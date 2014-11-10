@@ -1,0 +1,1 @@
+Consensum algorithm - implementation based on "In Search of an Understandable Consensus Algorithm" https://ramcloud.stanford.edu/raft.pdf
