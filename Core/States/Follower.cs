@@ -1,10 +1,11 @@
-﻿using Core.Messages;
+﻿using Core.Clustering;
+using Core.Messages;
 
 namespace Core.States
 {
     public class Follower : FinitState
     {
-        public void EnterState()
+        public void EnterState(ref LogState logState, Node node)
         {
             throw new System.NotImplementedException();
         }

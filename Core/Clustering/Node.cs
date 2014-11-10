@@ -4,20 +4,30 @@ namespace Core.Clustering
 {
     public class Node
     {
-        private string nodeName;
+        private NodeSettings settings;
 
         private LogState logState;
 
         private FinitState nodeState;
 
-        public Node(string nodeName, LogState logState, FinitState nodeState)
+        public Node(NodeSettings settings, LogState logState, FinitState nodeState)
         {
-            this.nodeName = nodeName;
+            this.settings = settings;
             this.logState = logState;
             this.nodeState = nodeState;
         }
 
+        public void Start()
+        {
+            nodeState.EnterState(ref logState, this);
+        }
 
+        public void Next(FinitState state)
+        {
+            nodeState = state;
+
+            nodeState.EnterState(ref logState, this);
+        }
 
     }
 }

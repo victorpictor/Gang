@@ -11,6 +11,5 @@ namespace Core.Clustering
         protected List<LogEntry> LogEntries;
 
         protected LogEntry PendingCommit;
-
     }
 }
