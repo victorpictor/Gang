@@ -1,4 +1,7 @@
-﻿using Core.States;
+﻿using Core.Messages;
+using Core.Receivers;
+using Core.Senders;
+using Core.States;
 
 namespace Core.Clustering
 {
@@ -7,21 +10,26 @@ namespace Core.Clustering
         private NodeSettings settings;
 
         private PersistentNodeState persistentNodeState;
-
         private FinitState nodeState;
 
-        public Node(NodeSettings settings, PersistentNodeState persistentNodeState, FinitState nodeState)
+        private ISendMessages sender;
+        private IReceiveMessages receiver;
+
+        public Node(NodeSettings settings, PersistentNodeState persistentNodeState, FinitState nodeState, ISendMessages sender, IReceiveMessages receiver)
         {
             this.settings = settings;
+
             this.persistentNodeState = persistentNodeState;
             this.nodeState = nodeState;
+
+            this.sender = sender;
+            this.receiver = receiver;
         }
 
         public void Start()
         {
             nodeState.EnterState(ref persistentNodeState, this);
         }
-
         public void Next(FinitState state)
         {
             nodeState = state;
@@ -33,16 +41,23 @@ namespace Core.Clustering
         {
             return this.persistentNodeState;
         }
-
         public FinitState LastFinitState()
         {
             return nodeState;
         }
-
         public NodeSettings GetSettings()
         {
             return this.settings;
         }
-        
+
+        public void Send(IMessage message)
+        {
+            sender.Send(message);
+        }
+
+        public IMessage Receive()
+        {
+            return receiver.Receive();
+        }
     }
 }

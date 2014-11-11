@@ -50,6 +50,8 @@
     <Compile Include="Messages\TimedOut.cs" />
     <Compile Include="Messages\VoteGranted.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Receivers\IReceiveMessages.cs" />
+    <Compile Include="Senders\ISendMessages.cs" />
     <Compile Include="States\Candidate.cs" />
     <Compile Include="States\Follower.cs" />
     <Compile Include="States\FinitState.cs" />

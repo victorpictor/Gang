@@ -58,7 +58,7 @@ namespace Core.States
 
         public override IMessage NextMessage()
         {
-            return new TimedOut();
+            return node.Receive();
         }
 
         private void Timer()
@@ -68,8 +68,9 @@ namespace Core.States
                 var settigs = node.GetSettings();
                 var state = node.GetState();
 
-                while (DateTime.Now.Subtract(lastReceivedOn).Milliseconds < settigs.ElectionTimeout) ;
-                    new MessageSender().Send(new TimedOut() { NodeId = state.NodeId, CurrentTerm = state.Term });
+                while (DateTime.Now.Subtract(lastReceivedOn).TotalMilliseconds < settigs.ElectionTimeout){}
+
+                node.Send(new TimedOut() { NodeId = state.NodeId, CurrentTerm = state.Term });
             });
         }
     }
