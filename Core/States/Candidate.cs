@@ -8,34 +8,27 @@ namespace Core.States
     {
         private Node node;
 
-        private Dictionary<int, long> Granted = new Dictionary<int, long>();
+        private HashSet<int> Granted = new HashSet<int>();
 
         public override MessageResponse Receive(AppendEntries appendEntries)
         {
             var state = node.GetState();
+            
             if (appendEntries.Term > state.Term)
-            {
-                Transition(()=>node.Next(new Follower()));
-            }
+                return new MessageResponse(true, n=> n.Next(new Follower()));
 
-            return new MessageResponse(false, n => { });
-        }
-
-        public override MessageResponse Receive(RequestedVote requestedVote)
-        {
             return new MessageResponse(false, n => { });
         }
 
         public override MessageResponse Receive(VoteGranted voteGranted)
         {
             var settings = node.GetSettings();
-            if (!Granted.ContainsKey(voteGranted.VoterId))
-            {
-                Granted.Add(voteGranted.VoterId, voteGranted.Term);
-                if (settings.Majority <= Granted.Count)
-                    return new MessageResponse(true, n =>n.Next(new Leader()));
-                
-            }
+
+            Granted.Add(voteGranted.VoterId);
+
+            if (Granted.Count >= settings.Majority)
+                return new MessageResponse(true, n => n.Next(new Leader()));
+
             return new MessageResponse(false, n => { });
         }
     }
