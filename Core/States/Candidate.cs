@@ -15,9 +15,9 @@ namespace Core.States
             var state = node.GetState();
             
             if (appendEntries.Term > state.Term)
-                return new MessageResponse(true, n=> n.Next(new Follower()));
+                return new MessageResponse(true, () => node.Next(new Follower()));
 
-            return new MessageResponse(false, n => { });
+          return new MessageResponse(false, () => { });
         }
 
         public override MessageResponse Receive(VoteGranted voteGranted)
@@ -27,9 +27,9 @@ namespace Core.States
             Granted.Add(voteGranted.VoterId);
 
             if (Granted.Count >= settings.Majority)
-                return new MessageResponse(true, n => n.Next(new Leader()));
+                return new MessageResponse(true, () => node.Next(new Leader()));
 
-            return new MessageResponse(false, n => { });
+            return new MessageResponse(false, () => { });
         }
     }
 }

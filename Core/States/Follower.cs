@@ -11,8 +11,7 @@ namespace Core.States
     {
         private DateTime lastReceivedOn = DateTime.Now;
         private Dictionary<long, int> votes = new Dictionary<long, int>();
-
-
+        
         public override void EnterState(ref PersistentNodeState persistentNodeState, Node node)
         {
             base.node = node;
@@ -25,12 +24,15 @@ namespace Core.States
         {
             var state = node.GetState();
 
-            if (state.Term > appendEntries.Term)
-                return new MessageResponse(false, n => { });
+            if (appendEntries.Term < state.Term)
+                return new MessageResponse(false, () => { });
+
+            if (appendEntries.Term > state.Term)
+                state.Term = appendEntries.Term;
 
             lastReceivedOn = DateTime.Now;
 
-            return new MessageResponse(false, n => { });
+            return new MessageResponse(false, () => { });
 
         }
 
@@ -39,7 +41,7 @@ namespace Core.States
             var state = node.GetState();
 
             if (state.Term >= requestedVote.LastLogTerm)
-                return new MessageResponse(false, n => { });
+                return new MessageResponse(false, () => { });
 
             if (!votes.ContainsKey(requestedVote.LastLogTerm))
             {
@@ -48,12 +50,17 @@ namespace Core.States
                 new MessageSender().Send(new VoteGranted() { VoterId = state.NodeId, CandidateId = requestedVote.CandidateId, Term = requestedVote.LastLogTerm });
             }
 
-            return new MessageResponse(false, n => { });
+            return new MessageResponse(false, () => { });
         }
 
         public override MessageResponse Receive(TimedOut timedOut)
         {
-            return new MessageResponse(true, n => n.Next(new Candidate()));
+            return new MessageResponse(true, () =>
+                {
+                    var state = node.GetState();
+                    state.Term++;
+                    node.Next(new Candidate());
+                });
         }
 
         public override IMessage NextMessage()

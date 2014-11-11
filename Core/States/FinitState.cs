@@ -8,10 +8,11 @@ namespace Core.States
     public class FinitState
     {
         protected Node node;
-
+        
         public virtual void EnterState(ref PersistentNodeState persistentNodeState, Node node)
         {
             this.node = node;
+            
             MessageResponse msgResp;
 
             while (true)
@@ -23,10 +24,10 @@ namespace Core.States
                 if (msgResp.LeaveState)
                     break;
 
-                msgResp.Action(node);
+                msgResp.Action();
             }
 
-            Transition(() => msgResp.Action(this.node));
+            Transition(() => msgResp.Action());
         }
 
         public virtual IMessage NextMessage()
@@ -41,22 +42,22 @@ namespace Core.States
 
         public virtual MessageResponse Receive(AppendEntries appendEntries)
         {
-            return new MessageResponse(false, n => { });
+            return new MessageResponse(false, () => { });
         }
 
         public virtual MessageResponse Receive(RequestedVote requestedVote)
         {
-            return new MessageResponse(false, n => { });
+            return new MessageResponse(false, () => { });
         }
 
         public virtual MessageResponse Receive(VoteGranted voteGranted)
         {
-            return new MessageResponse(false, n => { });
+            return new MessageResponse(false, () => { });
         }
 
         public virtual MessageResponse Receive(TimedOut timedOut)
         {
-            return new MessageResponse(true, n => { });
+            return new MessageResponse(true, () => { });
         }
     }
 }

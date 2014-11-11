@@ -44,5 +44,11 @@ namespace Core.Specs.WhenFollowing
             Assert.AreEqual(node.LastFinitState().GetType(), typeof(Candidate));
         }
 
+        [Test]
+        public void It_should_increment_term()
+        {
+            Assert.AreEqual(node.GetState().Term, 2);
+        }
+
     }
 }
