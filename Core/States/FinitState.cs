@@ -32,8 +32,9 @@ namespace Core.States
 
         public virtual IMessage NextMessage()
         {
-            return new TimedOut();
+            return node.Receive();
         }
+
 
         public void Transition(Action transition)
         {

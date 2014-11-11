@@ -63,11 +63,7 @@ namespace Core.States
                 });
         }
 
-        public override IMessage NextMessage()
-        {
-            return node.Receive();
-        }
-
+       
         private void Timer()
         {
             Task.Factory.StartNew(() =>
