@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Core.Clustering;
 using Core.Messages;
@@ -53,6 +52,11 @@ namespace Core.States
         public virtual MessageResponse Receive(VoteGranted voteGranted)
         {
             return new MessageResponse(false, n => { });
+        }
+
+        public virtual MessageResponse Receive(TimedOut timedOut)
+        {
+            return new MessageResponse(true, n => { });
         }
     }
 }

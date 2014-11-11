@@ -9,12 +9,14 @@ namespace Core.States
 {
     public class Follower : FinitState
     {
-        private DateTime lastMessageReceivedOn;
+        private DateTime lastReceivedOn = DateTime.Now;
         private Dictionary<long, int> votes = new Dictionary<long, int>();
 
 
         public override void EnterState(ref PersistentNodeState persistentNodeState, Node node)
         {
+            base.node = node;
+
             Timer();
             base.EnterState(ref persistentNodeState, node);
         }
@@ -26,7 +28,7 @@ namespace Core.States
             if (state.Term > appendEntries.Term)
                 return new MessageResponse(false, n => { });
 
-            lastMessageReceivedOn = DateTime.Now;
+            lastReceivedOn = DateTime.Now;
 
             return new MessageResponse(false, n => { });
 
@@ -49,12 +51,12 @@ namespace Core.States
             return new MessageResponse(false, n => { });
         }
 
-        public MessageResponse Receive(TimedOut timedOut)
+        public override MessageResponse Receive(TimedOut timedOut)
         {
             return new MessageResponse(true, n => n.Next(new Candidate()));
         }
 
-        public virtual IMessage NextMessage()
+        public override IMessage NextMessage()
         {
             return new TimedOut();
         }
@@ -64,9 +66,10 @@ namespace Core.States
             Task.Factory.StartNew(() =>
             {
                 var settigs = node.GetSettings();
+                var state = node.GetState();
 
-                while (DateTime.Now.Subtract(lastMessageReceivedOn).Milliseconds < settigs.ElectionTimeout) ;
-                                //send time out;
+                while (DateTime.Now.Subtract(lastReceivedOn).Milliseconds < settigs.ElectionTimeout) ;
+                    new MessageSender().Send(new TimedOut() { NodeId = state.NodeId, CurrentTerm = state.Term });
             });
         }
     }

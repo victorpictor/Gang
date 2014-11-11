@@ -15,7 +15,7 @@ namespace Core.States
             var state = node.GetState();
             if (appendEntries.Term > state.Term)
             {
-                Transition(t=>node.Next(new Follower()));
+                Transition(()=>node.Next(new Follower()));
             }
 
             return new MessageResponse(false, n => { });

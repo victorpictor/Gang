@@ -34,6 +34,11 @@ namespace Core.Clustering
             return this.persistentNodeState;
         }
 
+        public FinitState LastFinitState()
+        {
+            return nodeState;
+        }
+
         public NodeSettings GetSettings()
         {
             return this.settings;
