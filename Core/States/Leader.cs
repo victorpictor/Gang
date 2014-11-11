@@ -3,9 +3,9 @@ using Core.Messages;
 
 namespace Core.States
 {
-    public class Leader : ILead, FinitState
+    public class Leader : FinitState, ILead
     {
-        public void EnterState(ref LogState logState, Node node)
+        public void EnterState(ref PersistentNodeState persistentNodeState, Node node)
         {
             throw new System.NotImplementedException();
         }

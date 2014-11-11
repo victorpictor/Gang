@@ -6,28 +6,38 @@ namespace Core.Clustering
     {
         private NodeSettings settings;
 
-        private LogState logState;
+        private PersistentNodeState persistentNodeState;
 
         private FinitState nodeState;
 
-        public Node(NodeSettings settings, LogState logState, FinitState nodeState)
+        public Node(NodeSettings settings, PersistentNodeState persistentNodeState, FinitState nodeState)
         {
             this.settings = settings;
-            this.logState = logState;
+            this.persistentNodeState = persistentNodeState;
             this.nodeState = nodeState;
         }
 
         public void Start()
         {
-            nodeState.EnterState(ref logState, this);
+            nodeState.EnterState(ref persistentNodeState, this);
         }
 
         public void Next(FinitState state)
         {
             nodeState = state;
 
-            nodeState.EnterState(ref logState, this);
+            nodeState.EnterState(ref persistentNodeState, this);
         }
 
+        public PersistentNodeState GetState()
+        {
+            return this.persistentNodeState;
+        }
+
+        public NodeSettings GetSettings()
+        {
+            return this.settings;
+        }
+        
     }
 }
