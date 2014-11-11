@@ -24,10 +24,10 @@ namespace Core.States
                 if (msgResp.LeaveState)
                     break;
 
-                msgResp.NextState(node);
+                msgResp.Action(node);
             }
 
-            msgResp.NextState(node);
+            Transition(() => msgResp.Action(this.node));
         }
 
         public virtual IMessage NextMessage()
@@ -35,9 +35,9 @@ namespace Core.States
             return new TimedOut();
         }
 
-        public void Transition(Action<Node> transition)
+        public void Transition(Action transition)
         {
-           Task.Factory.StartNew(() => transition(node));
+           Task.Factory.StartNew(transition);
         }
 
         public virtual MessageResponse Receive(AppendEntries appendEntries)

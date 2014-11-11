@@ -51,7 +51,7 @@ namespace Core.States
 
         public MessageResponse Receive(TimedOut timedOut)
         {
-            return new MessageResponse(true, x => node.Next(new Candidate()));
+            return new MessageResponse(true, n => n.Next(new Candidate()));
         }
 
         public virtual IMessage NextMessage()
@@ -66,7 +66,7 @@ namespace Core.States
                 var settigs = node.GetSettings();
 
                 while (DateTime.Now.Subtract(lastMessageReceivedOn).Milliseconds < settigs.ElectionTimeout) ;
-                //send time out;
+                                //send time out;
             });
         }
     }

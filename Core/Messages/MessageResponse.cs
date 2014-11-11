@@ -6,12 +6,12 @@ namespace Core.Messages
     public class MessageResponse
     {
         public bool LeaveState;
-        public Action<Node> NextState;
+        public Action<Node> Action;
 
         public MessageResponse(bool leaveState, Action<Node> next)
         {
             this.LeaveState = leaveState;
-            this.NextState = next;
+            this.Action = next;
         }
     }
 }
