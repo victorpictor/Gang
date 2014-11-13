@@ -37,7 +37,7 @@ namespace Core.Specs.WhenFollowing
         public override void When()
         {
             node.Start();
-            Thread.Sleep(3500);
+            Thread.Sleep(1500);
             node.Stop();
         }
 

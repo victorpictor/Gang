@@ -9,8 +9,8 @@ namespace Core.States
 {
     public class Follower : FinitState
     {
-        private DateTime lastReceivedOn = DateTime.Now;
-        private Dictionary<long, int> votes = new Dictionary<long, int>();
+        protected DateTime lastReceivedOn = DateTime.Now;
+        protected Dictionary<long, int> votes = new Dictionary<long, int>();
         
         public override void EnterState(ref PersistentNodeState persistentNodeState, Node node)
         {
@@ -40,9 +40,10 @@ namespace Core.States
         {
             var state = node.GetState();
 
-            if (state.Term >= requestedVote.LastLogTerm)
+            if (state.Term < requestedVote.LastLogTerm)
                 return new MessageResponse(false, () => { });
 
+            if (state.Term == requestedVote.LastLogTerm)
             if (!votes.ContainsKey(requestedVote.LastLogTerm))
             {
                 votes.Add(requestedVote.LastLogTerm,requestedVote.CandidateId);
@@ -62,8 +63,7 @@ namespace Core.States
                     node.Next(new Candidate());
                 });
         }
-
-       
+        
         private void Timer()
         {
             var timer = new Thread(() =>
