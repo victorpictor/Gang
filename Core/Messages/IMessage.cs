@@ -2,6 +2,6 @@
 {
     public interface IMessage
     {
-        
+        long Term { get; set; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Core.Clustering;
 using Core.Messages;
 
@@ -18,7 +17,7 @@ namespace Core.States
             Timer();
             RequestVotes();
 
-            EnterState(ref persistentNodeState, node);
+            base.EnterState(ref persistentNodeState, node);
         }
 
         public override MessageResponse Receive(AppendEntries appendEntries)
@@ -55,12 +54,12 @@ namespace Core.States
 
         public void RequestVotes()
         {
-            var settigs = node.GetSettings();
-            var state = node.GetState();
-            var electionStarted = DateTime.Now;
-
-            Task.Factory.StartNew(() =>
+            var electionTask = new Thread(() =>
             {
+                var settigs = node.GetSettings();
+                var state = node.GetState();
+                var electionStarted = DateTime.Now;
+
                 while (DateTime.Now.Subtract(electionStarted).TotalMilliseconds < settigs.ElectionTimeout)
                 {
                     node.Send(new RequestedVote(){CandidateId = state.NodeId, LastLogTerm = state.Term, LastLogIndex = state.EntryIndex});
@@ -68,20 +67,24 @@ namespace Core.States
                 }
                 
             });
+
+            parallelTasks.Add(electionTask);
         }
 
         private void Timer()
         {
-            var settings = node.GetSettings();
-            var state = node.GetState();
-            
-            Task.Factory.StartNew(() =>
+            var timer = new Thread(() =>
             {
+                var settings = node.GetSettings();
+                var state = node.GetState();
+
                 Thread.Sleep(settings.ElectionTimeout);
                 
                 if (Granted.Count <= settings.Majority)
-                    node.Send(new TimedOut() { NodeId = state.NodeId, CurrentTerm = state.Term });
+                    node.Send(new TimedOut() { NodeId = state.NodeId, Term = state.Term });
             });
+
+            parallelTasks.Add(timer);
         }
     }
 }

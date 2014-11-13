@@ -30,6 +30,12 @@ namespace Core.Clustering
         {
             nodeState.EnterState(ref persistentNodeState, this);
         }
+
+        public void Stop()
+        {
+            sender.Send(new ExitState());
+        }
+
         public void Next(FinitState state)
         {
             nodeState = state;

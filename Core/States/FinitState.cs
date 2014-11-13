@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Core.Clustering;
 using Core.Messages;
@@ -8,37 +10,58 @@ namespace Core.States
     public class FinitState
     {
         protected Node node;
-        
+        protected List<Thread> parallelTasks = new List<Thread>();
+
         public virtual void EnterState(ref PersistentNodeState persistentNodeState, Node node)
         {
-            this.node = node;
-            
-            MessageResponse msgResp;
+            var loop = new Thread(() =>
+                {
+                    this.node = node;
 
-            while (true)
-            {
-                var message = NextMessage();
+                    MessageResponse msgResp;
 
-                msgResp = Receive((dynamic)message);
+                    while (true)
+                    {
+                        var message = NextMessage();
 
-                if (msgResp.LeaveState)
-                    break;
+                        msgResp = Receive((dynamic) message);
 
-                msgResp.Action();
-            }
+                        if (msgResp.LeaveState)
+                            break;
 
-            Transition(() => msgResp.Action());
+                        msgResp.Action();
+                    }
+
+                    Transition(() => msgResp.Action());
+                });
+
+            loop.Start();
         }
 
         public virtual IMessage NextMessage()
         {
-            return node.Receive();
-        }
+            while (true)
+            {
+                var message =  node.Receive();
 
+                if (message.Term >= 0)
+                    return message;
+            }
+            
+        }
 
         public void Transition(Action transition)
         {
            Task.Factory.StartNew(transition);
+        }
+
+        public virtual MessageResponse Receive(ExitState exitState)
+        {
+            return new MessageResponse(true, () =>
+                {
+                    parallelTasks.ForEach(pt => pt.Abort());
+                    parallelTasks = new List<Thread>();
+                });
         }
 
         public virtual MessageResponse Receive(AppendEntries appendEntries)

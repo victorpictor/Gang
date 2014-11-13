@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Core.Clustering;
 using Core.Messages;
-using Core.Messages.Senders;
 
 namespace Core.States
 {
@@ -47,7 +47,7 @@ namespace Core.States
             {
                 votes.Add(requestedVote.LastLogTerm,requestedVote.CandidateId);
 
-                new MessageSender().Send(new VoteGranted() { VoterId = state.NodeId, CandidateId = requestedVote.CandidateId, Term = requestedVote.LastLogTerm });
+                node.Send(new VoteGranted() { VoterId = state.NodeId, CandidateId = requestedVote.CandidateId, Term = requestedVote.LastLogTerm });
             }
 
             return new MessageResponse(false, () => { });
@@ -66,15 +66,18 @@ namespace Core.States
        
         private void Timer()
         {
-            Task.Factory.StartNew(() =>
+            var timer = new Thread(() =>
             {
                 var settigs = node.GetSettings();
                 var state = node.GetState();
 
                 while (DateTime.Now.Subtract(lastReceivedOn).TotalMilliseconds < settigs.ElectionTimeout){}
 
-                node.Send(new TimedOut() { NodeId = state.NodeId, CurrentTerm = state.Term });
+                node.Send(new TimedOut() { NodeId = state.NodeId, Term = state.Term });
             });
-        }
+
+            parallelTasks.Add(timer);
+            timer.Start();
+         }
     }
 }

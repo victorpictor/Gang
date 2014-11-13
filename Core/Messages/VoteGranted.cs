@@ -2,8 +2,8 @@
 {
     public class VoteGranted : IMessage
     {
-        public int CandidateId;
-        public int VoterId;
-        public long Term;
+        public int CandidateId { get; set; }
+        public int VoterId { get; set; }
+        public long Term { get; set; }
     }
 }

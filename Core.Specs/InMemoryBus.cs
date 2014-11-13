@@ -7,7 +7,7 @@ namespace Core.Specs
 {
     public class InMemoryBus: ISendMessages, IReceiveMessages
     {
-        private Queue<IMessage> messages = new Queue<IMessage>();
+        public Queue<IMessage> messages = new Queue<IMessage>();
 
         public void Send(IMessage m)
         {
@@ -19,7 +19,12 @@ namespace Core.Specs
             if (messages.Count > 0)
                 return messages.Dequeue();
 
-            return new AppendEntries(){Term = 0};
+            return new AppendEntries(){Term = -1};
+        }
+
+        public int MessageCount()
+        {
+            return messages.Count;
         }
     }
 }

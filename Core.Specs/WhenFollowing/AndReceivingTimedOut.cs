@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Core.Clustering;
 using Core.Log;
 using Core.States;
@@ -19,7 +20,7 @@ namespace Core.Specs.WhenFollowing
 
             var bus = new InMemoryBus();
 
-            node = new Node(new NodeSettings() {NodeId = 1, NodeName = "N1", ElectionTimeout = 2000, Majority = 3},
+            node = new Node(new NodeSettings() {NodeId = 1, NodeName = "N1", ElectionTimeout = 500, Majority = 3},
                             new PersistentNodeState()
                                 {
                                     NodeId = 1,
@@ -36,12 +37,14 @@ namespace Core.Specs.WhenFollowing
         public override void When()
         {
             node.Start();
+            Thread.Sleep(3500);
+            node.Stop();
         }
 
         [Test]
         public void It_should_become_Candidate()
         {
-            Assert.AreEqual(node.LastFinitState().GetType(), typeof(Candidate));
+            Assert.AreEqual(typeof(Candidate),node.LastFinitState().GetType());
         }
 
         [Test]

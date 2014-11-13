@@ -48,6 +48,8 @@
     <Compile Include="InMemoryBus.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WhenFollowing\AndReceivingRequestedVote\WithHigherTerm.cs" />
+    <Compile Include="WhenFollowing\AndReceivingRequestedVote\WithLowerTerm.cs" />
     <Compile Include="WhenFollowing\AndReceivingTimedOut.cs" />
   </ItemGroup>
   <ItemGroup>
