@@ -27,4 +27,5 @@ namespace Core.Specs
             return messages.Count;
         }
     }
+
 }

@@ -3,7 +3,6 @@ using System.Threading;
 using Core.Clustering;
 using Core.Log;
 using Core.Messages;
-using Core.Senders;
 using Core.States;
 using NUnit.Framework;
 
@@ -16,25 +15,14 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
             return votes;
         }
     }
-
-    public class MyBus : ISendMessages
-    {
-        public Queue<IMessage> queue = new Queue<IMessage>();
-        
-        public void Send(IMessage m)
-        {
-            queue.Enqueue(m);
-        }
-    }
-
-
+    
     [TestFixture]
     public class WithHigherTerm : Specification
     {
         private MyFollower state;
         private Node node;
 
-        private MyBus bus;
+        private InMemoryBus bus;
         private InMemoryBus inMemoryBus;
 
         public override void Given()
@@ -42,7 +30,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
 
             state = new MyFollower();
 
-            bus = new MyBus();
+            bus = new InMemoryBus();
             inMemoryBus = new InMemoryBus();
 
             node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 50000, Majority = 3 },
@@ -78,14 +66,14 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
         [Test]
         public void It_publish_vote_granted()
         {
-            Assert.AreEqual(typeof(VoteGranted), bus.queue.Peek().GetType());
+            Assert.AreEqual(typeof(VoteGranted), bus.messages.Peek().GetType());
         }
 
         [Test]
         public void It_should_publish_one_message()
         {
-            var controllMessage = bus.queue.Dequeue();
-            Assert.AreEqual(1, bus.queue.Count);
+            var controllMessage = bus.messages.Dequeue();
+            Assert.AreEqual(1, bus.messages.Count);
         }
     }
 }

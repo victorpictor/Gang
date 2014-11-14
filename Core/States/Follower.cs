@@ -68,10 +68,13 @@ namespace Core.States
         {
             var timer = new Thread(() =>
             {
-                var settigs = node.GetSettings();
+                var settings = node.GetSettings();
                 var state = node.GetState();
-
-                while (DateTime.Now.Subtract(lastReceivedOn).TotalMilliseconds < settigs.ElectionTimeout){}
+                var started = DateTime.Now;
+                
+                while (DateTime.Now.Subtract(started).TotalMilliseconds <= settings.ElectionTimeout)
+                {
+                }
 
                 node.Send(new TimedOut() { NodeId = state.NodeId, Term = state.Term });
             });

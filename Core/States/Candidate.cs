@@ -23,11 +23,14 @@ namespace Core.States
         public override MessageResponse Receive(AppendEntries appendEntries)
         {
             var state = node.GetState();
-            
-            if (appendEntries.Term > state.Term)
-                return new MessageResponse(true, () => node.Next(new Follower()));
 
-          return new MessageResponse(false, () => { });
+            if (appendEntries.Term > state.Term)
+            {
+                state.Term = appendEntries.Term;
+                return new MessageResponse(true, () => node.Next(new Follower()));
+            }
+
+            return new MessageResponse(false, () => { });
         }
 
         public override MessageResponse Receive(VoteGranted voteGranted)
@@ -69,6 +72,7 @@ namespace Core.States
             });
 
             parallelTasks.Add(electionTask);
+            electionTask.Start();
         }
 
         private void Timer()
@@ -79,12 +83,19 @@ namespace Core.States
                 var state = node.GetState();
 
                 Thread.Sleep(settings.ElectionTimeout);
-                
+
+                var started = DateTime.Now;
+
+                while (DateTime.Now.Subtract(started).TotalMilliseconds <= settings.ElectionTimeout)
+                {
+                }
+
                 if (Granted.Count <= settings.Majority)
                     node.Send(new TimedOut() { NodeId = state.NodeId, Term = state.Term });
             });
 
             parallelTasks.Add(timer);
+            timer.Start();
         }
     }
 }

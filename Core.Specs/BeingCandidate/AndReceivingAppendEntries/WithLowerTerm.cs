@@ -6,12 +6,12 @@ using Core.Messages;
 using Core.States;
 using NUnit.Framework;
 
-namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
+namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
 {
     [TestFixture]
     public class WithLowerTerm : Specification
     {
-        private MyFollower state;
+        private Candidate state;
         private Node node;
 
         private InMemoryBus bus;
@@ -19,7 +19,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
         public override void Given()
         {
 
-            state = new MyFollower();
+            state = new Candidate();
 
             bus = new InMemoryBus();
 
@@ -27,7 +27,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
                             new PersistentNodeState()
                             {
                                 NodeId = 1,
-                                Term = 3,
+                                Term = 2,
                                 EntryIndex = 0,
                                 LogEntries = new List<LogEntry>()
                             },
@@ -41,22 +41,22 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
         {
             node.Start();
 
-            bus.Send(new RequestedVote() { Term = 2, CandidateId = 2, LastLogIndex = 3, LastLogTerm = 4 });
-            Thread.Sleep(1500);
+            bus.Send(new AppendEntries() { Term = 1 });
 
             node.Stop();
+
+            Thread.Sleep(900);
         }
 
         [Test]
         public void It_should_stay_in_follower_state()
         {
-            Assert.AreEqual(typeof(MyFollower), node.LastFinitState().GetType());
+            Assert.AreEqual( typeof(Candidate), node.LastFinitState().GetType());
         }
 
         [Test]
-        public void It_should_ignore_request_vote_entry_command()
+        public void It_should_ignore_append_entry_command()
         {
-            var controlMessage = bus.Receive();
             Assert.AreEqual(0, bus.MessageCount());
         }
     }

@@ -52,6 +52,7 @@ namespace Core.States
 
         public void Transition(Action transition)
         {
+           parallelTasks.ForEach(pt => pt.Abort());
            Task.Factory.StartNew(transition);
         }
 

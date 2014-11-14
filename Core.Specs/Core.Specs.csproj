@@ -45,6 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BeingCandidate\AndReceivingAppendEntries\WithHigherTerm.cs" />
+    <Compile Include="BeingCandidate\AndReceivingAppendEntries\WithLowerTerm.cs" />
+    <Compile Include="BeingCandidate\AndReceivingVoteGranted\NotWinningElectionAndTimingOut.cs" />
+    <Compile Include="BeingCandidate\AndReceivingVoteGranted\WinningElection.cs" />
+    <Compile Include="BeingCandidate\AndRequestingVotes.cs" />
     <Compile Include="InMemoryBus.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,6 +65,7 @@
       <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
