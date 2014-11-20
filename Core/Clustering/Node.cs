@@ -28,7 +28,7 @@ namespace Core.Clustering
 
         public void Start()
         {
-            nodeState.EnterState(ref persistentNodeState, this);
+            nodeState.EnterState(this);
         }
 
         public void Stop()
@@ -40,7 +40,7 @@ namespace Core.Clustering
         {
             nodeState = state;
 
-            nodeState.EnterState(ref persistentNodeState, this);
+            nodeState.EnterState(this);
         }
 
         public PersistentNodeState GetState()

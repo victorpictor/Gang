@@ -10,14 +10,14 @@ namespace Core.States
     {
         private HashSet<int> Granted = new HashSet<int>();
 
-        public override void EnterState(ref PersistentNodeState persistentNodeState, Node node)
+        public override void EnterState(Node node)
         {
             base.node = node;
 
             Timer();
             RequestVotes();
 
-            base.EnterState(ref persistentNodeState, node);
+            base.EnterState(node);
         }
 
         public override MessageResponse Receive(AppendEntries appendEntries)

@@ -5,9 +5,9 @@ namespace Core.States
 {
     public class Stoped : FinitState
     {
-        public override void EnterState(ref PersistentNodeState persistentNodeState, Node node)
+        public override void EnterState(Node node)
         {
-            Console.WriteLine("Node stopped {0}", persistentNodeState.NodeId);
+            Console.WriteLine("Node stopped {0}", node.GetState().NodeId);
         }
     }
 }

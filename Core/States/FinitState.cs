@@ -12,7 +12,7 @@ namespace Core.States
         protected Node node;
         protected List<Thread> parallelTasks = new List<Thread>();
 
-        public virtual void EnterState(ref PersistentNodeState persistentNodeState, Node node)
+        public virtual void EnterState(Node node)
         {
             var loop = new Thread(() =>
                 {

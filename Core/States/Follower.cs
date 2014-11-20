@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Core.Clustering;
 using Core.Messages;
 
@@ -12,12 +11,12 @@ namespace Core.States
         protected DateTime lastReceivedOn = DateTime.Now;
         protected Dictionary<long, int> votes = new Dictionary<long, int>();
         
-        public override void EnterState(ref PersistentNodeState persistentNodeState, Node node)
+        public override void EnterState(Node node)
         {
             base.node = node;
 
             Timer();
-            base.EnterState(ref persistentNodeState, node);
+            base.EnterState(node);
         }
 
         public override MessageResponse Receive(AppendEntries appendEntries)
