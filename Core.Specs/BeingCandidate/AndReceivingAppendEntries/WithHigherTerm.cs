@@ -55,7 +55,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
         }
 
         [Test]
-        public void It_should_become_in_follower_state()
+        public void It_should_become_follower()
         {
             Assert.AreEqual(node.LastFinitState().GetType(), typeof(Follower));
         }
