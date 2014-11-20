@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Core.Log
 {
@@ -9,6 +10,6 @@ namespace Core.Log
         public long Term;
         public long Index;
 
-        public object Message;
+        public List<object> Messages;
     }
 }

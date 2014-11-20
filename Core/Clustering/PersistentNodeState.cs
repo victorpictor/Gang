@@ -12,5 +12,15 @@ namespace Core.Clustering
         public List<LogEntry> LogEntries;
 
         public LogEntry PendingCommit;
+
+        public void Append(long term, long currentEntryIndex,long prevTerm, long prevEntryIndex, List<object> messages)
+        {
+            if (PendingCommit.Index == prevEntryIndex && PendingCommit.Term == prevTerm)
+                LogEntries.Add(PendingCommit);
+
+            Term = term;
+            EntryIndex = currentEntryIndex;
+            PendingCommit = new LogEntry() { Term = term, Index = currentEntryIndex, Messages = messages };
+        }
     }
 }

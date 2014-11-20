@@ -45,6 +45,7 @@
     <Compile Include="Messages\AppendEntries.cs" />
     <Compile Include="Messages\ExitState.cs" />
     <Compile Include="Messages\IMessage.cs" />
+    <Compile Include="Messages\MessageExtention.cs" />
     <Compile Include="Messages\MessageResponse.cs" />
     <Compile Include="Messages\RequestedVote.cs" />
     <Compile Include="Messages\Senders\MessageSender.cs" />

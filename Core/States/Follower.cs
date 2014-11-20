@@ -31,8 +31,10 @@ namespace Core.States
 
             lastReceivedOn = DateTime.Now;
 
+            if (!appendEntries.IsHeartBeat())
+                state.Append(appendEntries.Term, appendEntries.LogIndex, appendEntries.PrevTerm, appendEntries.PrevLogIndex, appendEntries.Messages);
+            
             return new MessageResponse(false, () => { });
-
         }
 
         public override MessageResponse Receive(RequestedVote requestedVote)

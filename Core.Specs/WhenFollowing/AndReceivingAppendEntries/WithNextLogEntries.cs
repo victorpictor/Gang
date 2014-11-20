@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
 {
     [TestFixture]
-    public class WithHigherTerm : Specification
+    public class WithNextLogEntries : Specification
     {
         private Follower state;
         private Node node;
@@ -28,8 +28,9 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
                             {
                                 NodeId = 1,
                                 Term = 2,
-                                EntryIndex = 0,
-                                LogEntries = new List<LogEntry>()
+                                EntryIndex = 1,
+                                LogEntries = new List<LogEntry>(),
+                                PendingCommit = new LogEntry() { Term = 2, Index = 1, Messages = new List<object>() { new object() } }
                             },
                             state,
                             bus,
@@ -39,30 +40,26 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
 
         public override void When()
         {
-            node.Start();
+            bus.Send(new AppendEntries() { Term = 2, LogIndex = 2, PrevTerm = 2, PrevLogIndex = 1, Messages = new List<object>(){new object()} });
 
-            bus.Send(new AppendEntries() { Term = 4 });
-            Thread.Sleep(900);
+            node.Start();
+            Thread.Sleep(1500);
             node.Stop();
         }
 
+
         [Test]
-        public void It_should_not_ignore_append_entry_command()
+        public void It_should_append_new_entries()
         {
-            var controllMessage = bus.messages.Dequeue();
-            Assert.AreEqual(0, bus.MessageCount());
+            Assert.AreEqual(2, node.GetState().EntryIndex);
+            Assert.AreEqual(2, node.GetState().Term);
         }
 
         [Test]
-        public void It_should_update_term()
-        {
-            Assert.AreEqual(node.GetState().Term, 4);
-        }
-
-        [Test]
-        public void It_should_stay_in_follower_state()
+        public void It_should_not_change_node_state()
         {
             Assert.AreEqual(node.LastFinitState().GetType(), typeof(Follower));
         }
+
     }
 }

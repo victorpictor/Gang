@@ -43,10 +43,12 @@ namespace Core.Clustering
             nodeState.EnterState(this);
         }
 
+       
         public PersistentNodeState GetState()
         {
             return this.persistentNodeState;
         }
+
         public FinitState LastFinitState()
         {
             return nodeState;
