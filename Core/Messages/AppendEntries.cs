@@ -11,7 +11,7 @@ namespace Core.Messages
         public long PrevLogIndex { get; set; }
         public long LogIndex { get; set; }
 
-        public List<object> Messages { get; set; }
+        public List<object> MachineCommands { get; set; }
 
         
     }

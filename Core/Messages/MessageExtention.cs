@@ -6,7 +6,7 @@ namespace Core.Messages
     {
         public static bool IsHeartBeat(this AppendEntries appendEntries)
         {
-            return !appendEntries.Messages.Any();
+            return !appendEntries.MachineCommands.Any();
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Core.States
             lastReceivedOn = DateTime.Now;
 
             if (!appendEntries.IsHeartBeat())
-                state.Append(appendEntries.Term, appendEntries.LogIndex, appendEntries.PrevTerm, appendEntries.PrevLogIndex, appendEntries.Messages);
+                state.Append(appendEntries.Term, appendEntries.LogIndex, appendEntries.PrevTerm, appendEntries.PrevLogIndex, appendEntries.MachineCommands);
             
             return new MessageResponse(false, () => { });
         }

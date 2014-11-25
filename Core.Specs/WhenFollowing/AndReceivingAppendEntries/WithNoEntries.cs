@@ -40,7 +40,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
 
         public override void When()
         {
-            bus.Send(new AppendEntries(){ Term = 2, LogIndex = 2, PrevTerm = 2, PrevLogIndex = 1, Messages = new List<object>()});
+            bus.Send(new AppendEntries(){ Term = 2, LogIndex = 2, PrevTerm = 2, PrevLogIndex = 1, MachineCommands = new List<object>()});
             
             node.Start();
             Thread.Sleep(1500); 

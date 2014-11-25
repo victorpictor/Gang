@@ -2,7 +2,7 @@
 {
     public interface ILead
     {
-        void SendHeartBeat();
+        void HeartBeat();
         void SyncLog();
     }
 }
