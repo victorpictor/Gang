@@ -8,7 +8,7 @@ namespace Core.States
 {
     public class Leader : FinitState, ILead
     {
-        private DateTime lastRequest;
+        protected DateTime lastRequest;
 
         public override void EnterState(Node node)
         {
