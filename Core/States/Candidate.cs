@@ -27,7 +27,7 @@ namespace Core.States
             Granted.Add(voteGranted.VoterId);
 
             if (Granted.Count >= settings.Majority)
-                return new MessageResponse(true, () => node.Next(new Leader()));
+                return new MessageResponse(true, () => node.Next(Leader()));
 
             return new MessageResponse(false, () => { });
         }
@@ -38,7 +38,7 @@ namespace Core.States
             {
                 var state = node.GetState();
                 state.Term++;
-                node.Next(new Candidate());
+                node.Next(Candidate());
             });
         }
 

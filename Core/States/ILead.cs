@@ -4,5 +4,6 @@
     {
         void HeartBeat();
         void SyncLog();
+        void Appender();
     }
 }

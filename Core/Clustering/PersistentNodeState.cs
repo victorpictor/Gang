@@ -20,7 +20,7 @@ namespace Core.Clustering
 
             Term = term;
             EntryIndex = currentEntryIndex;
-            PendingCommit = new LogEntry() { Term = term, Index = currentEntryIndex, Messages = messages };
+            PendingCommit = new LogEntry() { Term = term, Index = currentEntryIndex, MachineCommands = messages };
         }
     }
 }

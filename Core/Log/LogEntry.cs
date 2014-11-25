@@ -10,6 +10,6 @@ namespace Core.Log
         public long Term;
         public long Index;
 
-        public List<object> Messages;
+        public List<object> MachineCommands;
     }
 }

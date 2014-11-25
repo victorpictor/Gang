@@ -13,11 +13,34 @@ namespace Core.States
         public override void EnterState(Node node)
         {
             this.lastRequest = DateTime.Now;
-            this.node = node;
+            base.node = node;
 
             base.EnterState(node);
 
             HeartBeat();
+            Appender();
+        }
+
+
+        public void Appender()
+        {
+            var appender = new Thread(() =>
+            {
+                var settings = node.GetSettings();
+                var state = node.GetState();
+
+                while (true)
+                {
+                    //get command
+                    //send command to followers
+                    //wait for majority to respond
+                    //retry if is the case
+                    //ack the client 
+                }
+            });
+
+            parallelTasks.Add(appender);
+            appender.Start();
         }
 
         public void HeartBeat()
@@ -45,5 +68,6 @@ namespace Core.States
         {
             
         }
+        
     }
 }

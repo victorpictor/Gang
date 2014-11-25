@@ -38,6 +38,19 @@ namespace Core.States
             loop.Start();
         }
 
+        public FinitState Leader()
+        {
+            return new Leader();
+        }
+        public FinitState Candidate()
+        {
+            return new Candidate();
+        }
+        public FinitState Follower()
+        {
+            return new Follower();
+        }
+        
         public virtual IMessage NextMessage()
         {
             while (true)
@@ -72,7 +85,7 @@ namespace Core.States
             if (appendEntries.Term > state.Term)
             {
                 state.Term = appendEntries.Term;
-                return new MessageResponse(true, () => node.Next(new Follower()));
+                return new MessageResponse(true, () => node.Next(Follower()));
             }
 
             return new MessageResponse(false, () => { });

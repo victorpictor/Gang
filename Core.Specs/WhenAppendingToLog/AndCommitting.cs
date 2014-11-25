@@ -19,7 +19,7 @@ namespace Core.Specs.WhenAppendingToLog
                     Term = 2,
                     EntryIndex = 1,
                     LogEntries = new List<LogEntry>(),
-                    PendingCommit = new LogEntry() {Term = 2, Index = 1, Messages = new List<object>() {new object()}}
+                    PendingCommit = new LogEntry() {Term = 2, Index = 1, MachineCommands = new List<object>() {new object()}}
                 };
         }
 

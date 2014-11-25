@@ -61,7 +61,7 @@ namespace Core.States
                 {
                     var state = node.GetState();
                     state.Term++;
-                    node.Next(new Candidate());
+                    node.Next(Candidate());
                 });
         }
         
