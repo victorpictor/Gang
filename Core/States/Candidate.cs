@@ -20,19 +20,6 @@ namespace Core.States
             base.EnterState(node);
         }
 
-        public override MessageResponse Receive(AppendEntries appendEntries)
-        {
-            var state = node.GetState();
-
-            if (appendEntries.Term > state.Term)
-            {
-                state.Term = appendEntries.Term;
-                return new MessageResponse(true, () => node.Next(new Follower()));
-            }
-
-            return new MessageResponse(false, () => { });
-        }
-
         public override MessageResponse Receive(VoteGranted voteGranted)
         {
             var settings = node.GetSettings();

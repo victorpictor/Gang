@@ -1,4 +1,6 @@
-﻿using Core.Clustering;
+﻿using System;
+using Core.Clustering;
+using Core.Messages;
 
 namespace Core.States
 {
@@ -6,9 +8,10 @@ namespace Core.States
     {
         public override void EnterState(Node node)
         {
-            
+            base.EnterState(node);
         }
 
+        
         public void SendHeartBeat()
         {
         }

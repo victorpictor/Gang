@@ -7,7 +7,7 @@ namespace Core.States
     {
         public override void EnterState(Node node)
         {
-            Console.WriteLine("Node stopped {0}", node.GetState().NodeId);
+            Console.WriteLine("Node stopped {0}", node.GetState().NodeId); 
         }
     }
 }
