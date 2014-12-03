@@ -32,8 +32,11 @@ namespace Core.States
             lastReceivedOn = DateTime.Now;
 
             if (!appendEntries.IsHeartBeat())
-                state.Append(appendEntries.Term, appendEntries.LogIndex, appendEntries.PrevTerm, appendEntries.PrevLogIndex, appendEntries.MachineCommands);
-            
+            {
+                state.Append(appendEntries.Term, appendEntries.LogIndex, appendEntries.PrevTerm,appendEntries.PrevLogIndex, appendEntries.MachineCommands);
+                node.Send(new EntriesAppended() { Term = appendEntries.Term, LogIndex = appendEntries.LogIndex, NodeId = node.GetSettings().NodeId});
+            }
+
             return new MessageResponse(false, () => { });
         }
 

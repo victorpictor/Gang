@@ -3,7 +3,6 @@
     public interface ILead
     {
         void HeartBeat();
-        void SyncLog();
         void Appender();
     }
 }

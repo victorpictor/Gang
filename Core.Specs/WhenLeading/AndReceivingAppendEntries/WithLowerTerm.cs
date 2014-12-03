@@ -15,14 +15,14 @@ namespace Core.Specs.WhenLeading.AndReceivingAppendEntries
         private Node node;
 
         private InMemoryBus bus;
-
+        
         public override void Given()
         {
 
             state = new Leader();
 
             bus = new InMemoryBus();
-
+            
             node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 },
                             new PersistentNodeState()
                             {

@@ -9,9 +9,8 @@ namespace Core.Clustering
         public int NodeId;
         
         public int ElectionTimeout = 1000;
-
         public int HeartBeatPeriod = 1000;
-
+        public int FollowerSla = 1000;
         public int Majority = 3;
 
         public List<int> KnownNodes = new List<int>();

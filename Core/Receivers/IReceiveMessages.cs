@@ -2,8 +2,13 @@
 
 namespace Core.Receivers
 {
-    public interface IReceiveMessages
+    public interface IReceiveMessages : IReceiveMessages<IMessage>
     {
         IMessage Receive();
+    }
+
+    public interface IReceiveMessages<T>
+    {
+        T Receive();
     }
 }

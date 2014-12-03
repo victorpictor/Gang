@@ -3,13 +3,23 @@ using System.Collections.Generic;
 using System.Threading;
 using Core.Clustering;
 using Core.Log;
+using Core.Messages;
+using Core.Receivers;
+using Core.Senders;
 using Core.States;
+using Core.Transport;
+using Moq;
 using NUnit.Framework;
 
-namespace Core.Specs.WhenLeading
+namespace Core.Specs.WhenLeading.HeartBeat
 {
     public class MyLeader : Leader
     {
+        public MyLeader(): base()
+        {
+            LeaderBus.InitLeaderBus(new Mock<IReceiveMessages<IClientCommand>>().Object, new Mock<ISend<ClientReply>>().Object, new Mock<IReceiveMessages<IMessage>>().Object);
+        }
+
         public void SetLastRequestTime(DateTime requested)
         {
             base.lastRequest = requested;
@@ -28,7 +38,7 @@ namespace Core.Specs.WhenLeading
         public override void Given()
         {
             state = new MyLeader();
-
+            
             bus1 = new InMemoryBus();
             bus2 = new InMemoryBus();
 

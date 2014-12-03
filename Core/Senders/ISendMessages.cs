@@ -2,7 +2,12 @@
 
 namespace Core.Senders
 {
-    public interface ISendMessages
+    public interface ISend<T>
+    {
+        void Send(T m);
+    }
+    
+    public interface ISendMessages:ISend<IMessage>
     {
         void Send(IMessage m);
     }
