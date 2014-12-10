@@ -15,7 +15,7 @@ namespace Core.States
         private LeaderBus leaderBus;
 
         protected DateTime lastRequest;
-        protected AappendEntriesReplies appendEntriesReplies;
+        protected AppendEntriesReplies appendEntriesReplies;
         
         public override void EnterState(Node node)
         {
@@ -41,7 +41,7 @@ namespace Core.States
                 {
                     var clientRequest = leaderBus.ReceiveCommand();
 
-                    appendEntriesReplies = new AappendEntriesReplies();
+                    appendEntriesReplies = new AppendEntriesReplies();
 
                     var followerMessage = new AppendEntries()
                         {

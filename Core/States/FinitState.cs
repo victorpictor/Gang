@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Clustering;
 using Core.Messages;
+using Core.States.Services;
 
 namespace Core.States
 {
@@ -11,6 +12,7 @@ namespace Core.States
     {
         protected Node node;
         protected List<Thread> parallelTasks = new List<Thread>();
+        protected List<ServiceReference> registeredServices = new List<ServiceReference>();
 
         public virtual void EnterState(Node node)
         {
@@ -66,14 +68,33 @@ namespace Core.States
         public void Transition(Action transition)
         {
            parallelTasks.ForEach(pt => pt.Abort());
+           StopRegisteredServices();
            Task.Factory.StartNew(transition);
         }
 
+
+        public virtual void StartRegisteredServices()
+        {
+            registeredServices.ForEach(service => service.StartService());
+        }
+
+        public virtual void StopRegisteredServices()
+        {
+            registeredServices.ForEach(service => service.StopService());
+            registeredServices = new List<ServiceReference>();
+        }
+
+        public virtual void RegisterService(ServiceReference service)
+        {
+            registeredServices.Add(service);
+        }
+        
         public virtual MessageResponse Receive(ExitState exitState)
         {
             return new MessageResponse(true, () =>
                 {
                     parallelTasks.ForEach(pt => pt.Abort());
+                    StopRegisteredServices();
                     parallelTasks = new List<Thread>();
                 });
         }

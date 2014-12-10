@@ -6,7 +6,7 @@ using Core.Messages;
 
 namespace Core.Concurrency
 {
-    public class AappendEntriesReplies
+    public class AppendEntriesReplies
     {
         static ReaderWriterLock Lock = new ReaderWriterLock();
         protected HashSet<EntriesAppended> appendEntriesResponses = new HashSet<EntriesAppended>();
