@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using Core.Clustering;
 using Core.Messages;
 
-namespace Core.States
+namespace Core.States.TheFollower
 {
     public class Follower : FinitState
     {
@@ -15,8 +14,13 @@ namespace Core.States
         {
             base.node = node;
 
-            Timer();
             base.EnterState(node);
+
+            RegisterService(
+                new TimeoutService(base.node)
+                    .StartService().Reference());
+
+            StartRegisteredServices();
         }
 
         public override MessageResponse Receive(AppendEntries appendEntries)
@@ -68,23 +72,5 @@ namespace Core.States
                 });
         }
         
-        private void Timer()
-        {
-            var timer = new Thread(() =>
-            {
-                var settings = node.GetSettings();
-                var state = node.GetState();
-                var started = DateTime.Now;
-                
-                while (DateTime.Now.Subtract(started).TotalMilliseconds <= settings.ElectionTimeout)
-                {
-                }
-
-                node.Send(new TimedOut() { NodeId = state.NodeId, Term = state.Term });
-            });
-
-            parallelTasks.Add(timer);
-            timer.Start();
-         }
     }
 }

@@ -7,6 +7,7 @@ using Core.Messages;
 using Core.Receivers;
 using Core.Senders;
 using Core.States;
+using Core.States.TheLead;
 using Core.Transport;
 using Moq;
 using NUnit.Framework;
@@ -20,9 +21,9 @@ namespace Core.Specs.WhenLeading.HeartBeat
             LeaderBus.InitLeaderBus(new Mock<IReceiveMessages<IClientCommand>>().Object, new Mock<ISend<ClientReply>>().Object, new Mock<IReceiveMessages<IMessage>>().Object);
         }
 
-        public void SetLastRequestTime(DateTime requested)
+        public void SetLastRequestTime()
         {
-            base.lastRequest = requested;
+            base.requestState = new RequestState(){};
         }
     }
 
@@ -62,7 +63,7 @@ namespace Core.Specs.WhenLeading.HeartBeat
 
             for (int i = 0; i < 10; i++)
             {
-                state.SetLastRequestTime(DateTime.Now);
+                state.SetLastRequestTime();
                 Thread.Sleep(100);
             }
             

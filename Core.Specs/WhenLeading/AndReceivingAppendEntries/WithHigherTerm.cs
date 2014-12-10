@@ -3,7 +3,8 @@ using System.Threading;
 using Core.Clustering;
 using Core.Log;
 using Core.Messages;
-using Core.States;
+using Core.States.TheFollower;
+using Core.States.TheLead;
 using NUnit.Framework;
 
 namespace Core.Specs.WhenLeading.AndReceivingAppendEntries

@@ -4,6 +4,7 @@ using Core.Clustering;
 using Core.Log;
 using Core.Messages;
 using Core.States;
+using Core.States.TheFollower;
 using NUnit.Framework;
 
 namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote

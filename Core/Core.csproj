@@ -63,18 +63,21 @@
     <Compile Include="Receivers\IReceiveMessages.cs" />
     <Compile Include="States\Services\AbstractService.cs" />
     <Compile Include="States\Services\ServiceReference.cs" />
+    <Compile Include="States\TheCandidate\ElectionService.cs" />
+    <Compile Include="States\TheCandidate\ElectionState.cs" />
+    <Compile Include="States\TheCandidate\ElectionTimeOutService.cs" />
+    <Compile Include="States\TheFollower\TimeoutService.cs" />
     <Compile Include="States\TheLead\FollowersRepliesService.cs" />
     <Compile Include="States\TheLead\AppendEntriesService.cs" />
     <Compile Include="States\TheLead\HeartBeatService.cs" />
     <Compile Include="States\TheLead\RequestState.cs" />
-    <Compile Include="States\TheLead\NewLead.cs" />
+    <Compile Include="States\TheLead\Leader.cs" />
     <Compile Include="Transport\LeaderBus.cs" />
     <Compile Include="Senders\ISendMessages.cs" />
     <Compile Include="States\TheCandidate\Candidate.cs" />
     <Compile Include="States\TheFollower\Follower.cs" />
     <Compile Include="States\FinitState.cs" />
     <Compile Include="States\TheLead\ILead.cs" />
-    <Compile Include="States\TheLead\Leader.cs" />
     <Compile Include="Clustering\PersistentNodeState.cs" />
     <Compile Include="Transport\IBus.cs" />
   </ItemGroup>
