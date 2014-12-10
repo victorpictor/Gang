@@ -11,15 +11,15 @@ namespace Core.States.TheCandidate
         {
             base.node = node;
 
-            base.EnterState(node);
-
             RegisterService(
                 new ElectionService(base.node)
-                    .StartService().Reference());
+                    .Reference());
 
             RegisterService(
                 new ElectionTimeOutService(base.node, this.Granted)
-                    .StartService().Reference());
+                    .Reference());
+
+            base.EnterState(node);
             
             StartRegisteredServices();
         }

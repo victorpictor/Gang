@@ -13,12 +13,12 @@ namespace Core.States.TheFollower
         public override void EnterState(Node node)
         {
             base.node = node;
-
-            base.EnterState(node);
-
+            
             RegisterService(
                 new TimeoutService(base.node)
-                    .StartService().Reference());
+                    .Reference());
+            
+            base.EnterState(node);
 
             StartRegisteredServices();
         }

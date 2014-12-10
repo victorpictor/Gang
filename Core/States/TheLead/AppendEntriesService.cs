@@ -15,37 +15,38 @@ namespace Core.States.TheLead
 
         public AppendEntriesService(Node node, LeaderBus leaderBus, RequestState requestState)
         {
-            
+
             var appender = new Thread(() =>
                 {
                     this.requestState = requestState;
                     this.leaderBus = leaderBus;
                     var state = node.GetState();
 
-                while (true)
-                {
-                    var clientRequest = leaderBus.ReceiveCommand();
-
-                    var followerMessage = new AppendEntries()
+                    while (true)
                     {
-                        LeaderId = state.NodeId,
-                        Term = state.Term,
-                        LogIndex = state.EntryIndex + 1,
-                        PrevTerm = state.PrevTerm(),
-                        PrevLogIndex = state.PrevLogIngex(),
-                        MachineCommands = new List<object> { clientRequest.Command }
-                    };
+                        var clientRequest = leaderBus.ReceiveCommand();
 
-                    node.Send(followerMessage);
-                    requestState.MessageSentNow();
+                        var followerMessage = new AppendEntries()
+                            {
+                                LeaderId = state.NodeId,
+                                Term = state.Term,
+                                LogIndex = state.EntryIndex + 1,
+                                PrevTerm = state.PrevTerm(),
+                                PrevLogIndex = state.PrevLogIngex(),
+                                MachineCommands = new List<object> {clientRequest.Command}
+                            };
 
-                    WaitForMajorityToReply(followerMessage);
+                        node.Send(followerMessage);
+                        requestState.MessageSentNow();
 
-                    state.Append(followerMessage.Term, followerMessage.LogIndex, followerMessage.PrevTerm, followerMessage.PrevLogIndex, followerMessage.MachineCommands);
+                        WaitForMajorityToReply(followerMessage);
 
-                    leaderBus.SendToClient();
-                }
-            });
+                        state.Append(followerMessage.Term, followerMessage.LogIndex, followerMessage.PrevTerm,
+                                     followerMessage.PrevLogIndex, followerMessage.MachineCommands);
+
+                        leaderBus.SendToClient();
+                    }
+                });
 
             reference = new ServiceReference(appender);
         }

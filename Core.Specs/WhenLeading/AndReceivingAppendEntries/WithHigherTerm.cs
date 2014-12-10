@@ -3,8 +3,10 @@ using System.Threading;
 using Core.Clustering;
 using Core.Log;
 using Core.Messages;
+using Core.Specs.WhenLeading.HeartBeat;
 using Core.States.TheFollower;
 using Core.States.TheLead;
+using Core.Transport;
 using NUnit.Framework;
 
 namespace Core.Specs.WhenLeading.AndReceivingAppendEntries
@@ -12,7 +14,7 @@ namespace Core.Specs.WhenLeading.AndReceivingAppendEntries
     [TestFixture]
     public class WithHigherTerm : Specification
     {
-        private Leader state;
+        private MyLeader state;
         private Node node;
 
         private InMemoryBus bus;
@@ -20,8 +22,8 @@ namespace Core.Specs.WhenLeading.AndReceivingAppendEntries
         public override void Given()
         {
 
-            state = new Leader();
-
+            state = new MyLeader();
+            
             bus = new InMemoryBus();
 
             node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 },

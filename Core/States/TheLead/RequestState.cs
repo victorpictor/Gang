@@ -7,7 +7,7 @@ namespace Core.States.TheLead
     public class RequestState
     {
         private DateTime lastMessageSent;
-        private AppendEntriesReplies appendEntries;
+        private AppendEntriesReplies appendEntries = new AppendEntriesReplies();
         
         public RequestState()
         {

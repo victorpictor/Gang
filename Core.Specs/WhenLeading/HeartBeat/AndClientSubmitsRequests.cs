@@ -18,7 +18,10 @@ namespace Core.Specs.WhenLeading.HeartBeat
     {
         public MyLeader(): base()
         {
-            LeaderBus.InitLeaderBus(new Mock<IReceiveMessages<IClientCommand>>().Object, new Mock<ISend<ClientReply>>().Object, new Mock<IReceiveMessages<IMessage>>().Object);
+            var receiver = new Mock<IReceiveMessages<IMessage>>();
+            receiver.SetReturnsDefault(new ClientCommand(){Id = Guid.NewGuid(), Command = new object()});
+
+            LeaderBus.InitLeaderBus(new Mock<IReceiveMessages<IClientCommand>>().Object, new Mock<ISend<ClientReply>>().Object, receiver.Object);
         }
 
         public void SetLastRequestTime()

@@ -17,20 +17,21 @@ namespace Core.States.TheLead
             this.requestState = new RequestState();
 
             base.node = node;
-            base.EnterState(node);
-
+           
 
             RegisterService(
                 new AppendEntriesService(base.node, leaderBus, requestState)
-                    .StartService().Reference());
+                    .Reference());
 
             RegisterService(
                 new HeartBeatService(base.node, this.requestState)
-                    .StartService().Reference());
+                    .Reference());
 
             RegisterService(
                 new FollowersRepliesService(leaderBus, requestState)
-                    .StartService().Reference());
+                    .Reference());
+
+            base.EnterState(node);
 
             StartRegisteredServices();
         }
