@@ -31,6 +31,10 @@ namespace Core.States.TheLead
                 new FollowersRepliesService(leaderBus, requestState)
                     .Reference());
 
+            RegisterService(
+                new ReadLogService()
+                    .Reference());
+
             base.EnterState(node);
 
             StartRegisteredServices();

@@ -5,9 +5,6 @@ using System.Threading.Tasks;
 using Core.Clustering;
 using Core.Messages;
 using Core.States.Services;
-using Core.States.TheCandidate;
-using Core.States.TheFollower;
-using Core.States.TheLead;
 
 namespace Core.States
 {
@@ -42,19 +39,6 @@ namespace Core.States
             loop.Start();
         }
 
-        public FinitState Leader()
-        {
-            return new Leader();
-        }
-        public FinitState Candidate()
-        {
-            return new Candidate();
-        }
-        public FinitState Follower()
-        {
-            return new Follower();
-        }
-        
         public virtual IMessage NextMessage()
         {
             while (true)
@@ -101,7 +85,7 @@ namespace Core.States
             if (appendEntries.Term > state.Term)
             {
                 state.Term = appendEntries.Term;
-                return new MessageResponse(true, () => node.Next(Follower()));
+                return new MessageResponse(true, () => node.Next(new StateFactory().Follower()));
             }
 
             return new MessageResponse(false, () => { });

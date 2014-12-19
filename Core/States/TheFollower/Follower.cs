@@ -17,6 +17,10 @@ namespace Core.States.TheFollower
             RegisterService(
                 new TimeoutService(base.node)
                     .Reference());
+
+            RegisterService(
+                new LogRecoveryService()
+                    .Reference());
             
             base.EnterState(node);
 
@@ -68,7 +72,7 @@ namespace Core.States.TheFollower
                 {
                     var state = node.GetState();
                     state.Term++;
-                    node.Next(Candidate());
+                    node.Next(new StateFactory().Candidate());
                 });
         }
         

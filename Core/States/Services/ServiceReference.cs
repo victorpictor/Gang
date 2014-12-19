@@ -14,7 +14,8 @@ namespace Core.States.Services
         public void StopService()
         {
             if (serviceThread != null)
-                serviceThread.Abort();
+                if (serviceThread.IsAlive)
+                    serviceThread.Abort();
         }
 
         public void StartService()

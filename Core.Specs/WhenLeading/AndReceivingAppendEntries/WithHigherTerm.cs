@@ -5,8 +5,6 @@ using Core.Log;
 using Core.Messages;
 using Core.Specs.WhenLeading.HeartBeat;
 using Core.States.TheFollower;
-using Core.States.TheLead;
-using Core.Transport;
 using NUnit.Framework;
 
 namespace Core.Specs.WhenLeading.AndReceivingAppendEntries
