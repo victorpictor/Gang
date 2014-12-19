@@ -7,7 +7,7 @@ namespace Core.States.TheCandidate
     {
         private ElectionState Granted = new ElectionState();
 
-        public override void EnterState(Node node)
+        public override void EnterNewState(Node node)
         {
             base.node = node;
 
@@ -19,9 +19,7 @@ namespace Core.States.TheCandidate
                 new ElectionTimeOutService(base.node, this.Granted)
                     .Reference());
 
-            base.EnterState(node);
-            
-            StartRegisteredServices();
+           StartRegisteredServices();
         }
 
         public override MessageResponse Receive(VoteGranted voteGranted)

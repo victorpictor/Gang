@@ -10,17 +10,19 @@ namespace Core.Clustering
         private NodeSettings settings;
 
         private PersistentNodeState persistentNodeState;
-        private FinitState nodeState;
+        private NodeState nodeState;
+        private FinitState finitState;
 
         private ISendMessages sender;
         private IReceiveMessages receiver;
 
-        public Node(NodeSettings settings, PersistentNodeState persistentNodeState, FinitState nodeState, ISendMessages sender, IReceiveMessages receiver)
+        public Node(NodeSettings settings, PersistentNodeState persistentNodeState, FinitState finitState, ISendMessages sender, IReceiveMessages receiver)
         {
             this.settings = settings;
 
             this.persistentNodeState = persistentNodeState;
-            this.nodeState = nodeState;
+            this.nodeState = new NodeState();
+            this.finitState = finitState;
 
             this.sender = sender;
             this.receiver = receiver;
@@ -28,7 +30,7 @@ namespace Core.Clustering
 
         public void Start()
         {
-            nodeState.EnterState(this);
+            nodeState.EnterState(this, finitState, receiver);
         }
 
         public void Stop()
@@ -36,11 +38,12 @@ namespace Core.Clustering
             sender.Send(new ExitState());
         }
 
-        public void Next(FinitState state)
+        public void Next(FinitState finitState)
         {
-            nodeState = state;
+            nodeState = new  NodeState();
+            this.finitState = finitState;
 
-            nodeState.EnterState(this);
+            nodeState.EnterState(this, finitState, receiver);
         }
 
        
@@ -51,7 +54,7 @@ namespace Core.Clustering
 
         public FinitState LastFinitState()
         {
-            return nodeState;
+            return finitState;
         }
         public NodeSettings GetSettings()
         {

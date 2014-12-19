@@ -13,7 +13,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
     [TestFixture]
     public class WithHigherTerm : Specification
     {
-        private Candidate state;
+        private Candidate finitState;
         private Node node;
 
         private InMemoryBus bus;
@@ -21,7 +21,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
         public override void Given()
         {
 
-            state = new Candidate();
+            finitState = new Candidate();
 
             bus = new InMemoryBus();
 
@@ -33,7 +33,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
                                 EntryIndex = 0,
                                 LogEntries = new List<LogEntry>()
                             },
-                            state,
+                            finitState,
                             bus,
                             bus
                 );
@@ -53,13 +53,13 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
         [Test]
         public void It_should_update_term()
         {
-            Assert.AreEqual(node.GetState().Term, 4);
+            Assert.AreEqual(4, node.GetState().Term);
         }
 
         [Test]
         public void It_should_become_follower()
         {
-            Assert.AreEqual(node.LastFinitState().GetType(), typeof(Follower));
+            Assert.AreEqual(typeof(Follower), node.LastFinitState().GetType());
         }
     }
 }

@@ -10,23 +10,21 @@ namespace Core.States.TheFollower
         protected DateTime lastReceivedOn = DateTime.Now;
         protected Dictionary<long, int> votes = new Dictionary<long, int>();
         
-        public override void EnterState(Node node)
+        public override void EnterNewState(Node node)
         {
             base.node = node;
-            
+
             RegisterService(
-                new TimeoutService(base.node)
+                new TimeoutService(node)
                     .Reference());
 
             RegisterService(
                 new LogRecoveryService()
                     .Reference());
-            
-            base.EnterState(node);
 
             StartRegisteredServices();
         }
-
+        
         public override MessageResponse Receive(AppendEntries appendEntries)
         {
             var state = node.GetState();

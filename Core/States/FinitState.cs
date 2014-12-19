@@ -13,44 +13,46 @@ namespace Core.States
         protected Node node;
         protected List<ServiceReference> registeredServices = new List<ServiceReference>();
 
-        public virtual void EnterState(Node node)
-        {
-            var loop = new Thread(() =>
-                {
-                    this.node = node;
+        //public virtual void EnterState(Node node)
+        //{
+        //    var loop = new Thread(() =>
+        //        {
+        //            this.node = node;
 
-                    MessageResponse msgResp;
+        //            MessageResponse msgResp;
 
-                    while (true)
-                    {
-                        var message = NextMessage();
+        //            while (true)
+        //            {
+        //                var message = NextMessage();
 
-                        msgResp = Receive((dynamic) message);
+        //                msgResp = Receive((dynamic) message);
 
-                        if (msgResp.LeaveState)
-                            break;
+        //                if (msgResp.LeaveState)
+        //                    break;
 
-                        msgResp.Action();
-                    }
+        //                msgResp.Action();
+        //            }
 
-                    Transition(() => msgResp.Action());
-                });
+        //            Transition(() => msgResp.Action());
+        //        });
 
-            loop.Start();
-        }
+        //    loop.Start();
+        //}
 
-        public virtual IMessage NextMessage()
-        {
-            while (true)
-            {
-                var message =  node.Receive();
+        //public virtual IMessage NextMessage()
+        //{
+        //    while (true)
+        //    {
+        //        var message =  node.Receive();
 
-                if (message.Term >= 0)
-                    return message;
-            }
-            
-        }
+        //        if (message.Term >= 0)
+        //            return message;
+        //    }
 
+        //}
+
+        public virtual void EnterNewState(Node node) { }
+        
         public void Transition(Action transition)
         {
            StopRegisteredServices();

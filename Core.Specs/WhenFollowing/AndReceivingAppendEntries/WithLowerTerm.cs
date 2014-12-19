@@ -52,7 +52,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
         [Test]
         public void It_should_stay_in_follower_state()
         {
-            Assert.AreEqual(node.LastFinitState().GetType(), typeof(Follower));
+            Assert.AreEqual(typeof(Follower), node.LastFinitState().GetType());
         }
 
         [Test]

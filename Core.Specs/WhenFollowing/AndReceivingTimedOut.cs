@@ -39,7 +39,7 @@ namespace Core.Specs.WhenFollowing
         public override void When()
         {
             node.Start();
-            Thread.Sleep(1500);
+            Thread.Sleep(10500);
             node.Stop();
         }
 
@@ -52,7 +52,7 @@ namespace Core.Specs.WhenFollowing
         [Test]
         public void It_should_increment_term()
         {
-            Assert.AreEqual(node.GetState().Term, 2);
+            Assert.AreEqual(2, node.GetState().Term);
         }
 
     }

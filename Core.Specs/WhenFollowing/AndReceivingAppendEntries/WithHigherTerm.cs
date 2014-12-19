@@ -42,7 +42,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
         {
             node.Start();
 
-            bus.Send(new AppendEntries() { Term = 4 });
+            bus.Send(new AppendEntries() { Term = 4, MachineCommands = new List<object>(){new object()}});
             Thread.Sleep(900);
             node.Stop();
         }
@@ -57,13 +57,13 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
         [Test]
         public void It_should_update_term()
         {
-            Assert.AreEqual(node.GetState().Term, 4);
+            Assert.AreEqual(4, node.GetState().Term);
         }
 
         [Test]
         public void It_should_stay_in_follower_state()
         {
-            Assert.AreEqual(node.LastFinitState().GetType(), typeof(Follower));
+            Assert.AreEqual(typeof(Follower), node.LastFinitState().GetType());
         }
     }
 }

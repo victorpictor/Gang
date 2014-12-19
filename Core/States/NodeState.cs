@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using Core.Clustering;
 using Core.Messages;
 using Core.Receivers;
 
@@ -8,9 +9,11 @@ namespace Core.States
     {
         private IReceiveMessages receiver;
 
-        public virtual void EnterState(IReceiveMessages receiver, FinitState state)
+        public virtual void EnterState(Node node, FinitState state, IReceiveMessages receiver)
         {
             this.receiver = receiver;
+
+            state.EnterNewState(node);
 
             var loop = new Thread(() =>
             {
