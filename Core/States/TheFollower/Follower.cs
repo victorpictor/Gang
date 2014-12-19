@@ -73,6 +73,11 @@ namespace Core.States.TheFollower
                     node.Next(new StateFactory().Candidate());
                 });
         }
-        
+
+        public override MessageResponse Receive(ExitState exitState)
+        {
+            return new MessageResponse(true, StopRegisteredServices);
+        }
+
     }
 }
