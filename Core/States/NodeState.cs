@@ -7,13 +7,26 @@ namespace Core.States
 {
     public class NodeState
     {
+        private Node node;
         private IReceiveMessages receiver;
+        private FinitState finitState;
 
-        public virtual void EnterState(Node node, FinitState state, IReceiveMessages receiver)
+        public NodeState(Node node, FinitState state, IReceiveMessages receiver)
         {
+            this.node = node;
             this.receiver = receiver;
+            this.finitState = state;
+        }
 
-            state.EnterNewState(node);
+        public FinitState ReadState()
+        {
+            return finitState;
+        }
+
+        public virtual void EnterState()
+        {
+            
+            finitState.EnterNewState(node);
 
             var loop = new Thread(() =>
             {
@@ -23,7 +36,7 @@ namespace Core.States
                 {
                     var message = NextMessage();
 
-                    msgResp = state.Receive((dynamic)message);
+                    msgResp = finitState.Receive((dynamic)message);
 
                     if (msgResp.LeaveState)
                         break;
@@ -31,7 +44,7 @@ namespace Core.States
                     msgResp.Action();
                 }
 
-                state.Transition(() => msgResp.Action());
+                finitState.Transition(() => msgResp.Action());
             });
 
             loop.Start();

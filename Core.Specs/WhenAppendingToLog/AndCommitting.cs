@@ -12,7 +12,6 @@ namespace Core.Specs.WhenAppendingToLog
 
         public override void Given()
         {
-
             state = new PersistentNodeState()
                 {
                     NodeId = 1,

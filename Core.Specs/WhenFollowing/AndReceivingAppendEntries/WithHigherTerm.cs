@@ -3,7 +3,6 @@ using System.Threading;
 using Core.Clustering;
 using Core.Log;
 using Core.Messages;
-using Core.States;
 using Core.States.TheFollower;
 using NUnit.Framework;
 
@@ -24,14 +23,18 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
 
             bus = new InMemoryBus();
 
-            node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 },
-                            new PersistentNodeState()
-                            {
-                                NodeId = 1,
-                                Term = 2,
-                                EntryIndex = 0,
-                                LogEntries = new List<LogEntry>()
-                            },
+            DomainRegistry
+                .RegisterServiceFactory(
+                    new ServiceFactory(
+                        new PersistentNodeState()
+                        {
+                            NodeId = 1,
+                            Term = 2,
+                            EntryIndex = 0,
+                            LogEntries = new List<LogEntry>()
+                        }));
+
+            node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 20000, Majority = 3 },
                             state,
                             bus,
                             bus
@@ -43,7 +46,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
             node.Start();
 
             bus.Send(new AppendEntries() { Term = 4, MachineCommands = new List<object>(){new object()}});
-            Thread.Sleep(900);
+            Thread.Sleep(600);
             node.Stop();
         }
 
@@ -57,7 +60,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
         [Test]
         public void It_should_update_term()
         {
-            Assert.AreEqual(4, node.GetState().Term);
+            Assert.AreEqual(4, DomainRegistry.NodLogEntriesService().NodeState().Term);
         }
 
         [Test]

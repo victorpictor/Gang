@@ -9,18 +9,20 @@ namespace Core.States.TheLead
 {
     public class AppendEntriesService : AbstractService
     {
+
         private Node node;
         private RequestState requestState;
         private LeaderBus leaderBus;
 
         public AppendEntriesService(Node node, LeaderBus leaderBus, RequestState requestState)
         {
+            this.node = node;
 
             var appender = new Thread(() =>
                 {
                     this.requestState = requestState;
                     this.leaderBus = leaderBus;
-                    var state = node.GetState();
+                    var state = DomainRegistry.NodLogEntriesService().NodeState();
 
                     while (true)
                     {

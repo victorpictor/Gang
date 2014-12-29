@@ -25,14 +25,18 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
 
             bus = new InMemoryBus();
 
+            DomainRegistry
+               .RegisterServiceFactory(
+                   new ServiceFactory(
+                       new PersistentNodeState()
+                       {
+                           NodeId = 1,
+                           Term = 2,
+                           EntryIndex = 0,
+                           LogEntries = new List<LogEntry>()
+                       }));
+
             node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 },
-                            new PersistentNodeState()
-                            {
-                                NodeId = 1,
-                                Term = 2,
-                                EntryIndex = 0,
-                                LogEntries = new List<LogEntry>()
-                            },
                             finitState,
                             bus,
                             bus
@@ -53,7 +57,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
         [Test]
         public void It_should_update_term()
         {
-            Assert.AreEqual(4, node.GetState().Term);
+            Assert.AreEqual(4, DomainRegistry.NodLogEntriesService().NodeState().Term);
         }
 
         [Test]

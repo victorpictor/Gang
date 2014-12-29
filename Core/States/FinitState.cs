@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Core.Clustering;
 using Core.Messages;
@@ -13,49 +12,11 @@ namespace Core.States
         protected Node node;
         protected List<ServiceReference> registeredServices = new List<ServiceReference>();
 
-        //public virtual void EnterState(Node node)
-        //{
-        //    var loop = new Thread(() =>
-        //        {
-        //            this.node = node;
-
-        //            MessageResponse msgResp;
-
-        //            while (true)
-        //            {
-        //                var message = NextMessage();
-
-        //                msgResp = Receive((dynamic) message);
-
-        //                if (msgResp.LeaveState)
-        //                    break;
-
-        //                msgResp.Action();
-        //            }
-
-        //            Transition(() => msgResp.Action());
-        //        });
-
-        //    loop.Start();
-        //}
-
-        //public virtual IMessage NextMessage()
-        //{
-        //    while (true)
-        //    {
-        //        var message =  node.Receive();
-
-        //        if (message.Term >= 0)
-        //            return message;
-        //    }
-
-        //}
-
         public virtual void EnterNewState(Node node) { }
         
         public void Transition(Action transition)
         {
-           StopRegisteredServices();
+           //StopRegisteredServices();
            Task.Factory.StartNew(transition);
         }
         
@@ -82,11 +43,12 @@ namespace Core.States
 
         public virtual MessageResponse Receive(AppendEntries appendEntries)
         {
-            var state = node.GetState();
+            var state = DomainRegistry.NodLogEntriesService().NodeState();
 
             if (appendEntries.Term > state.Term)
             {
-                state.Term = appendEntries.Term;
+                DomainRegistry.NodLogEntriesService().UpdateTerm(appendEntries.Term);
+
                 return new MessageResponse(true, () => node.Next(new StateFactory().Follower()));
             }
 

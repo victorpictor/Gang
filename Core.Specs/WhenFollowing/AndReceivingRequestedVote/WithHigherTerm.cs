@@ -34,14 +34,18 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
             bus = new InMemoryBus();
             inMemoryBus = new InMemoryBus();
 
+            DomainRegistry
+                .RegisterServiceFactory(
+                    new ServiceFactory(
+                        new PersistentNodeState()
+                        {
+                            NodeId = 1,
+                            Term = 4,
+                            EntryIndex = 0,
+                            LogEntries = new List<LogEntry>()
+                        }));
+
             node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 50000, Majority = 3 },
-                            new PersistentNodeState()
-                            {
-                                NodeId = 1,
-                                Term = 4,
-                                EntryIndex = 0,
-                                LogEntries = new List<LogEntry>()
-                            },
                             state,
                             bus,
                             inMemoryBus

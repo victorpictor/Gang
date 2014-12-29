@@ -38,8 +38,8 @@ namespace Core.States.TheCandidate
         {
             return new MessageResponse(true, () =>
             {
-                var state = node.GetState();
-                state.Term++;
+                DomainRegistry.NodLogEntriesService().IncrementTerm();
+
                 node.Next(new StateFactory().Candidate());
             });
         }

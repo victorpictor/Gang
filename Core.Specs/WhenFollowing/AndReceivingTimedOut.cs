@@ -22,14 +22,18 @@ namespace Core.Specs.WhenFollowing
 
             var bus = new InMemoryBus();
 
+            DomainRegistry
+                .RegisterServiceFactory(
+                    new ServiceFactory(
+                        new PersistentNodeState()
+                            {
+                                NodeId = 1,
+                                Term = 1,
+                                EntryIndex = 0,
+                                LogEntries = new List<LogEntry>()
+                            }));
+
             node = new Node(new NodeSettings() {NodeId = 1, NodeName = "N1", ElectionTimeout = 500, Majority = 3},
-                            new PersistentNodeState()
-                                {
-                                    NodeId = 1,
-                                    Term = 1,
-                                    EntryIndex = 0,
-                                    LogEntries = new List<LogEntry>()
-                                },
                             state, 
                             bus,
                             bus
@@ -39,7 +43,7 @@ namespace Core.Specs.WhenFollowing
         public override void When()
         {
             node.Start();
-            Thread.Sleep(10500);
+            Thread.Sleep(1500);
             node.Stop();
         }
 
@@ -52,7 +56,7 @@ namespace Core.Specs.WhenFollowing
         [Test]
         public void It_should_increment_term()
         {
-            Assert.AreEqual(2, node.GetState().Term);
+            Assert.AreEqual(2, DomainRegistry.NodLogEntriesService().NodeState().Term);
         }
 
     }

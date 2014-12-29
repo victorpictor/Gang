@@ -46,14 +46,18 @@ namespace Core.Specs.WhenLeading.HeartBeat
             bus1 = new InMemoryBus();
             bus2 = new InMemoryBus();
 
+            DomainRegistry
+               .RegisterServiceFactory(
+                   new ServiceFactory(
+                       new PersistentNodeState()
+                       {
+                           NodeId = 1,
+                           Term = 2,
+                           EntryIndex = 0,
+                           LogEntries = new List<LogEntry>()
+                       }));
+
             node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 250, Majority = 3 },
-                            new PersistentNodeState()
-                            {
-                                NodeId = 1,
-                                Term = 2,
-                                EntryIndex = 0,
-                                LogEntries = new List<LogEntry>()
-                            },
                             state,
                             bus1,
                             bus2

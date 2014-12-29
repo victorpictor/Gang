@@ -24,14 +24,18 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
 
             bus = new InMemoryBus();
 
+            DomainRegistry
+              .RegisterServiceFactory(
+                  new ServiceFactory(
+                      new PersistentNodeState()
+                      {
+                          NodeId = 1,
+                          Term = 1,
+                          EntryIndex = 0,
+                          LogEntries = new List<LogEntry>()
+                      }));
+
             node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3 },
-                            new PersistentNodeState()
-                            {
-                                NodeId = 1,
-                                Term = 1,
-                                EntryIndex = 0,
-                                LogEntries = new List<LogEntry>()
-                            },
                             state,
                             bus,
                             bus

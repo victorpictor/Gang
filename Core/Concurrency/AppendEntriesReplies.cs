@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Core.Messages;
@@ -8,7 +7,7 @@ namespace Core.Concurrency
 {
     public class AppendEntriesReplies
     {
-        static ReaderWriterLock Lock = new ReaderWriterLock();
+        protected ReaderWriterLock Lock = new ReaderWriterLock();
         protected HashSet<EntriesAppended> appendEntriesResponses = new HashSet<EntriesAppended>();
 
         public void Register(EntriesAppended e)
@@ -28,7 +27,7 @@ namespace Core.Concurrency
         {
             var resp = 0;
 
-            Lock.AcquireReaderLock(100);
+            Lock.AcquireReaderLock(50);
 
             resp = appendEntriesResponses.Count(ae => ae.Term == term && ae.LogIndex == index);
 

@@ -24,15 +24,19 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
 
             bus = new InMemoryBus();
 
+            DomainRegistry
+                .RegisterServiceFactory(
+                    new ServiceFactory(
+                        new PersistentNodeState()
+                        {
+                            NodeId = 1,
+                            Term = 2,
+                            EntryIndex = 1,
+                            LogEntries = new List<LogEntry>(),
+                            PendingCommit = new LogEntry() { Term = 2, Index = 1, MachineCommands = new List<object>() { new object() } }
+                        }));
+
             node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 },
-                            new PersistentNodeState()
-                            {
-                                NodeId = 1,
-                                Term = 2,
-                                EntryIndex = 1,
-                                LogEntries = new List<LogEntry>(),
-                                PendingCommit = new LogEntry() { Term = 2, Index = 1, MachineCommands = new List<object>() { new object() } }
-                            },
                             state,
                             bus,
                             bus
@@ -52,8 +56,8 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
         [Test]
         public void It_should_append_new_entries()
         {
-            Assert.AreEqual(2, node.GetState().EntryIndex);
-            Assert.AreEqual(2, node.GetState().Term);
+            Assert.AreEqual(2, DomainRegistry.NodLogEntriesService().NodeState().EntryIndex);
+            Assert.AreEqual(2, DomainRegistry.NodLogEntriesService().NodeState().Term);
         }
 
         [Test]

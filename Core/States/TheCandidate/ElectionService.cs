@@ -13,7 +13,7 @@ namespace Core.States.TheCandidate
             var election = new Thread(() =>
             {
                 var settigs = node.GetSettings();
-                var state = node.GetState();
+                var state = DomainRegistry.NodLogEntriesService().NodeState();
                 var electionStarted = DateTime.Now;
 
                 while (DateTime.Now.Subtract(electionStarted).TotalMilliseconds < settigs.ElectionTimeout)

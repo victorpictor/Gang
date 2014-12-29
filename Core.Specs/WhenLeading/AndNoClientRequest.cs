@@ -23,14 +23,18 @@ namespace Core.Specs.WhenLeading
             bus1 = new InMemoryBus();
             bus2 = new InMemoryBus();
 
+            DomainRegistry
+               .RegisterServiceFactory(
+                   new ServiceFactory(
+                       new PersistentNodeState()
+                       {
+                           NodeId = 1,
+                           Term = 2,
+                           EntryIndex = 0,
+                           LogEntries = new List<LogEntry>()
+                       }));
+
             node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 },
-                            new PersistentNodeState()
-                            {
-                                NodeId = 1,
-                                Term = 2,
-                                EntryIndex = 0,
-                                LogEntries = new List<LogEntry>()
-                            },
                             state,
                             bus1,
                             bus2
@@ -47,7 +51,7 @@ namespace Core.Specs.WhenLeading
         [Test]
         public void It_should_send_heart_beat_to_nodes_every_beatperiod()
         {
-            Assert.LessOrEqual(6,bus1.MessageCount());
+            Assert.GreaterOrEqual(bus1.MessageCount(),6);
         }
     }
 }

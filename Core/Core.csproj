@@ -45,7 +45,9 @@
     <Compile Include="Clustering\Node.cs" />
     <Compile Include="Clustering\NodeSettings.cs" />
     <Compile Include="Clustering\NodeStateService.cs" />
+    <Compile Include="Clustering\NodLogEntriesService.cs" />
     <Compile Include="Concurrency\AppendEntriesReplies.cs" />
+    <Compile Include="DomainRegistry.cs" />
     <Compile Include="Log\LogEntry.cs" />
     <Compile Include="Messages\AppendEntries.cs" />
     <Compile Include="Messages\AppendEntriesReply.cs" />
