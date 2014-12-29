@@ -23,8 +23,8 @@ namespace Core.Specs.WhenFollowing
             var bus = new InMemoryBus();
 
             DomainRegistry
-                .RegisterServiceFactory(
-                    new ServiceFactory(
+                .RegisterService(
+                    new NodeLogEntriesService(
                         new PersistentNodeState()
                             {
                                 NodeId = 1,
@@ -56,7 +56,8 @@ namespace Core.Specs.WhenFollowing
         [Test]
         public void It_should_increment_term()
         {
-            Assert.AreEqual(2, DomainRegistry.NodLogEntriesService().NodeState().Term);
+            var term = DomainRegistry.NodLogEntriesService().NodeState().Term;
+            Assert.AreEqual(2, term);
         }
 
     }

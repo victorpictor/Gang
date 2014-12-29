@@ -2,20 +2,17 @@
 
 namespace Core.Clustering
 {
-    public class NodLogEntriesService
+    public class NodeLogEntriesService
     {
         private PersistentNodeState persistentNodeState;
 
-        public NodLogEntriesService()
-        {
-        }
-
-        public NodLogEntriesService(PersistentNodeState persistentNodeState)
+        
+        public NodeLogEntriesService(PersistentNodeState persistentNodeState)
         {
             this.persistentNodeState = persistentNodeState;
         }
 
-        public NodLogEntriesService(/*source*/ int source)
+        public NodeLogEntriesService(/*source*/ int source)
         {
 
         }

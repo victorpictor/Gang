@@ -1,26 +1,24 @@
-﻿using System;
-using Core.Clustering;
+﻿using Core.Clustering;
 
 namespace Core
 {
     public interface IServiceFactory
     {
-        NodLogEntriesService NodLogEntriesService();
+        NodeLogEntriesService NodLogEntriesService();
     }
-
-
+    
     public class DomainRegistry
     {
-        static IServiceFactory serviceFactory;
+        static NodeLogEntriesService nodeLogEntriesService;
 
-        public static void RegisterServiceFactory(IServiceFactory _serviceFactory)
+        public static void RegisterService(NodeLogEntriesService _nodeLogEntriesService)
         {
-            serviceFactory = _serviceFactory;
+            nodeLogEntriesService = _nodeLogEntriesService;
         }
         
-        public static NodLogEntriesService NodLogEntriesService()
+        public static NodeLogEntriesService NodLogEntriesService()
         {
-            return serviceFactory.NodLogEntriesService();
+            return nodeLogEntriesService;
         }
     }
 }

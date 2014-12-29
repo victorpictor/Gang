@@ -24,8 +24,8 @@ namespace Core.Specs.WhenLeading
             bus2 = new InMemoryBus();
 
             DomainRegistry
-               .RegisterServiceFactory(
-                   new ServiceFactory(
+               .RegisterService(
+                   new NodeLogEntriesService(
                        new PersistentNodeState()
                        {
                            NodeId = 1,

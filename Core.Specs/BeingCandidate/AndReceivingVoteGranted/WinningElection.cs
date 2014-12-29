@@ -25,8 +25,8 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
             bus = new InMemoryBus();
 
             DomainRegistry
-              .RegisterServiceFactory(
-                  new ServiceFactory(
+              .RegisterService(
+                  new NodeLogEntriesService(
                       new PersistentNodeState()
                       {
                           NodeId = 1,

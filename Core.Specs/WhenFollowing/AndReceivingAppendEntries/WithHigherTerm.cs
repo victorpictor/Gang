@@ -24,8 +24,8 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
             bus = new InMemoryBus();
 
             DomainRegistry
-                .RegisterServiceFactory(
-                    new ServiceFactory(
+                .RegisterService(
+                    new NodeLogEntriesService(
                         new PersistentNodeState()
                         {
                             NodeId = 1,
@@ -46,7 +46,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
             node.Start();
 
             bus.Send(new AppendEntries() { Term = 4, MachineCommands = new List<object>(){new object()}});
-            Thread.Sleep(600);
+            Thread.Sleep(900);
             node.Stop();
         }
 

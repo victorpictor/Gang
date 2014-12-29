@@ -7,9 +7,10 @@ namespace Core.Clustering
 {
     public class Node
     {
+        // -> to domain registry
         private NodeSettings settings;
+        //
 
-        private PersistentNodeState persistentNodeState;
         private NodeState nodeState;
        
         private ISendMessages sender;
@@ -42,11 +43,6 @@ namespace Core.Clustering
             nodeState.EnterState();
         }
        
-        public PersistentNodeState GetState()
-        {
-            return this.persistentNodeState;
-        }
-
         public FinitState LastFinitState()
         {
             return nodeState.ReadState();

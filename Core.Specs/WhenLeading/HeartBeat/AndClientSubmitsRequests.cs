@@ -47,8 +47,8 @@ namespace Core.Specs.WhenLeading.HeartBeat
             bus2 = new InMemoryBus();
 
             DomainRegistry
-               .RegisterServiceFactory(
-                   new ServiceFactory(
+               .RegisterService(
+                   new NodeLogEntriesService(
                        new PersistentNodeState()
                        {
                            NodeId = 1,

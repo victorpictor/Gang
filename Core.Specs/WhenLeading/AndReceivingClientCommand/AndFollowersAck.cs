@@ -62,8 +62,8 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
             bus2 = new InMemoryBus();
 
             DomainRegistry
-                .RegisterServiceFactory(
-                    new ServiceFactory(
+                .RegisterService(
+                    new NodeLogEntriesService(
                         new PersistentNodeState()
                         {
                             NodeId = 1,
@@ -82,7 +82,7 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
         public override void When()
         {
             node.Start();
-            Thread.Sleep(1000);
+            Thread.Sleep(1500);
             node.Stop();
         }
 

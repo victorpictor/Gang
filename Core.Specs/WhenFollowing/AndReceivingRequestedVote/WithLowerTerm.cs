@@ -24,8 +24,8 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
             bus = new InMemoryBus();
 
             DomainRegistry
-              .RegisterServiceFactory(
-                  new ServiceFactory(
+              .RegisterService(
+                  new NodeLogEntriesService(
                       new PersistentNodeState()
                       {
                           NodeId = 1,

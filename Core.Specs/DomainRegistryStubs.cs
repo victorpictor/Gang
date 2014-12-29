@@ -1,17 +1,18 @@
-﻿using Core.Clustering;
+﻿using System;
+using Core.Clustering;
 
 namespace Core.Specs
 {
     public class ServiceFactory : IServiceFactory
     {
-        private NodLogEntriesService service;
+        private static NodeLogEntriesService service;
 
         public ServiceFactory(PersistentNodeState state)
         {
-            this.service = new NodLogEntriesService(state);
+            service = new NodeLogEntriesService(state);
         }
 
-        public NodLogEntriesService NodLogEntriesService()
+        public NodeLogEntriesService NodLogEntriesService()
         {
             return service;
         }
