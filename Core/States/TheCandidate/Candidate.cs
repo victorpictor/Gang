@@ -38,7 +38,7 @@ namespace Core.States.TheCandidate
         {
             return new MessageResponse(true, () =>
             {
-                DomainRegistry.NodLogEntriesService().IncrementTerm();
+                node.NodLogEntriesService().IncrementTerm();
 
                 node.Next(new StateFactory().Candidate());
             });

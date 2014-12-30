@@ -61,8 +61,7 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
             bus1 = new InMemoryBus();
             bus2 = new InMemoryBus();
 
-            DomainRegistry
-                .RegisterService(
+            var logEntriesService = 
                     new NodeLogEntriesService(
                         new PersistentNodeState()
                         {
@@ -70,10 +69,11 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
                             Term = 2,
                             EntryIndex = 0,
                             LogEntries = new List<LogEntry>()
-                        }));
+                        });
             
             node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 },
                             state,
+                            logEntriesService,
                             bus1,
                             bus2
                 );
@@ -97,7 +97,7 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
         [Test]
         public void It_should_update_node_state()
         {
-            var ns = DomainRegistry.NodLogEntriesService().NodeState();
+            var ns = node.NodLogEntriesService().NodeState();
 
             Assert.AreEqual(2, ns.Term);
             Assert.AreEqual(1, ns.EntryIndex);

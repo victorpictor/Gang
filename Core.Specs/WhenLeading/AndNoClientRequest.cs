@@ -23,8 +23,7 @@ namespace Core.Specs.WhenLeading
             bus1 = new InMemoryBus();
             bus2 = new InMemoryBus();
 
-            DomainRegistry
-               .RegisterService(
+            var logEntriesService = 
                    new NodeLogEntriesService(
                        new PersistentNodeState()
                        {
@@ -32,10 +31,11 @@ namespace Core.Specs.WhenLeading
                            Term = 2,
                            EntryIndex = 0,
                            LogEntries = new List<LogEntry>()
-                       }));
+                       });
 
             node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 },
                             state,
+                            logEntriesService,
                             bus1,
                             bus2
                 );

@@ -22,7 +22,7 @@ namespace Core.States.TheLead
                 {
                     this.requestState = requestState;
                     this.leaderBus = leaderBus;
-                    var state = DomainRegistry.NodLogEntriesService().NodeState();
+                    var state = node.NodLogEntriesService().NodeState();
 
                     while (true)
                     {

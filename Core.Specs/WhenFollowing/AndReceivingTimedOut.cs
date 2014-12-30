@@ -22,8 +22,7 @@ namespace Core.Specs.WhenFollowing
 
             var bus = new InMemoryBus();
 
-            DomainRegistry
-                .RegisterService(
+           var logEntriesService = 
                     new NodeLogEntriesService(
                         new PersistentNodeState()
                             {
@@ -31,10 +30,11 @@ namespace Core.Specs.WhenFollowing
                                 Term = 1,
                                 EntryIndex = 0,
                                 LogEntries = new List<LogEntry>()
-                            }));
+                            });
 
             node = new Node(new NodeSettings() {NodeId = 1, NodeName = "N1", ElectionTimeout = 500, Majority = 3},
                             state, 
+                            logEntriesService,
                             bus,
                             bus
                 );
@@ -56,7 +56,7 @@ namespace Core.Specs.WhenFollowing
         [Test]
         public void It_should_increment_term()
         {
-            var term = DomainRegistry.NodLogEntriesService().NodeState().Term;
+            var term = node.NodLogEntriesService().NodeState().Term;
             Assert.AreEqual(2, term);
         }
 

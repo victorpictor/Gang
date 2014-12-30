@@ -13,7 +13,7 @@ namespace Core.States.TheCandidate
             var timer = new Thread(() =>
             {
                 var settings = node.GetSettings();
-                var state = DomainRegistry.NodLogEntriesService().NodeState();
+                var state = node.NodLogEntriesService().NodeState();
 
                 Thread.Sleep(settings.ElectionTimeout);
 

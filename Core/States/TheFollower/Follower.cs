@@ -27,7 +27,7 @@ namespace Core.States.TheFollower
         
         public override MessageResponse Receive(AppendEntries appendEntries)
         {
-            var state = DomainRegistry
+            var state = node
                 .NodLogEntriesService()
                 .NodeState();
 
@@ -35,7 +35,7 @@ namespace Core.States.TheFollower
                 return new MessageResponse(false, () => { });
 
             if (appendEntries.Term > state.Term)
-                DomainRegistry
+                node
                     .NodLogEntriesService()
                     .UpdateTerm(appendEntries.Term);
 
@@ -43,7 +43,7 @@ namespace Core.States.TheFollower
 
             if (!appendEntries.IsHeartBeat())
             {
-                DomainRegistry
+                node
                     .NodLogEntriesService()
                     .Append(appendEntries.Term, appendEntries.LogIndex, appendEntries.PrevTerm,appendEntries.PrevLogIndex, appendEntries.MachineCommands);
 
@@ -55,7 +55,7 @@ namespace Core.States.TheFollower
 
         public override MessageResponse Receive(RequestedVote requestedVote)
         {
-            var state = DomainRegistry.NodLogEntriesService().NodeState();
+            var state = node.NodLogEntriesService().NodeState();
 
             if (state.Term < requestedVote.LastLogTerm)
                 return new MessageResponse(false, () => { });
@@ -75,7 +75,7 @@ namespace Core.States.TheFollower
         {
             return new MessageResponse(true, () =>
                 {
-                    DomainRegistry
+                    node
                         .NodLogEntriesService()
                         .IncrementTerm();
 

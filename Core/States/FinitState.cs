@@ -16,7 +16,6 @@ namespace Core.States
         
         public void Transition(Action transition)
         {
-           //StopRegisteredServices();
            Task.Factory.StartNew(transition);
         }
         
@@ -43,11 +42,11 @@ namespace Core.States
 
         public virtual MessageResponse Receive(AppendEntries appendEntries)
         {
-            var state = DomainRegistry.NodLogEntriesService().NodeState();
+            var state = node.NodLogEntriesService().NodeState();
 
             if (appendEntries.Term > state.Term)
             {
-                DomainRegistry.NodLogEntriesService().UpdateTerm(appendEntries.Term);
+                node.NodLogEntriesService().UpdateTerm(appendEntries.Term);
 
                 return new MessageResponse(true, () => node.Next(new StateFactory().Follower()));
             }

@@ -12,16 +12,18 @@ namespace Core.Clustering
         //
 
         private NodeState nodeState;
-       
+        private NodeLogEntriesService logEntriesService;
+
         private ISendMessages sender;
         private IReceiveMessages receiver;
 
-        public Node(NodeSettings settings, FinitState finitState, ISendMessages sender, IReceiveMessages receiver)
+        public Node(NodeSettings settings, FinitState finitState, NodeLogEntriesService logEntriesService, ISendMessages sender, IReceiveMessages receiver)
         {
             this.settings = settings;
+            this.logEntriesService = logEntriesService;
 
             this.nodeState = new NodeState(this, finitState, receiver);
-            
+
             this.sender = sender;
             this.receiver = receiver;
         }
@@ -34,6 +36,11 @@ namespace Core.Clustering
         public void Stop()
         {
             sender.Send(new ExitState());
+        }
+
+        public NodeLogEntriesService NodLogEntriesService()
+        {
+            return logEntriesService;
         }
 
         public void Next(FinitState finitState)

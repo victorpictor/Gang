@@ -54,7 +54,6 @@
     <Compile Include="BeingCandidate\AndReceivingVoteGranted\NotWinningElectionAndTimingOut.cs" />
     <Compile Include="BeingCandidate\AndReceivingVoteGranted\WinningElection.cs" />
     <Compile Include="BeingCandidate\AndRequestingVotes.cs" />
-    <Compile Include="DomainRegistryStubs.cs" />
     <Compile Include="InMemoryBus.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

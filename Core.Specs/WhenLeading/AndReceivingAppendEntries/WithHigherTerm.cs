@@ -24,8 +24,7 @@ namespace Core.Specs.WhenLeading.AndReceivingAppendEntries
             
             bus = new InMemoryBus();
 
-            DomainRegistry
-                .RegisterService(
+            var logEntriesService = 
                     new NodeLogEntriesService(
                         new PersistentNodeState()
                         {
@@ -33,10 +32,11 @@ namespace Core.Specs.WhenLeading.AndReceivingAppendEntries
                             Term = 2,
                             EntryIndex = 0,
                             LogEntries = new List<LogEntry>()
-                        }));
+                        });
 
             node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 },
                             state,
+                            logEntriesService,
                             bus,
                             bus
                 );
@@ -54,7 +54,7 @@ namespace Core.Specs.WhenLeading.AndReceivingAppendEntries
         [Test]
         public void It_should_update_term()
         {
-            Assert.AreEqual(4, DomainRegistry.NodLogEntriesService().NodeState().Term);
+            Assert.AreEqual(4, node.NodLogEntriesService().NodeState().Term);
         }
 
         [Test]

@@ -13,7 +13,7 @@ namespace Core.States.TheFollower
             var timer = new Thread(() =>
                 {
                     var settings = node.GetSettings();
-                    var state = DomainRegistry
+                    var state = node
                         .NodLogEntriesService()
                         .NodeState();
                     var started = DateTime.Now;

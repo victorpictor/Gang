@@ -14,7 +14,7 @@ namespace Core.States.TheLead
             var beat = new Thread(() =>
                 {
                    var settings = node.GetSettings();
-                   var state = DomainRegistry.NodLogEntriesService().NodeState();
+                   var state = node.NodLogEntriesService().NodeState();
 
                     while (true)
                     {
