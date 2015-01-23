@@ -15,10 +15,10 @@ namespace Core.States.TheFollower
                     var settings = node.GetRegistry().NodeSettings();
                     
                     var state = node.GetRegistry().LogEntriesService().NodeState();
-                   
-                    var started = DateTime.Now;
 
-                    while (DateTime.Now.Subtract(started).TotalMilliseconds <= settings.ElectionTimeout)
+                    var lastMessageReceivedOn = node.GetRegistry().LogEntriesService().LastMessageReceivedOn();
+
+                    while (DateTime.Now.Subtract(lastMessageReceivedOn).TotalMilliseconds <= settings.ElectionTimeout)
                     {
                     }
 

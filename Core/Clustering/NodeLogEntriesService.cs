@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Core.Clustering
 {
@@ -6,23 +7,9 @@ namespace Core.Clustering
     {
         private PersistentNodeState persistentNodeState;
 
-        
         public NodeLogEntriesService(PersistentNodeState persistentNodeState)
         {
             this.persistentNodeState = persistentNodeState;
-        }
-
-        public NodeLogEntriesService()
-        {
-
-        }
-
-        public void Start()
-        {
-        } 
-
-        public void Stop()
-        {
         }
 
         public PersistentNodeState NodeState()
@@ -35,9 +22,19 @@ namespace Core.Clustering
             persistentNodeState.Term++;
         }
 
+        public void MessageReceivedNow()
+        {
+            persistentNodeState.LastMessageReceivedOn = DateTime.Now;
+        }
+
         public void UpdateTerm(long term)
         {
             persistentNodeState.Term = term;
+        }
+
+        public DateTime LastMessageReceivedOn()
+        {
+            return persistentNodeState.LastMessageReceivedOn;
         }
 
         public long PrevTerm()

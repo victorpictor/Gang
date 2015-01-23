@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Core.Log;
 
 namespace Core.Clustering
@@ -12,6 +13,8 @@ namespace Core.Clustering
         public List<LogEntry> LogEntries;
 
         public LogEntry PendingCommit;
+
+        public DateTime LastMessageReceivedOn = DateTime.Now;
 
         public long PrevTerm()
         {

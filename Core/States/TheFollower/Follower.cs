@@ -7,7 +7,6 @@ namespace Core.States.TheFollower
 {
     public class Follower : FinitState
     {
-        protected DateTime lastReceivedOn = DateTime.Now;
         protected Dictionary<long, int> votes = new Dictionary<long, int>();
         
         public override void EnterNewState(Node node)
@@ -36,12 +35,16 @@ namespace Core.States.TheFollower
                 return new MessageResponse(false, () => { });
 
             if (appendEntries.Term > state.Term)
+
                 node
                     .GetRegistry()
                     .LogEntriesService()
                     .UpdateTerm(appendEntries.Term);
 
-            lastReceivedOn = DateTime.Now;
+                node
+                    .GetRegistry()
+                    .LogEntriesService()
+                    .MessageReceivedNow();
 
             if (!appendEntries.IsHeartBeat())
             {
