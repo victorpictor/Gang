@@ -23,7 +23,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
             state = new Candidate();
 
             bus = new InMemoryBus();
-
+            
             var logEntriesService = 
                    new NodeLogEntriesService(
                        new PersistentNodeState()
@@ -34,12 +34,13 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
                            LogEntries = new List<LogEntry>()
                        });
 
-            node = new Node(new NodeSettings() {NodeId = 1, NodeName = "N1", ElectionTimeout = 300, Majority = 3},
-                            state,
-                            logEntriesService,
-                            bus,
-                            bus
-                );
+            var registry = new DomainRegistry()
+              .UseDomainMessageSender(bus)
+              .UseNodeMessageSender(bus)
+              .UseNodeLogEntriesService(logEntriesService)
+              .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 300, Majority = 3 });
+
+            node = new Node(state,registry,bus);
         }
 
 
@@ -61,7 +62,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
         [Test]
         public void It_should_increment_state()
         {
-            Assert.AreEqual(2, node.NodLogEntriesService().NodeState().Term);
+            Assert.AreEqual(2, node.GetRegistry().UseLogEntriesService().NodeState().Term);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace Core.Specs.WhenLeading
             bus1 = new InMemoryBus();
             bus2 = new InMemoryBus();
 
+           
             var logEntriesService = 
                    new NodeLogEntriesService(
                        new PersistentNodeState()
@@ -33,12 +34,13 @@ namespace Core.Specs.WhenLeading
                            LogEntries = new List<LogEntry>()
                        });
 
-            node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 },
-                            state,
-                            logEntriesService,
-                            bus1,
-                            bus2
-                );
+            var registry = new DomainRegistry()
+              .UseNodeMessageSender(bus1)
+              .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 })
+              .UseNodeLogEntriesService(logEntriesService);
+
+
+            node = new Node(state,registry,bus2);
         }
 
         public override void When()

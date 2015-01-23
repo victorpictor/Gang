@@ -19,7 +19,7 @@ namespace Core.Specs
             if (messages.Count > 0)
                 return messages.Dequeue();
 
-            return new AppendEntries(){Term = -1};
+            return new AppendEntries(-1,-1,null);
         }
 
         public int MessageCount()

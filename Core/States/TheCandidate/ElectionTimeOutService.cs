@@ -11,20 +11,23 @@ namespace Core.States.TheCandidate
         public ElectionTimeOutService(Node node, ElectionState electionState)
         {
             var timer = new Thread(() =>
-            {
-                var settings = node.GetSettings();
-                var state = node.NodLogEntriesService().NodeState();
-
-                Thread.Sleep(settings.ElectionTimeout);
-
-                var started = DateTime.Now;
-
-                while (DateTime.Now.Subtract(started).TotalMilliseconds <= settings.ElectionTimeout)
                 {
-                }
+                    var settings = node.GetRegistry().NodeSettings();
+                    
+                    var state = node.GetRegistry().UseLogEntriesService().NodeState();
 
-                if (electionState.Votes() <= settings.Majority)
-                    node.Send(new TimedOut() { NodeId = state.NodeId, Term = state.Term });
+                    Thread.Sleep(settings.ElectionTimeout);
+
+                    var started = DateTime.Now;
+
+                    while (DateTime.Now.Subtract(started).TotalMilliseconds <= settings.ElectionTimeout)
+                    {
+                    }
+
+                    if (electionState.Votes() <= settings.Majority)
+                        node.GetRegistry()
+                            .DomainMessageSender()
+                            .Send(new TimedOut(state.NodeId, state.Term));
             });
 
            reference = new ServiceReference(timer);

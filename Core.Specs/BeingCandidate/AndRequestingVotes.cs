@@ -33,13 +33,14 @@ namespace Core.Specs.BeingCandidate
                            EntryIndex = 0,
                            LogEntries = new List<LogEntry>()
                        });
+           
+            var registry = new DomainRegistry()
+                .UseDomainMessageSender(bus)
+                .UseNodeMessageSender(bus2)
+                .UseNodeLogEntriesService(logEntriesService)
+                .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3 });
 
-            node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3 },
-                            state,
-                            logEntriesService,
-                            bus2,
-                            bus
-                );
+            node = new Node(state,registry,bus);
         }
 
 

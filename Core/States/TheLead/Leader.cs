@@ -10,13 +10,11 @@ namespace Core.States.TheLead
         
         public override void EnterNewState(Node node)
         {
+            base.node = node;
 
             leaderBus = new LeaderBus();
             this.requestState = new RequestState();
-
-            base.node = node;
-
-
+            
             RegisterService(
                 new AppendEntriesService(base.node, leaderBus, requestState)
                     .Reference());

@@ -12,13 +12,18 @@ namespace Core.States.TheCandidate
         {
             var election = new Thread(() =>
             {
-                var settigs = node.GetSettings();
-                var state = node.NodLogEntriesService().NodeState();
+                var settigs = node.GetRegistry().NodeSettings();
+                
+                var state = node.GetRegistry().UseLogEntriesService().NodeState();
+                
                 var electionStarted = DateTime.Now;
 
                 while (DateTime.Now.Subtract(electionStarted).TotalMilliseconds < settigs.ElectionTimeout)
                 {
-                    node.Send(new RequestedVote() { CandidateId = state.NodeId, LastLogTerm = state.Term, LastLogIndex = state.EntryIndex });
+                    node.GetRegistry()
+                        .NodeMessageSender()
+                        .Send(new RequestedVote(state.NodeId, state.PrevTerm(), state.Term, state.EntryIndex));
+                    
                     Thread.Sleep(settigs.ElectionTimeout / 3);
                 }
 

@@ -13,14 +13,17 @@ namespace Core.States.TheLead
         {
             var beat = new Thread(() =>
                 {
-                   var settings = node.GetSettings();
-                   var state = node.NodLogEntriesService().NodeState();
+                    var settings = node.GetRegistry().NodeSettings();
+                    var state = node.GetRegistry().UseLogEntriesService().NodeState();
 
                     while (true)
                     {
                         if (DateTime.Now.Subtract(requestState.LastMessageSent()).TotalMilliseconds >= settings.HeartBeatPeriod)
                         {
-                            node.Send(new AppendEntries { Term = state.Term, LogIndex = state.EntryIndex, MachineCommands = new List<object>() });
+                            node.GetRegistry()
+                                .NodeMessageSender()
+                                .Send(new AppendEntries(state.Term, state.EntryIndex, new List<object>()));
+                            
                             Thread.Sleep(settings.HeartBeatPeriod);
                         }
                     }

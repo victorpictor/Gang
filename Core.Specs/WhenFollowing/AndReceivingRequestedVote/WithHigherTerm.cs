@@ -34,6 +34,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
             bus = new InMemoryBus();
             inMemoryBus = new InMemoryBus();
 
+           
             var logEntriesService = 
                     new NodeLogEntriesService(
                         new PersistentNodeState()
@@ -44,19 +45,21 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
                             LogEntries = new List<LogEntry>()
                         });
 
-            node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 50000, Majority = 3 },
-                            state,
-                            logEntriesService,
-                            bus,
-                            inMemoryBus
-                );
+            var registry = new DomainRegistry()
+              .UseDomainMessageSender(bus)
+              .UseNodeMessageSender(bus)
+              .UseNodeLogEntriesService(logEntriesService)
+              .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 50000, Majority = 3 });
+
+
+            node = new Node(state,registry,inMemoryBus);
         }
 
         public override void When()
         {
             node.Start();
 
-            inMemoryBus.Send(new RequestedVote() { Term = 4, CandidateId = 2, LastLogIndex = 3, LastLogTerm = 4 });
+            inMemoryBus.Send(new RequestedVote(2,4,4,3));
             Thread.Sleep(1500);
 
             node.Stop();

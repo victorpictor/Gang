@@ -25,28 +25,30 @@ namespace Core.Specs.WhenLeading.AndReceivingAppendEntries
             bus = new InMemoryBus();
 
             var logEntriesService = 
-                  new NodeLogEntriesService(
-                      new PersistentNodeState()
-                      {
-                          NodeId = 1,
-                          Term = 3,
-                          EntryIndex = 0,
-                          LogEntries = new List<LogEntry>()
-                      });
+                new NodeLogEntriesService(
+                    new PersistentNodeState()
+                        {
+                            NodeId = 1,
+                            Term = 3,
+                            EntryIndex = 0,
+                            LogEntries = new List<LogEntry>()
+                        });
 
-            node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 },
-                            state,
-                            logEntriesService,
-                            bus,
-                            bus
-                );
+            var registry = new DomainRegistry()
+               .UseDomainMessageSender(bus)
+               .UseNodeMessageSender(bus)
+               .UseNodeLogEntriesService(logEntriesService)
+               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 });
+
+
+            node = new Node(state, registry,bus);
         }
 
         public override void When()
         {
             node.Start();
 
-            bus.Send(new AppendEntries() { Term = 1 });
+            bus.Send(new AppendEntries(1, 1, 1, 1, 1, null));
 
             Thread.Sleep(900);
         }

@@ -22,23 +22,20 @@ namespace Core.States.TheLead
                 {
                     this.requestState = requestState;
                     this.leaderBus = leaderBus;
-                    var state = node.NodLogEntriesService().NodeState();
+                    var state = node.GetRegistry().UseLogEntriesService().NodeState();
 
                     while (true)
                     {
                         var clientRequest = leaderBus.ReceiveCommand();
 
-                        var followerMessage = new AppendEntries()
-                            {
-                                LeaderId = state.NodeId,
-                                Term = state.Term,
-                                LogIndex = state.EntryIndex + 1,
-                                PrevTerm = state.PrevTerm(),
-                                PrevLogIndex = state.PrevLogIngex(),
-                                MachineCommands = new List<object> {clientRequest.Command}
-                            };
+                        var followerMessage = new AppendEntries(state.NodeId, state.Term, state.PrevTerm(),
+                                                                state.EntryIndex + 1, state.PrevLogIngex(),
+                                                                new List<object> {clientRequest.Command});
 
-                        node.Send(followerMessage);
+                        node.GetRegistry()
+                            .NodeMessageSender()
+                            .Send(followerMessage);
+
                         requestState.MessageSentNow();
 
                         WaitForMajorityToReply(followerMessage);
@@ -56,7 +53,7 @@ namespace Core.States.TheLead
 
         public void WaitForMajorityToReply(AppendEntries retryMessage)
         {
-            var settings = node.GetSettings();
+            var settings = node.GetRegistry().NodeSettings();
             var nap = 0;
             while (true)
             {

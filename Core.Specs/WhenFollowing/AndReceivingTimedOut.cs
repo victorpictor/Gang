@@ -17,27 +17,27 @@ namespace Core.Specs.WhenFollowing
 
         public override void Given()
         {
-
             state = new Follower();
 
             var bus = new InMemoryBus();
+            
+            var logEntriesService =
+                     new NodeLogEntriesService(
+                         new PersistentNodeState()
+                             {
+                                 NodeId = 1,
+                                 Term = 1,
+                                 EntryIndex = 0,
+                                 LogEntries = new List<LogEntry>()
+                             });
 
-           var logEntriesService = 
-                    new NodeLogEntriesService(
-                        new PersistentNodeState()
-                            {
-                                NodeId = 1,
-                                Term = 1,
-                                EntryIndex = 0,
-                                LogEntries = new List<LogEntry>()
-                            });
+            var registry = new DomainRegistry()
+               .UseDomainMessageSender(bus)
+               .UseNodeMessageSender(bus)
+               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 500, Majority = 3 })
+               .UseNodeLogEntriesService(logEntriesService);
 
-            node = new Node(new NodeSettings() {NodeId = 1, NodeName = "N1", ElectionTimeout = 500, Majority = 3},
-                            state, 
-                            logEntriesService,
-                            bus,
-                            bus
-                );
+            node = new Node(state, registry, bus);
         }
 
         public override void When()
@@ -50,13 +50,13 @@ namespace Core.Specs.WhenFollowing
         [Test]
         public void It_should_become_Candidate()
         {
-            Assert.AreEqual(typeof(Candidate),node.LastFinitState().GetType());
+            Assert.AreEqual(typeof(Candidate), node.LastFinitState().GetType());
         }
 
         [Test]
         public void It_should_increment_term()
         {
-            var term = node.NodLogEntriesService().NodeState().Term;
+            var term = node.GetRegistry().UseLogEntriesService().NodeState().Term;
             Assert.AreEqual(2, term);
         }
 

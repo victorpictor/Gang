@@ -1,30 +1,21 @@
 ﻿using Core.Messages;
 using Core.Receivers;
-using Core.Senders;
 using Core.States;
 
 namespace Core.Clustering
 {
     public class Node
     {
-        // -> to domain registry
-        private NodeSettings settings;
-        //
-
         private NodeState nodeState;
-        private NodeLogEntriesService logEntriesService;
-
-        private ISendMessages sender;
+        
+        private DomainRegistry domainRegistry;
         private IReceiveMessages receiver;
 
-        public Node(NodeSettings settings, FinitState finitState, NodeLogEntriesService logEntriesService, ISendMessages sender, IReceiveMessages receiver)
+        public Node(FinitState finitState, DomainRegistry domainRegistry, IReceiveMessages receiver)
         {
-            this.settings = settings;
-            this.logEntriesService = logEntriesService;
-
             this.nodeState = new NodeState(this, finitState, receiver);
 
-            this.sender = sender;
+            this.domainRegistry = domainRegistry;
             this.receiver = receiver;
         }
 
@@ -35,14 +26,10 @@ namespace Core.Clustering
 
         public void Stop()
         {
-            sender.Send(new ExitState());
+            domainRegistry.DomainMessageSender().Send(new ExitState());
         }
 
-        public NodeLogEntriesService NodLogEntriesService()
-        {
-            return logEntriesService;
-        }
-
+        
         public void Next(FinitState finitState)
         {
             nodeState = new NodeState(this, finitState, receiver);
@@ -54,19 +41,11 @@ namespace Core.Clustering
         {
             return nodeState.ReadState();
         }
-        public NodeSettings GetSettings()
+        
+        public DomainRegistry GetRegistry()
         {
-            return this.settings;
+            return domainRegistry;
         }
 
-        public void Send(IMessage message)
-        {
-            sender.Send(message);
-        }
-
-        public IMessage Receive()
-        {
-            return receiver.Receive();
-        }
     }
 }

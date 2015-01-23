@@ -24,7 +24,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
 
             bus = new InMemoryBus();
 
-            var logEntriesService = 
+           var logEntriesService = 
                     new NodeLogEntriesService(
                         new PersistentNodeState()
                         {
@@ -34,19 +34,21 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
                             LogEntries = new List<LogEntry>(),
                             PendingCommit = new LogEntry() { Term = 2, Index = 1, MachineCommands = new List<object>() { new object() } }
                         });
+           
+            var registry = new DomainRegistry()
+             .UseDomainMessageSender(bus)
+             .UseNodeMessageSender(bus)
+             .UseNodeLogEntriesService(logEntriesService)
+             .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 });
 
-            node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 },
-                            state,
-                            logEntriesService,
-                            bus,
-                            bus
-                );
+            
+            node = new Node(state,registry,bus);
         }
 
         public override void When()
         {
-            bus.Send(new AppendEntries(){ Term = 2, LogIndex = 2, PrevTerm = 2, PrevLogIndex = 1, MachineCommands = new List<object>()});
-            
+            bus.Send(new AppendEntries(1, 2, 2, 2, 1, new List<object>()));
+
             node.Start();
             Thread.Sleep(1500); 
             node.Stop();
@@ -56,8 +58,8 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
         [Test]
         public void It_should_not_append_new_entries()
         {
-            Assert.AreEqual(1, node.NodLogEntriesService().NodeState().EntryIndex);
-            Assert.AreEqual(2, node.NodLogEntriesService().NodeState().Term);
+            Assert.AreEqual(1, node.GetRegistry().UseLogEntriesService().NodeState().EntryIndex);
+            Assert.AreEqual(2, node.GetRegistry().UseLogEntriesService().NodeState().Term);
         }
 
         [Test]

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Core.Clustering;
 using Core.Log;
@@ -22,7 +23,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
             state = new Follower();
 
             bus = new InMemoryBus();
-
+            
             var logEntriesService = 
                     new NodeLogEntriesService(
                         new PersistentNodeState()
@@ -33,19 +34,20 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
                             LogEntries = new List<LogEntry>()
                         });
 
-            node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 20000, Majority = 3 },
-                            state,
-                            logEntriesService,
-                            bus,
-                            bus
-                );
+            var registry = new DomainRegistry()
+               .UseDomainMessageSender(bus)
+               .UseNodeMessageSender(bus)
+               .UseNodeLogEntriesService(logEntriesService)
+               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 20000, Majority = 3 });
+
+            node = new Node(state,registry,bus);
         }
 
         public override void When()
         {
             node.Start();
 
-            bus.Send(new AppendEntries() { Term = 4, MachineCommands = new List<object>(){new object()}});
+            bus.Send(new AppendEntries(1, 4, 4, 3, 2, new List<object>() {new object()}));// { Term = 4, MachineCommands = new List<object>() { new object() } });
             Thread.Sleep(900);
             node.Stop();
         }
@@ -60,7 +62,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
         [Test]
         public void It_should_update_term()
         {
-            Assert.AreEqual(4, node.NodLogEntriesService().NodeState().Term);
+            Assert.AreEqual(4, node.GetRegistry().UseLogEntriesService().NodeState().Term);
         }
 
         [Test]

@@ -42,11 +42,11 @@ namespace Core.States
 
         public virtual MessageResponse Receive(AppendEntries appendEntries)
         {
-            var state = node.NodLogEntriesService().NodeState();
+            var state = node.GetRegistry().UseLogEntriesService().NodeState();
 
             if (appendEntries.Term > state.Term)
             {
-                node.NodLogEntriesService().UpdateTerm(appendEntries.Term);
+                node.GetRegistry().UseLogEntriesService().UpdateTerm(appendEntries.Term);
 
                 return new MessageResponse(true, () => node.Next(new StateFactory().Follower()));
             }

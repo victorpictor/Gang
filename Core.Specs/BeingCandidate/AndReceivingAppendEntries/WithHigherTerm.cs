@@ -25,7 +25,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
 
             bus = new InMemoryBus();
 
-            var logEntriesService = 
+           var logEntriesService = 
                    new NodeLogEntriesService(
                        new PersistentNodeState()
                        {
@@ -35,19 +35,21 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
                            LogEntries = new List<LogEntry>()
                        });
 
-            node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 },
-                            finitState,
-                            logEntriesService,
-                            bus,
-                            bus
-                );
+            var registry = new DomainRegistry()
+              .UseDomainMessageSender(bus)
+              .UseNodeMessageSender(bus)
+              .UseNodeLogEntriesService(logEntriesService)
+              .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 });
+
+
+            node = new Node(finitState,registry,bus);
         }
 
         public override void When()
         {
             node.Start();
 
-            bus.Send(new AppendEntries() { Term = 4 });
+            bus.Send(new AppendEntries(1, 4, 4, 4, 3, null));
 
             node.Stop();
 
@@ -57,7 +59,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
         [Test]
         public void It_should_update_term()
         {
-            Assert.AreEqual(4, node.NodLogEntriesService().NodeState().Term);
+            Assert.AreEqual(4, node.GetRegistry().UseLogEntriesService().NodeState().Term);
         }
 
         [Test]

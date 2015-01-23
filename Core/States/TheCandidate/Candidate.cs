@@ -24,7 +24,7 @@ namespace Core.States.TheCandidate
 
         public override MessageResponse Receive(VoteGranted voteGranted)
         {
-            var settings = node.GetSettings();
+            var settings = node.GetRegistry().NodeSettings();
 
             Granted.AddVote(voteGranted.VoterId);
 
@@ -38,7 +38,7 @@ namespace Core.States.TheCandidate
         {
             return new MessageResponse(true, () =>
             {
-                node.NodLogEntriesService().IncrementTerm();
+                node.GetRegistry().UseLogEntriesService().IncrementTerm();
 
                 node.Next(new StateFactory().Candidate());
             });

@@ -12,7 +12,7 @@ namespace Core.Clustering
             this.persistentNodeState = persistentNodeState;
         }
 
-        public NodeLogEntriesService(/*source*/ int source)
+        public NodeLogEntriesService()
         {
 
         }

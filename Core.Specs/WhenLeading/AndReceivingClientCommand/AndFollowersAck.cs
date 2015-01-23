@@ -60,7 +60,7 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
 
             bus1 = new InMemoryBus();
             bus2 = new InMemoryBus();
-
+            
             var logEntriesService = 
                     new NodeLogEntriesService(
                         new PersistentNodeState()
@@ -70,13 +70,15 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
                             EntryIndex = 0,
                             LogEntries = new List<LogEntry>()
                         });
-            
-            node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 },
-                            state,
-                            logEntriesService,
-                            bus1,
-                            bus2
-                );
+
+            var registry = new DomainRegistry()
+              .UseDomainMessageSender(bus1)
+              .UseNodeMessageSender(bus1)
+              .UseNodeLogEntriesService(logEntriesService)
+              .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 });
+
+
+            node = new Node(state,registry,bus2);
         }
 
         public override void When()
@@ -85,8 +87,7 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
             Thread.Sleep(1500);
             node.Stop();
         }
-
-
+        
 
         [Test]
         public void It_should_send_message_to_followers()
@@ -97,7 +98,7 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
         [Test]
         public void It_should_update_node_state()
         {
-            var ns = node.NodLogEntriesService().NodeState();
+            var ns = node.GetRegistry().UseLogEntriesService().NodeState();
 
             Assert.AreEqual(2, ns.Term);
             Assert.AreEqual(1, ns.EntryIndex);

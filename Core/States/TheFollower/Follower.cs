@@ -28,7 +28,8 @@ namespace Core.States.TheFollower
         public override MessageResponse Receive(AppendEntries appendEntries)
         {
             var state = node
-                .NodLogEntriesService()
+                .GetRegistry()
+                .UseLogEntriesService()
                 .NodeState();
 
             if (appendEntries.Term < state.Term)
@@ -36,7 +37,8 @@ namespace Core.States.TheFollower
 
             if (appendEntries.Term > state.Term)
                 node
-                    .NodLogEntriesService()
+                    .GetRegistry()
+                    .UseLogEntriesService()
                     .UpdateTerm(appendEntries.Term);
 
             lastReceivedOn = DateTime.Now;
@@ -44,10 +46,18 @@ namespace Core.States.TheFollower
             if (!appendEntries.IsHeartBeat())
             {
                 node
-                    .NodLogEntriesService()
+                    .GetRegistry()
+                    .UseLogEntriesService()
                     .Append(appendEntries.Term, appendEntries.LogIndex, appendEntries.PrevTerm,appendEntries.PrevLogIndex, appendEntries.MachineCommands);
 
-                node.Send(new EntriesAppended() { Term = appendEntries.Term, LogIndex = appendEntries.LogIndex, NodeId = node.GetSettings().NodeId});
+                node.GetRegistry()
+                    .NodeMessageSender()
+                    .Send(new EntriesAppended()
+                        {
+                            Term = appendEntries.Term,
+                            LogIndex = appendEntries.LogIndex,
+                            NodeId = node.GetRegistry().NodeSettings().NodeId
+                        });
             }
 
             return new MessageResponse(false, () => { });
@@ -55,7 +65,7 @@ namespace Core.States.TheFollower
 
         public override MessageResponse Receive(RequestedVote requestedVote)
         {
-            var state = node.NodLogEntriesService().NodeState();
+            var state = node.GetRegistry().UseLogEntriesService().NodeState();
 
             if (state.Term < requestedVote.LastLogTerm)
                 return new MessageResponse(false, () => { });
@@ -65,7 +75,14 @@ namespace Core.States.TheFollower
             {
                 votes.Add(requestedVote.LastLogTerm,requestedVote.CandidateId);
 
-                node.Send(new VoteGranted() { VoterId = state.NodeId, CandidateId = requestedVote.CandidateId, Term = requestedVote.LastLogTerm });
+                node.GetRegistry()
+                    .NodeMessageSender()
+                    .Send(new VoteGranted()
+                        {
+                            VoterId = state.NodeId,
+                            CandidateId = requestedVote.CandidateId,
+                            Term = requestedVote.LastLogTerm
+                        });
             }
 
             return new MessageResponse(false, () => { });
@@ -76,7 +93,8 @@ namespace Core.States.TheFollower
             return new MessageResponse(true, () =>
                 {
                     node
-                        .NodLogEntriesService()
+                        .GetRegistry()
+                        .UseLogEntriesService()
                         .IncrementTerm();
 
                     node.Next(new StateFactory().Candidate());

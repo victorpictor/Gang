@@ -24,7 +24,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
 
             bus = new InMemoryBus();
 
-           var logEntriesService = 
+          var logEntriesService = 
                   new NodeLogEntriesService(
                       new PersistentNodeState()
                       {
@@ -34,12 +34,13 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
                           LogEntries = new List<LogEntry>()
                       });
 
-            node = new Node(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3 },
-                            state,
-                            logEntriesService,
-                            bus,
-                            bus
-                );
+          var registry = new DomainRegistry()
+           .UseDomainMessageSender(bus)
+           .UseNodeMessageSender(bus)
+           .UseNodeLogEntriesService(logEntriesService)
+           .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3 });
+
+            node = new Node(state,registry,bus);
         }
 
 

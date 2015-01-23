@@ -12,17 +12,19 @@ namespace Core.States.TheFollower
         {
             var timer = new Thread(() =>
                 {
-                    var settings = node.GetSettings();
-                    var state = node
-                        .NodLogEntriesService()
-                        .NodeState();
+                    var settings = node.GetRegistry().NodeSettings();
+                    
+                    var state = node.GetRegistry().UseLogEntriesService().NodeState();
+                   
                     var started = DateTime.Now;
 
                     while (DateTime.Now.Subtract(started).TotalMilliseconds <= settings.ElectionTimeout)
                     {
                     }
 
-                    node.Send(new TimedOut() {NodeId = state.NodeId, Term = state.Term});
+                    node.GetRegistry()
+                        .DomainMessageSender()
+                        .Send(new TimedOut(state.NodeId, state.Term));
                 });
 
             reference = new ServiceReference(timer);
