@@ -40,10 +40,11 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
               .UseDomainMessageSender(bus)
               .UseNodeMessageSender(bus)
               .UseNodeLogEntriesService(logEntriesService)
+              .UseToReceiveMessages(bus)
               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 });
 
 
-            node = new Node(state,registry,bus);
+            node = new Node(state,registry);
         }
 
         public override void When()
@@ -59,8 +60,8 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
         [Test]
         public void It_should_append_new_entries()
         {
-            Assert.AreEqual(2, node.GetRegistry().UseLogEntriesService().NodeState().EntryIndex);
-            Assert.AreEqual(2, node.GetRegistry().UseLogEntriesService().NodeState().Term);
+            Assert.AreEqual(2, node.GetRegistry().LogEntriesService().NodeState().EntryIndex);
+            Assert.AreEqual(2, node.GetRegistry().LogEntriesService().NodeState().Term);
         }
 
         [Test]

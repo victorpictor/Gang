@@ -34,10 +34,11 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
             var registry = new DomainRegistry()
                 .UseDomainMessageSender(bus)
                 .UseNodeMessageSender(bus)
+                .UseToReceiveMessages(bus)
                 .UseNodeLogEntriesService(logEntriesService)
                 .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 });
 
-            node = new Node(state,registry,bus);
+            node = new Node(state,registry);
         }
 
         private InMemoryBus bus;

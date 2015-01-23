@@ -75,10 +75,11 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
               .UseDomainMessageSender(bus1)
               .UseNodeMessageSender(bus1)
               .UseNodeLogEntriesService(logEntriesService)
+              .UseToReceiveMessages(bus2)
               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 });
 
 
-            node = new Node(state,registry,bus2);
+            node = new Node(state,registry);
         }
 
         public override void When()
@@ -98,7 +99,7 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
         [Test]
         public void It_should_update_node_state()
         {
-            var ns = node.GetRegistry().UseLogEntriesService().NodeState();
+            var ns = node.GetRegistry().LogEntriesService().NodeState();
 
             Assert.AreEqual(2, ns.Term);
             Assert.AreEqual(1, ns.EntryIndex);

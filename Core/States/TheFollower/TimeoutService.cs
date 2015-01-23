@@ -14,7 +14,7 @@ namespace Core.States.TheFollower
                 {
                     var settings = node.GetRegistry().NodeSettings();
                     
-                    var state = node.GetRegistry().UseLogEntriesService().NodeState();
+                    var state = node.GetRegistry().LogEntriesService().NodeState();
                    
                     var started = DateTime.Now;
 

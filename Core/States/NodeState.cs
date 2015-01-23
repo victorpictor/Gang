@@ -8,13 +8,13 @@ namespace Core.States
     public class NodeState
     {
         private Node node;
-        private IReceiveMessages receiver;
+        private DomainRegistry registry;
         private FinitState finitState;
 
-        public NodeState(Node node, FinitState state, IReceiveMessages receiver)
+        public NodeState(Node node, FinitState state, DomainRegistry registry)
         {
             this.node = node;
-            this.receiver = receiver;
+            this.registry = registry;
             this.finitState = state;
         }
 
@@ -52,6 +52,8 @@ namespace Core.States
 
         public IMessage NextMessage()
         {
+            var receiver = registry.MessageReceiver();
+
             while (true)
             {
                 var message = receiver.Receive();

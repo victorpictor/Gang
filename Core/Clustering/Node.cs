@@ -9,14 +9,12 @@ namespace Core.Clustering
         private NodeState nodeState;
         
         private DomainRegistry domainRegistry;
-        private IReceiveMessages receiver;
-
-        public Node(FinitState finitState, DomainRegistry domainRegistry, IReceiveMessages receiver)
+        
+        public Node(FinitState finitState, DomainRegistry domainRegistry)
         {
-            this.nodeState = new NodeState(this, finitState, receiver);
+            this.nodeState = new NodeState(this, finitState, domainRegistry);
 
             this.domainRegistry = domainRegistry;
-            this.receiver = receiver;
         }
 
         public void Start()
@@ -32,7 +30,7 @@ namespace Core.Clustering
         
         public void Next(FinitState finitState)
         {
-            nodeState = new NodeState(this, finitState, receiver);
+            nodeState = new NodeState(this, finitState, domainRegistry);
            
             nodeState.EnterState();
         }

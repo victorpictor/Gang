@@ -36,11 +36,12 @@ namespace Core.Specs.WhenLeading
 
             var registry = new DomainRegistry()
               .UseNodeMessageSender(bus1)
+              .UseToReceiveMessages(bus2)
               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 })
               .UseNodeLogEntriesService(logEntriesService);
 
 
-            node = new Node(state,registry,bus2);
+            node = new Node(state,registry);
         }
 
         public override void When()

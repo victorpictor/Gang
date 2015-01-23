@@ -49,10 +49,11 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
               .UseDomainMessageSender(bus)
               .UseNodeMessageSender(bus)
               .UseNodeLogEntriesService(logEntriesService)
+              .UseToReceiveMessages(inMemoryBus)
               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 50000, Majority = 3 });
 
 
-            node = new Node(state,registry,inMemoryBus);
+            node = new Node(state,registry);
         }
 
         public override void When()

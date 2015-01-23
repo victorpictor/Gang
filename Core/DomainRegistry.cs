@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Clustering;
+using Core.Receivers;
 using Core.Senders;
 
 namespace Core
@@ -8,6 +9,7 @@ namespace Core
     {
         private ISendMessages nodeSender;
         private ISendMessages domainSender;
+        private IReceiveMessages nodeMessageReceiver;
         private NodeSettings nodeSettings;
         private NodeLogEntriesService logEntriesService;
 
@@ -36,7 +38,22 @@ namespace Core
             return this;
         }
 
-        public NodeLogEntriesService UseLogEntriesService()
+        public DomainRegistry UseToReceiveMessages(IReceiveMessages nodeMessageReceiver)
+        {
+            this.nodeMessageReceiver = nodeMessageReceiver;
+            
+            return this;
+        }
+
+        public IReceiveMessages MessageReceiver()
+        {
+            if (nodeMessageReceiver == null)
+                throw new NullReferenceException("No MessageReceiver registered");
+
+            return nodeMessageReceiver;
+        }
+
+        public NodeLogEntriesService LogEntriesService()
         {
             if (logEntriesService == null)
                 throw new NullReferenceException("No NodeLogEntriesService registered");

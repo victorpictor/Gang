@@ -14,7 +14,7 @@ namespace Core.States.TheCandidate
                 {
                     var settings = node.GetRegistry().NodeSettings();
                     
-                    var state = node.GetRegistry().UseLogEntriesService().NodeState();
+                    var state = node.GetRegistry().LogEntriesService().NodeState();
 
                     Thread.Sleep(settings.ElectionTimeout);
 

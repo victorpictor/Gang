@@ -60,11 +60,12 @@ namespace Core.Specs.WhenLeading.HeartBeat
                .UseDomainMessageSender(bus1)
                .UseNodeMessageSender(bus1)
                .UseNodeLogEntriesService(logEntriesService)
+               .UseToReceiveMessages(bus2)
                .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 250, Majority = 3 });
 
             
 
-            node = new Node(state,registry,bus2);
+            node = new Node(state,registry);
         }
 
         public override void When()

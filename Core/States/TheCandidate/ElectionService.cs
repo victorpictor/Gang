@@ -14,7 +14,7 @@ namespace Core.States.TheCandidate
             {
                 var settigs = node.GetRegistry().NodeSettings();
                 
-                var state = node.GetRegistry().UseLogEntriesService().NodeState();
+                var state = node.GetRegistry().LogEntriesService().NodeState();
                 
                 var electionStarted = DateTime.Now;
 

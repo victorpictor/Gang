@@ -38,9 +38,10 @@ namespace Core.Specs.BeingCandidate
                 .UseDomainMessageSender(bus)
                 .UseNodeMessageSender(bus2)
                 .UseNodeLogEntriesService(logEntriesService)
+                .UseToReceiveMessages(bus)
                 .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3 });
 
-            node = new Node(state,registry,bus);
+            node = new Node(state,registry);
         }
 
 

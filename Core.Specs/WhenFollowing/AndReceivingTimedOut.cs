@@ -34,10 +34,11 @@ namespace Core.Specs.WhenFollowing
             var registry = new DomainRegistry()
                .UseDomainMessageSender(bus)
                .UseNodeMessageSender(bus)
+               .UseToReceiveMessages(bus)
                .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 500, Majority = 3 })
                .UseNodeLogEntriesService(logEntriesService);
 
-            node = new Node(state, registry, bus);
+            node = new Node(state, registry);
         }
 
         public override void When()
@@ -56,7 +57,7 @@ namespace Core.Specs.WhenFollowing
         [Test]
         public void It_should_increment_term()
         {
-            var term = node.GetRegistry().UseLogEntriesService().NodeState().Term;
+            var term = node.GetRegistry().LogEntriesService().NodeState().Term;
             Assert.AreEqual(2, term);
         }
 
