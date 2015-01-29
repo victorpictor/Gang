@@ -12,7 +12,8 @@ namespace Core
         private IReceiveMessages nodeMessageReceiver;
         private NodeSettings nodeSettings;
         private NodeLogEntriesService logEntriesService;
-
+        private Receiver receiver;
+      
         public DomainRegistry UseNodeMessageSender(ISendMessages sender)
         {
             this.nodeSender = sender;
@@ -45,12 +46,12 @@ namespace Core
             return this;
         }
 
-        public IReceiveMessages MessageReceiver()
+        public Receiver MessageReceiver()
         {
             if (nodeMessageReceiver == null)
                 throw new NullReferenceException("No MessageReceiver registered");
 
-            return nodeMessageReceiver;
+            return new Receiver(nodeMessageReceiver);
         }
 
         public NodeLogEntriesService LogEntriesService()

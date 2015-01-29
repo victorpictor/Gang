@@ -24,24 +24,23 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
 
             bus = new InMemoryBus();
 
-          var logEntriesService = 
-                  new NodeLogEntriesService(
-                      new PersistentNodeState()
-                      {
-                          NodeId = 1,
-                          Term = 1,
-                          EntryIndex = 0,
-                          LogEntries = new List<LogEntry>()
-                      });
+            var logEntriesService =
+                    new NodeLogEntriesService(
+                        new PersistentNodeState()
+                        {
+                            NodeId = 1,
+                            Term = 1,
+                            EntryIndex = 0,
+                            LogEntries = new List<LogEntry>()
+                        });
 
-          var registry = new DomainRegistry()
-           .UseDomainMessageSender(bus)
-           .UseNodeMessageSender(bus)
-           .UseNodeLogEntriesService(logEntriesService)
-           .UseToReceiveMessages(bus)
-           .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3 });
+            var registry = new DomainRegistry()
+             .UseDomainMessageSender(bus)
+             .UseToReceiveMessages(bus)
+             .UseNodeLogEntriesService(logEntriesService)
+             .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3 });
 
-            node = new Node(state,registry);
+            node = new Node(state, registry);
         }
 
 
@@ -49,7 +48,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
         {
             node.Start();
 
-            bus.Send(new VoteGranted() { Term = 1, VoterId = 2});
+            bus.Send(new VoteGranted() { Term = 1, VoterId = 2 });
             bus.Send(new VoteGranted() { Term = 1, VoterId = 3 });
             bus.Send(new VoteGranted() { Term = 1, VoterId = 2 });
             bus.Send(new VoteGranted() { Term = 1, VoterId = 4 });
@@ -63,6 +62,6 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
         public void It_should_become_Candidate()
         {
             Assert.AreEqual(typeof(Leader), node.LastFinitState().GetType());
-        } 
+        }
     }
 }

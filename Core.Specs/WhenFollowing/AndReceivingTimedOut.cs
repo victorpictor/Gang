@@ -2,7 +2,6 @@
 using System.Threading;
 using Core.Clustering;
 using Core.Log;
-using Core.States;
 using Core.States.TheCandidate;
 using Core.States.TheFollower;
 using NUnit.Framework;

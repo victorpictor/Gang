@@ -20,7 +20,6 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
 
         public override void Given()
         {
-
             finitState = new Candidate();
 
             bus = new InMemoryBus();
@@ -37,9 +36,8 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
 
             var registry = new DomainRegistry()
               .UseDomainMessageSender(bus)
-              .UseNodeMessageSender(bus)
-              .UseNodeLogEntriesService(logEntriesService)
               .UseToReceiveMessages(bus)
+              .UseNodeLogEntriesService(logEntriesService)
               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 });
 
 

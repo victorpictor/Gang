@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using Core.Clustering;
 using Core.Messages;
-using Core.Receivers;
 
 namespace Core.States
 {
@@ -27,6 +26,7 @@ namespace Core.States
         {
             
             finitState.EnterNewState(node);
+            var receiver = registry.MessageReceiver();
 
             var loop = new Thread(() =>
             {
@@ -34,7 +34,7 @@ namespace Core.States
 
                 while (true)
                 {
-                    var message = NextMessage();
+                    var message = receiver.NextMessage();
 
                     msgResp = finitState.Receive((dynamic)message);
 
@@ -50,18 +50,6 @@ namespace Core.States
             loop.Start();
         }
 
-        public IMessage NextMessage()
-        {
-            var receiver = registry.MessageReceiver();
-
-            while (true)
-            {
-                var message = receiver.Receive();
-
-                if (message.Term >= 0)
-                    return message;
-            }
-
-        }
+        
     }
 }
