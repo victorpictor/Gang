@@ -10,7 +10,7 @@ namespace Core.States.TheCandidate
     {
         public ElectionTimeOutService(Node node, ElectionState electionState)
         {
-            var timer = new Thread(() =>
+            Action timer = () =>
                 {
                     var settings = node.GetRegistry().NodeSettings();
                     
@@ -28,7 +28,7 @@ namespace Core.States.TheCandidate
                         node.GetRegistry()
                             .DomainMessageSender()
                             .Send(new TimedOut(state.NodeId, state.Term));
-            });
+            };
 
            reference = new ServiceReference(timer);
         } 

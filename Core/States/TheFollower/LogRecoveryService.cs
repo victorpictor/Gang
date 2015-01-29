@@ -7,7 +7,7 @@ namespace Core.States.TheFollower
     {
         public LogRecoveryService()
         {
-            reference = new ServiceReference(new Thread(() => Thread.Sleep(3000)));
+            reference = new ServiceReference(() => Thread.Sleep(3000));
         }
     }
 }

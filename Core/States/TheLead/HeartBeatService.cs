@@ -11,7 +11,7 @@ namespace Core.States.TheLead
     {
         public HeartBeatService(Node node, RequestState requestState)
         {
-            var beat = new Thread(() =>
+            Action beat = () =>
                 {
                     var settings = node.GetRegistry().NodeSettings();
                     var state = node.GetRegistry().LogEntriesService().NodeState();
@@ -27,7 +27,7 @@ namespace Core.States.TheLead
                             Thread.Sleep(settings.HeartBeatPeriod);
                         }
                     }
-            });
+            };
 
            reference = new ServiceReference(beat);
         }

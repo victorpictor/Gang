@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace Core.States.Services
 {
@@ -6,9 +7,9 @@ namespace Core.States.Services
     {
         private Thread serviceThread;
 
-        public ServiceReference(Thread t)
+        public ServiceReference(Action a)
         {
-            this.serviceThread = t;
+            this.serviceThread = new Thread(new ThreadStart(a));
         }
 
         public void StopService()

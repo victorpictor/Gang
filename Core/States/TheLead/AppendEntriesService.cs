@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Core.Clustering;
 using Core.Messages;
@@ -18,7 +19,7 @@ namespace Core.States.TheLead
         {
             this.node = node;
 
-            var appender = new Thread(() =>
+            Action appender = () =>
                 {
                     this.requestState = requestState;
                     this.leaderBus = leaderBus;
@@ -45,7 +46,7 @@ namespace Core.States.TheLead
 
                         leaderBus.SendToClient();
                     }
-                });
+                };
 
             reference = new ServiceReference(appender);
         }

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Core.Messages;
 using Core.States.Services;
 using Core.Transport;
@@ -9,14 +10,14 @@ namespace Core.States.TheLead
     {
         public FollowersRepliesService(LeaderBus leaderBus, RequestState requestState)
         {
-            var appended = new Thread(() =>
+            Action appended = () =>
                 {
                     while (true)
                     {
                         var entriesAppended = (EntriesAppended)leaderBus.ReceiveMessage();
                         requestState.RegisterReply(entriesAppended);
                     }
-            });
+            };
 
             reference = new ServiceReference(appended);
         }

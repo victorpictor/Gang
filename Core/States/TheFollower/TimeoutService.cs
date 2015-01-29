@@ -10,7 +10,7 @@ namespace Core.States.TheFollower
     {
         public TimeoutService(Node node)
         {
-            var timer = new Thread(() =>
+            Action timer = () =>
                 {
                     var settings = node.GetRegistry().NodeSettings();
                     
@@ -25,7 +25,7 @@ namespace Core.States.TheFollower
                     node.GetRegistry()
                         .DomainMessageSender()
                         .Send(new TimedOut(state.NodeId, state.Term));
-                });
+                };
 
             reference = new ServiceReference(timer);
         }
