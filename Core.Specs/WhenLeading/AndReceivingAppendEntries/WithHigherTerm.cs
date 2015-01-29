@@ -50,7 +50,7 @@ namespace Core.Specs.WhenLeading.AndReceivingAppendEntries
         {
             node.Start();
 
-            bus.Send(new AppendEntries(1, 4, 4, 2, 1, null));// { Term = 4 });
+            bus.Send(new AppendEntries(1, 4, 4, 2, 1, null));
 
             Thread.Sleep(900);
         }

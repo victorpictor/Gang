@@ -80,12 +80,7 @@ namespace Core.States.TheFollower
 
                 node.GetRegistry()
                     .NodeMessageSender()
-                    .Send(new VoteGranted()
-                        {
-                            VoterId = state.NodeId,
-                            CandidateId = requestedVote.CandidateId,
-                            Term = requestedVote.LastLogTerm
-                        });
+                    .Send(new VoteGranted(state.NodeId, requestedVote.CandidateId, requestedVote.LastLogTerm));
             }
 
             return new MessageResponse(false, () => { });

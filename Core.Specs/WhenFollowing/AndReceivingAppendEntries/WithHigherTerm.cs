@@ -48,7 +48,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
         {
             node.Start();
 
-            bus.Send(new AppendEntries(1, 4, 4, 3, 2, new List<object>() {new object()}));// { Term = 4, MachineCommands = new List<object>() { new object() } });
+            bus.Send(new AppendEntries(1, 4, 4, 3, 2, new List<object>() {new object()}));
             Thread.Sleep(900);
             node.Stop();
         }

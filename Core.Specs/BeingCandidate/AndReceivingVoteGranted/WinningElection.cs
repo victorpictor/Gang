@@ -48,10 +48,10 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
         {
             node.Start();
 
-            bus.Send(new VoteGranted() { Term = 1, VoterId = 2 });
-            bus.Send(new VoteGranted() { Term = 1, VoterId = 3 });
-            bus.Send(new VoteGranted() { Term = 1, VoterId = 2 });
-            bus.Send(new VoteGranted() { Term = 1, VoterId = 4 });
+            bus.Send(new VoteGranted(2, 55, 1));
+            bus.Send(new VoteGranted(3, 55, 1));
+            bus.Send(new VoteGranted(2, 55, 1));
+            bus.Send(new VoteGranted(4, 55, 1));
 
             node.Stop();
 

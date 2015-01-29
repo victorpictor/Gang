@@ -48,7 +48,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
         {
             node.Start();
 
-            bus.Send(new AppendEntries(1, 1, 1, 1, 1, null));//{Term = 1});
+            bus.Send(new AppendEntries(1, 1, 1, 1, 1, null));
            
             node.Stop();
 
