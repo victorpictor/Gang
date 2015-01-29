@@ -1,38 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Clustering;
 using Core.Messages;
-using Core.States.Services;
 
 namespace Core.States
 {
-    public class FinitState
+    public class FinitState: StateServiceCollection
     {
         protected Node node;
-        protected List<ServiceReference> registeredServices = new List<ServiceReference>();
-
+       
         public virtual void EnterNewState(Node node) { }
         
         public void Transition(Action transition)
         {
            Task.Factory.StartNew(transition);
-        }
-        
-        public virtual void StartRegisteredServices()
-        {
-            registeredServices.ForEach(service => service.StartService());
-        }
-
-        public virtual void StopRegisteredServices()
-        {
-            registeredServices.ForEach(service => service.StopService());
-            registeredServices = new List<ServiceReference>();
-        }
-
-        public virtual void RegisterService(ServiceReference service)
-        {
-            registeredServices.Add(service);
         }
         
         public virtual MessageResponse Receive(ExitState exitState)

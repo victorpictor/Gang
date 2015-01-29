@@ -70,6 +70,7 @@
     <Compile Include="States\Services\ServiceReference.cs" />
     <Compile Include="States\NodeState.cs" />
     <Compile Include="States\StateFactory.cs" />
+    <Compile Include="States\StateServiceCollection.cs" />
     <Compile Include="States\TheCandidate\ElectionService.cs" />
     <Compile Include="States\TheCandidate\ElectionState.cs" />
     <Compile Include="States\TheCandidate\ElectionTimeOutService.cs" />

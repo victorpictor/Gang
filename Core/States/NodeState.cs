@@ -24,12 +24,11 @@ namespace Core.States
 
         public virtual void EnterState()
         {
-            
             finitState.EnterNewState(node);
-            var receiver = registry.MessageReceiver();
-
+            
             var loop = new Thread(() =>
             {
+                var receiver = registry.MessageReceiver();
                 MessageResponse msgResp;
 
                 while (true)

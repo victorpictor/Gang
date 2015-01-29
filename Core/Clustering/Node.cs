@@ -3,13 +3,13 @@ using Core.States;
 
 namespace Core.Clustering
 {
-    public class Node: VirtualNode
+    public class Node: VirtualNode, IChangeState
     {
         public Node(FinitState finitState, DomainRegistry domainRegistry)
         {
-            this.nodeState = new NodeState(this, finitState, domainRegistry);
+            base.nodeState = new NodeState(this, finitState, domainRegistry);
 
-            this.domainRegistry = domainRegistry;
+            base.domainRegistry = domainRegistry;
         }
 
         public override void Start()
@@ -28,6 +28,5 @@ namespace Core.Clustering
            
             nodeState.EnterState();
         }
-
     }
 }
