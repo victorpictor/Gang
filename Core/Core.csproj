@@ -46,6 +46,7 @@
     <Compile Include="Clustering\NodeSettings.cs" />
     <Compile Include="Clustering\NodeStateService.cs" />
     <Compile Include="Clustering\NodeLogEntriesService.cs" />
+    <Compile Include="Clustering\VirtualNode.cs" />
     <Compile Include="Concurrency\AppendEntriesReplies.cs" />
     <Compile Include="DomainRegistry.cs" />
     <Compile Include="Log\LogEntry.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Receivers\IReceiveMessages.cs" />
     <Compile Include="Receivers\Receiver.cs" />
+    <Compile Include="States\IChangeState.cs" />
     <Compile Include="States\Services\AbstractService.cs" />
     <Compile Include="States\Services\ServiceReference.cs" />
     <Compile Include="States\NodeState.cs" />

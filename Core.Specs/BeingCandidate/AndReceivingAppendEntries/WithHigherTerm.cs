@@ -24,24 +24,25 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
 
             bus = new InMemoryBus();
 
-           var logEntriesService = 
-                   new NodeLogEntriesService(
-                       new PersistentNodeState()
-                       {
-                           NodeId = 1,
-                           Term = 2,
-                           EntryIndex = 0,
-                           LogEntries = new List<LogEntry>()
-                       });
+            var logEntriesService =
+                    new NodeLogEntriesService(
+                        new PersistentNodeState()
+                        {
+                            NodeId = 1,
+                            Term = 2,
+                            EntryIndex = 0,
+                            LogEntries = new List<LogEntry>()
+                        });
 
             var registry = new DomainRegistry()
               .UseDomainMessageSender(bus)
+              .UseNodeMessageSender(bus)
               .UseToReceiveMessages(bus)
               .UseNodeLogEntriesService(logEntriesService)
               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 });
 
 
-            node = new Node(finitState,registry);
+            node = new Node(finitState, registry);
         }
 
         public override void When()
