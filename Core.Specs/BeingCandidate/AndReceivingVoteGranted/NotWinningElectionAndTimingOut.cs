@@ -23,22 +23,21 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
             state = new Candidate();
 
             bus = new InMemoryBus();
-            
-            var logEntriesService = 
-                   new NodeLogEntriesService(
-                       new PersistentNodeState()
-                       {
-                           NodeId = 1,
-                           Term = 1,
-                           EntryIndex = 0,
-                           LogEntries = new List<LogEntry>()
-                       });
+
+            var logEntryStore = new LogEntryStore();
+            logEntryStore.Append(new LogEntry()
+            {
+                NodeId = 1,
+                Term = 1,
+                Index = 0,
+                MachineCommands = new List<object>()
+            });
 
             var registry = new DomainRegistry()
-              .UseDomainMessageSender(bus)
-              .UseToReceiveMessages(bus)
-              .UseNodeLogEntriesService(logEntriesService)
-              .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 300, Majority = 3 });
+                .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 300, Majority = 3 })
+                .UseDomainMessageSender(bus)
+                .UseToReceiveMessages(bus)
+                .UseLogEntryStore(logEntryStore);
 
             node = new Node(state,registry);
         }

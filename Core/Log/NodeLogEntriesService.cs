@@ -1,15 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core.Clustering;
 
-namespace Core.Clustering
+namespace Core.Log
 {
     public class NodeLogEntriesService
     {
         private PersistentNodeState persistentNodeState;
-
-        public NodeLogEntriesService(PersistentNodeState persistentNodeState)
+        private ILogEntryStore logEntryStore;
+        
+        public NodeLogEntriesService(ILogEntryStore logEntryStore, int nodeId)
         {
-            this.persistentNodeState = persistentNodeState;
+            this.logEntryStore = logEntryStore;
+
+            var last = logEntryStore.LastAppended();
+
+            this.persistentNodeState = new PersistentNodeState()
+            {
+                NodeId = nodeId,
+                Term = last.Term,
+                EntryIndex = last.Index
+            };
         }
 
         public PersistentNodeState NodeState()
@@ -49,7 +60,7 @@ namespace Core.Clustering
 
         public void Append(long term, long currentEntryIndex, long prevTerm, long prevEntryIndex, List<object> messages)
         {
-            persistentNodeState.Append(term, currentEntryIndex, prevTerm, PrevLogIngex(), messages);
+            persistentNodeState.Append(term, currentEntryIndex, prevTerm, PrevLogIngex(), messages, logEntryStore);
         }
     }
 }

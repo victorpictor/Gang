@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Core.Clustering;
 using Core.Messages;
 
@@ -8,7 +7,7 @@ namespace Core.States.TheFollower
     public class Follower : FinitState
     {
         protected Dictionary<long, int> votes = new Dictionary<long, int>();
-        
+
         public override void EnterNewState(Node node)
         {
             base.node = node;
@@ -23,37 +22,34 @@ namespace Core.States.TheFollower
 
             StartRegisteredServices();
         }
-        
+
         public override MessageResponse Receive(AppendEntries appendEntries)
         {
-            var state = node
+            var logEntryService = node
                 .GetRegistry()
-                .LogEntriesService()
-                .NodeState();
+                .LogEntriesService();
+
+            var state = logEntryService.NodeState();
 
             if (appendEntries.Term < state.Term)
                 return new MessageResponse(false, () => { });
 
             if (appendEntries.Term > state.Term)
+                logEntryService.UpdateTerm(appendEntries.Term);
 
-                node
-                    .GetRegistry()
-                    .LogEntriesService()
-                    .UpdateTerm(appendEntries.Term);
-
-                node
-                    .GetRegistry()
-                    .LogEntriesService()
-                    .MessageReceivedNow();
+            logEntryService.MessageReceivedNow();
 
             if (!appendEntries.IsHeartBeat())
             {
+                logEntryService
+                    .Append(appendEntries.Term,
+                            appendEntries.LogIndex,
+                            appendEntries.PrevTerm,
+                            appendEntries.PrevLogIndex,
+                            appendEntries.MachineCommands);
+
                 node
                     .GetRegistry()
-                    .LogEntriesService()
-                    .Append(appendEntries.Term, appendEntries.LogIndex, appendEntries.PrevTerm,appendEntries.PrevLogIndex, appendEntries.MachineCommands);
-
-                node.GetRegistry()
                     .NodeMessageSender()
                     .Send(new EntriesAppended()
                         {
@@ -74,14 +70,14 @@ namespace Core.States.TheFollower
                 return new MessageResponse(false, () => { });
 
             if (state.Term == requestedVote.LastLogTerm)
-            if (!votes.ContainsKey(requestedVote.LastLogTerm))
-            {
-                votes.Add(requestedVote.LastLogTerm,requestedVote.CandidateId);
+                if (!votes.ContainsKey(requestedVote.LastLogTerm))
+                {
+                    votes.Add(requestedVote.LastLogTerm, requestedVote.CandidateId);
 
-                node.GetRegistry()
-                    .NodeMessageSender()
-                    .Send(new VoteGranted(state.NodeId, requestedVote.CandidateId, requestedVote.LastLogTerm));
-            }
+                    node.GetRegistry()
+                        .NodeMessageSender()
+                        .Send(new VoteGranted(state.NodeId, requestedVote.CandidateId, requestedVote.LastLogTerm));
+                }
 
             return new MessageResponse(false, () => { });
         }

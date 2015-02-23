@@ -41,8 +41,10 @@ namespace Core.States.TheLead
 
                         WaitForMajorityToReply(followerMessage);
 
-                        state.Append(followerMessage.Term, followerMessage.LogIndex, followerMessage.PrevTerm,
-                                     followerMessage.PrevLogIndex, followerMessage.MachineCommands);
+                        node.GetRegistry()
+                            .LogEntriesService()
+                            .Append(followerMessage.Term, followerMessage.LogIndex, followerMessage.PrevTerm,
+                                    followerMessage.PrevLogIndex, followerMessage.MachineCommands);
 
                         leaderBus.SendToClient();
                     }

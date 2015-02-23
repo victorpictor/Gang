@@ -23,22 +23,22 @@ namespace Core.Specs.WhenLeading
             bus1 = new InMemoryBus();
             bus2 = new InMemoryBus();
 
-           
-            var logEntriesService = 
-                   new NodeLogEntriesService(
-                       new PersistentNodeState()
-                       {
-                           NodeId = 1,
-                           Term = 2,
-                           EntryIndex = 0,
-                           LogEntries = new List<LogEntry>()
-                       });
+
+            var logEntryStore = new LogEntryStore();
+            logEntryStore.Append(new LogEntry()
+            {
+                NodeId = 1,
+                Term = 2,
+                Index = 0,
+                MachineCommands = new List<object>()
+            });
+
 
             var registry = new DomainRegistry()
+              .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 })
               .UseNodeMessageSender(bus1)
               .UseToReceiveMessages(bus2)
-              .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 })
-              .UseNodeLogEntriesService(logEntriesService);
+              .UseLogEntryStore(logEntryStore);
 
 
             node = new Node(state,registry);

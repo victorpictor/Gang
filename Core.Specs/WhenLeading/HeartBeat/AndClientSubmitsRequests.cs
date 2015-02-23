@@ -46,24 +46,21 @@ namespace Core.Specs.WhenLeading.HeartBeat
             bus1 = new InMemoryBus();
             bus2 = new InMemoryBus();
 
-            var logEntriesService = 
-                   new NodeLogEntriesService(
-                       new PersistentNodeState()
-                       {
-                           NodeId = 1,
-                           Term = 2,
-                           EntryIndex = 0,
-                           LogEntries = new List<LogEntry>()
-                       });
+            var logEntryStore = new LogEntryStore();
+            logEntryStore.Append(new LogEntry()
+            {
+                NodeId = 1,
+                Term = 2,
+                Index = 0,
+                MachineCommands = new List<object>()
+            });
 
             var registry = new DomainRegistry()
+               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 250, Majority = 3 })
                .UseDomainMessageSender(bus1)
                .UseNodeMessageSender(bus1)
-               .UseNodeLogEntriesService(logEntriesService)
-               .UseToReceiveMessages(bus2)
-               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 250, Majority = 3 });
-
-            
+               .UseLogEntryStore(logEntryStore)
+               .UseToReceiveMessages(bus2);
 
             node = new Node(state,registry);
         }

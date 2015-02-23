@@ -34,23 +34,21 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
             bus = new InMemoryBus();
             inMemoryBus = new InMemoryBus();
 
-           
-            var logEntriesService = 
-                    new NodeLogEntriesService(
-                        new PersistentNodeState()
-                        {
-                            NodeId = 1,
-                            Term = 4,
-                            EntryIndex = 0,
-                            LogEntries = new List<LogEntry>()
-                        });
+            var logEntryStore = new LogEntryStore();
+            logEntryStore.Append(new LogEntry()
+            {
+                NodeId = 1,
+                Term = 4,
+                Index = 0,
+                MachineCommands = new List<object>()
+            });
 
             var registry = new DomainRegistry()
+              .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 50000, Majority = 3 })
               .UseDomainMessageSender(bus)
               .UseNodeMessageSender(bus)
-              .UseNodeLogEntriesService(logEntriesService)
-              .UseToReceiveMessages(inMemoryBus)
-              .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 50000, Majority = 3 });
+              .UseLogEntryStore(logEntryStore)
+              .UseToReceiveMessages(inMemoryBus);
 
 
             node = new Node(state,registry);

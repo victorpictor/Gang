@@ -10,8 +10,6 @@ namespace Core.Clustering
         public long Term;
         public long EntryIndex;
 
-        public List<LogEntry> LogEntries;
-
         public LogEntry PendingCommit;
 
         public DateTime LastMessageReceivedOn = DateTime.Now;
@@ -32,11 +30,11 @@ namespace Core.Clustering
             return EntryIndex;
         }
 
-        public void Append(long term, long currentEntryIndex,long prevTerm, long prevEntryIndex, List<object> messages)
+        public void Append(long term, long currentEntryIndex,long prevTerm, long prevEntryIndex, List<object> messages, ILogEntryStore store)
         {
             if (PendingCommit != null)
             if (PendingCommit.Index == prevEntryIndex && PendingCommit.Term == prevTerm)
-                LogEntries.Add(PendingCommit);
+                store.Append(PendingCommit);
 
             Term = term;
             EntryIndex = currentEntryIndex;

@@ -19,23 +19,22 @@ namespace Core.Specs.WhenFollowing
             state = new Follower();
 
             var bus = new InMemoryBus();
-            
-            var logEntriesService =
-                     new NodeLogEntriesService(
-                         new PersistentNodeState()
-                             {
-                                 NodeId = 1,
-                                 Term = 1,
-                                 EntryIndex = 0,
-                                 LogEntries = new List<LogEntry>()
-                             });
 
-            var registry = new DomainRegistry()
+            var logEntryStore = new LogEntryStore();
+            logEntryStore.Append(new LogEntry()
+            {
+                NodeId = 1,
+                Term = 1,
+                Index = 0,
+                MachineCommands = new List<object>()
+            });
+
+           var registry = new DomainRegistry()
+               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 500, Majority = 3 })
                .UseDomainMessageSender(bus)
                .UseNodeMessageSender(bus)
                .UseToReceiveMessages(bus)
-               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 500, Majority = 3 })
-               .UseNodeLogEntriesService(logEntriesService);
+               .UseLogEntryStore(logEntryStore);
 
             node = new Node(state, registry);
         }

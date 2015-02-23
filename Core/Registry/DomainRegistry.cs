@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Clustering;
+using Core.Log;
 using Core.Receivers;
 using Core.Senders;
 
@@ -7,34 +8,35 @@ namespace Core
 {
     public class DomainRegistry : Configurator, IDependencyFactory
     {
-        override public DomainRegistry UseNodeMessageSender(ISendMessages sender)
+        public override DomainRegistry UseNodeMessageSender(ISendMessages sender)
         {
             this.nodeSender = sender;
             return this;
         }
-        override public DomainRegistry UseDomainMessageSender(ISendMessages domainSender)
+        public override DomainRegistry UseDomainMessageSender(ISendMessages domainSender)
         {
             this.domainSender = domainSender;
             return this;
         }
-        override public DomainRegistry UseNodeSettings(NodeSettings nodeSettings)
+        public override DomainRegistry UseNodeSettings(NodeSettings nodeSettings)
         {
             this.nodeSettings = nodeSettings;
             return this;
         }
-        override public DomainRegistry UseNodeLogEntriesService(NodeLogEntriesService logEntriesService)
+        public override DomainRegistry UseToReceiveMessages(IReceiveMessages nodeMessageReceiver)
         {
-            this.logEntriesService = logEntriesService;
+            this.nodeMessageReceiver = nodeMessageReceiver;
 
             return this;
         }
-        override public DomainRegistry UseToReceiveMessages(IReceiveMessages nodeMessageReceiver)
+        public override DomainRegistry UseLogEntryStore(ILogEntryStore logEntryStore)
         {
-            this.nodeMessageReceiver = nodeMessageReceiver;
+            this.logEntryStore = logEntryStore;
+            this.logEntriesService = new NodeLogEntriesService(logEntryStore, nodeSettings.NodeId);
             
             return this;
         }
-        
+
         public Receiver MessageReceiver()
         {
             if (nodeMessageReceiver == null)

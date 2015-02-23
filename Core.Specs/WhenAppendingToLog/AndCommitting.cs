@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Core.Clustering;
 using Core.Log;
+using Moq;
 using NUnit.Framework;
 
 namespace Core.Specs.WhenAppendingToLog
@@ -9,22 +10,23 @@ namespace Core.Specs.WhenAppendingToLog
     public class AndCommitting : Specification
     {
         private PersistentNodeState state;
+        private ILogEntryStore store;
 
         public override void Given()
         {
+            store = new LogEntryStore();
             state = new PersistentNodeState()
                 {
                     NodeId = 1,
                     Term = 2,
                     EntryIndex = 1,
-                    LogEntries = new List<LogEntry>(),
                     PendingCommit = new LogEntry() {Term = 2, Index = 1, MachineCommands = new List<object>() {new object()}}
                 };
         }
 
         public override void When()
         {
-            state.Append(2, 2, 2, 1, new List<object>() { new object() });
+            state.Append(2, 2, 2, 1, new List<object>() { new object() }, store);
         }
 
 
@@ -38,7 +40,7 @@ namespace Core.Specs.WhenAppendingToLog
         [Test]
         public void It_should_commit_prev()
         {
-            Assert.AreEqual(1, state.LogEntries.Count);
+            Assert.AreEqual(1, ((LogEntryStore)store).Count());
 
         }
 

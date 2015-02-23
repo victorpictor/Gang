@@ -7,6 +7,7 @@ namespace Core.Log
     {
         public Guid Id = Guid.NewGuid();
 
+        public int NodeId;
         public long Term;
         public long Index;
 

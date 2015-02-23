@@ -24,23 +24,22 @@ namespace Core.Specs.WhenLeading.AndReceivingAppendEntries
 
             bus = new InMemoryBus();
 
-            var logEntriesService = 
-                new NodeLogEntriesService(
-                    new PersistentNodeState()
-                        {
-                            NodeId = 1,
-                            Term = 3,
-                            EntryIndex = 0,
-                            LogEntries = new List<LogEntry>()
-                        });
+
+            var logEntryStore = new LogEntryStore();
+            logEntryStore.Append(new LogEntry()
+            {
+                NodeId = 1,
+                Term = 3,
+                Index = 0,
+                MachineCommands = new List<object>()
+            });
 
             var registry = new DomainRegistry()
+               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 })
                .UseDomainMessageSender(bus)
                .UseNodeMessageSender(bus)
-               .UseNodeLogEntriesService(logEntriesService)
-               .UseToReceiveMessages(bus)
-               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 });
-
+               .UseLogEntryStore(logEntryStore)
+               .UseToReceiveMessages(bus);
 
             node = new Node(state, registry);
         }
