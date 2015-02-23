@@ -5,47 +5,36 @@ using Core.Senders;
 
 namespace Core
 {
-    public class DomainRegistry
+    public class DomainRegistry : Configurator, IDependencyFactory
     {
-        private ISendMessages nodeSender;
-        private ISendMessages domainSender;
-        private IReceiveMessages nodeMessageReceiver;
-        private NodeSettings nodeSettings;
-        private NodeLogEntriesService logEntriesService;
-        private Receiver receiver;
-      
-        public DomainRegistry UseNodeMessageSender(ISendMessages sender)
+        override public DomainRegistry UseNodeMessageSender(ISendMessages sender)
         {
             this.nodeSender = sender;
             return this;
         }
-        
-        public DomainRegistry UseDomainMessageSender(ISendMessages domainSender)
+        override public DomainRegistry UseDomainMessageSender(ISendMessages domainSender)
         {
             this.domainSender = domainSender;
             return this;
         }
-
-        public DomainRegistry UseNodeSettings(NodeSettings nodeSettings)
+        override public DomainRegistry UseNodeSettings(NodeSettings nodeSettings)
         {
             this.nodeSettings = nodeSettings;
             return this;
         }
-
-        public DomainRegistry UseNodeLogEntriesService(NodeLogEntriesService logEntriesService)
+        override public DomainRegistry UseNodeLogEntriesService(NodeLogEntriesService logEntriesService)
         {
             this.logEntriesService = logEntriesService;
 
             return this;
         }
-
-        public DomainRegistry UseToReceiveMessages(IReceiveMessages nodeMessageReceiver)
+        override public DomainRegistry UseToReceiveMessages(IReceiveMessages nodeMessageReceiver)
         {
             this.nodeMessageReceiver = nodeMessageReceiver;
             
             return this;
         }
-
+        
         public Receiver MessageReceiver()
         {
             if (nodeMessageReceiver == null)
@@ -53,7 +42,6 @@ namespace Core
 
             return new Receiver(nodeMessageReceiver);
         }
-
         public NodeLogEntriesService LogEntriesService()
         {
             if (logEntriesService == null)
@@ -61,7 +49,6 @@ namespace Core
 
             return logEntriesService;
         }
-
         public ISendMessages NodeMessageSender()
         {
             if (nodeSender == null)
@@ -69,7 +56,6 @@ namespace Core
 
             return nodeSender;
         }
-
         public ISendMessages DomainMessageSender()
         {
             if (domainSender == null)
@@ -77,7 +63,6 @@ namespace Core
 
             return domainSender;
         }
-
         public NodeSettings NodeSettings()
         {
             if (nodeSettings == null)
