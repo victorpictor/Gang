@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Core;
 using Core.Clustering;
 using Core.States.TheFollower;
@@ -29,6 +30,8 @@ namespace NodeHost
             while (true)
             {
             }
+
+            node.Stop();
         }
     }
 }
