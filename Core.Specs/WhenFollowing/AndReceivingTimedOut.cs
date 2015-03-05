@@ -31,7 +31,8 @@ namespace Core.Specs.WhenFollowing
 
            var registry = new DomainRegistry()
                .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 500, Majority = 3 })
-               .UseDomainMessageSender(bus)
+               .UseContolMessageQueue()
+               .UseContolMessageSender(bus)
                .UseNodeMessageSender(bus)
                .UseToReceiveMessages(bus)
                .UseLogEntryStore(logEntryStore);

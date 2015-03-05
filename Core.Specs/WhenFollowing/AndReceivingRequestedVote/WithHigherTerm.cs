@@ -45,7 +45,8 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
 
             var registry = new DomainRegistry()
               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 50000, Majority = 3 })
-              .UseDomainMessageSender(bus)
+              .UseContolMessageQueue()
+              .UseContolMessageSender(bus)
               .UseNodeMessageSender(bus)
               .UseLogEntryStore(logEntryStore)
               .UseToReceiveMessages(inMemoryBus);
@@ -79,7 +80,6 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
         [Test]
         public void It_should_publish_one_message()
         {
-            var controllMessage = bus.messages.Dequeue();
             Assert.AreEqual(1, bus.messages.Count);
         }
     }

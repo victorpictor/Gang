@@ -13,7 +13,7 @@ namespace Core
             this.nodeSender = sender;
             return this;
         }
-        public override DomainRegistry UseDomainMessageSender(ISendMessages domainSender)
+        public override DomainRegistry UseContolMessageSender(ISendMessages domainSender)
         {
             this.domainSender = domainSender;
             return this;
@@ -37,12 +37,19 @@ namespace Core
             return this;
         }
 
+        public override DomainRegistry UseContolMessageQueue()
+        {
+            this.contolMessageQueue = new ContolMessageQueue();
+
+            return this;
+        }
+
         public Receiver MessageReceiver()
         {
             if (nodeMessageReceiver == null)
                 throw new NullReferenceException("No MessageReceiver registered");
 
-            return new Receiver(nodeMessageReceiver);
+            return new Receiver(nodeMessageReceiver, contolMessageQueue);
         }
 
         public NodeLogEntriesService LogEntriesService()
@@ -59,12 +66,12 @@ namespace Core
 
             return nodeSender;
         }
-        public ISendMessages DomainMessageSender()
+        public ISendMessages ContolMessageSender()
         {
-            if (domainSender == null)
-                throw new NullReferenceException("No DomainMessageSender registered");
+            if (contolMessageQueue == null)
+                throw new NullReferenceException("No ContolMessageQueue registered");
 
-            return domainSender;
+            return new ContolMessageSender((IDeliverMessages)contolMessageQueue);
         }
         public NodeSettings NodeSettings()
         {

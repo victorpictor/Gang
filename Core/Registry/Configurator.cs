@@ -13,12 +13,14 @@ namespace Core
         protected NodeSettings nodeSettings;
         protected NodeLogEntriesService logEntriesService;
         protected ILogEntryStore logEntryStore;
+        protected IReceiveMessages contolMessageQueue;
        
         public abstract DomainRegistry UseNodeMessageSender(ISendMessages sender);
-        public abstract DomainRegistry UseDomainMessageSender(ISendMessages domainSender);
+        public abstract DomainRegistry UseContolMessageSender(ISendMessages domainSender);
         public abstract DomainRegistry UseNodeSettings(NodeSettings nodeSettings);
         public abstract DomainRegistry UseToReceiveMessages(IReceiveMessages nodeMessageReceiver);
         public abstract DomainRegistry UseLogEntryStore(ILogEntryStore logEntryStore);
+        public abstract DomainRegistry UseContolMessageQueue();
     }
 
 }

@@ -21,8 +21,6 @@ namespace ZmqTransport.MessageReceivers
             {
                 var messages = new MessageRegistry();
 
-
-
                 using (var context = NetMQContext.Create())
                 using (var subSocket = context.CreateSubscriberSocket())
                 {

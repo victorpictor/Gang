@@ -1,4 +1,5 @@
 ﻿using Core.Messages;
+using Core.Messages.Control;
 using Core.States;
 
 namespace Core.Clustering
@@ -19,7 +20,7 @@ namespace Core.Clustering
 
         public override void Stop()
         {
-            domainRegistry.DomainMessageSender().Send(new ExitState());
+            domainRegistry.ContolMessageSender().Send(new ExitState());
         }
 
         public void Next(FinitState finitState)

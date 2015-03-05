@@ -36,7 +36,8 @@ namespace Core.Specs.WhenLeading.AndReceivingAppendEntries
 
             var registry = new DomainRegistry()
                .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 })
-               .UseDomainMessageSender(bus)
+               .UseContolMessageQueue()
+               .UseContolMessageSender(bus)
                .UseNodeMessageSender(bus)
                .UseLogEntryStore(logEntryStore)
                .UseToReceiveMessages(bus);

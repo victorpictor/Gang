@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Core.Clustering;
 using Core.Messages;
+using Core.Messages.Control;
 
 namespace Core.States
 {

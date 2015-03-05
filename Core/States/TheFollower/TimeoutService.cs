@@ -2,6 +2,7 @@
 using System.Threading;
 using Core.Clustering;
 using Core.Messages;
+using Core.Messages.Control;
 using Core.States.Services;
 
 namespace Core.States.TheFollower
@@ -23,7 +24,7 @@ namespace Core.States.TheFollower
                     }
 
                     node.GetRegistry()
-                        .DomainMessageSender()
+                        .ContolMessageSender()
                         .Send(new TimedOut(state.NodeId, state.Term));
                 };
 

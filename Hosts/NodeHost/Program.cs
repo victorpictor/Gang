@@ -20,7 +20,7 @@ namespace NodeHost
                 .UseNodeSettings(new NodeSettings(){NodeId = 1, NodeName = "first", ElectionTimeout = 3000, FollowerSla = 200, HeartBeatPeriod = 150, KnownNodes = new List<int>() {2, 3, 4}, Majority = 3})
                 .UseToReceiveMessages(new SubscriberNodeMessageReceiver())
                 .UseNodeMessageSender(new NodeMessageSender())
-                .UseDomainMessageSender(new DomainMessageSender())
+                .UseContolMessageSender(new DomainMessageSender())
                 .UseLogEntryStore(new LogEntryStore());
 
 

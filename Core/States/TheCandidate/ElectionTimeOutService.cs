@@ -2,6 +2,7 @@
 using System.Threading;
 using Core.Clustering;
 using Core.Messages;
+using Core.Messages.Control;
 using Core.States.Services;
 
 namespace Core.States.TheCandidate
@@ -26,7 +27,7 @@ namespace Core.States.TheCandidate
 
                     if (electionState.Votes() <= settings.Majority)
                         node.GetRegistry()
-                            .DomainMessageSender()
+                            .ContolMessageSender()
                             .Send(new TimedOut(state.NodeId, state.Term));
             };
 

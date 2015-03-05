@@ -10,7 +10,7 @@ namespace Core
         Receiver MessageReceiver();
         NodeLogEntriesService LogEntriesService();
         ISendMessages NodeMessageSender();
-        ISendMessages DomainMessageSender();
+        ISendMessages ContolMessageSender();
         NodeSettings NodeSettings();
     }
 

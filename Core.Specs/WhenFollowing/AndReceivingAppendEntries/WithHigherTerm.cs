@@ -35,7 +35,8 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
 
             var registry = new DomainRegistry()
                .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 20000, Majority = 3 })
-               .UseDomainMessageSender(bus)
+               .UseContolMessageQueue()
+               .UseContolMessageSender(bus)
                .UseNodeMessageSender(bus)
                .UseLogEntryStore(logEntryStore)
                .UseToReceiveMessages(bus);
@@ -55,7 +56,6 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
         [Test]
         public void It_should_not_ignore_append_entry_command()
         {
-            var controllMessage = bus.messages.Dequeue();
             Assert.AreEqual(0, bus.MessageCount());
         }
 

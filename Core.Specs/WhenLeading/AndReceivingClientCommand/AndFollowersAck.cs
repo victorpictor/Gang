@@ -72,7 +72,8 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
 
             var registry = new DomainRegistry()
               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 })
-              .UseDomainMessageSender(bus1)
+              .UseContolMessageQueue()
+              .UseContolMessageSender(bus1)
               .UseNodeMessageSender(bus1)
               .UseLogEntryStore(logEntryStore)
               .UseToReceiveMessages(bus2);

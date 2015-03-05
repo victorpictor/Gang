@@ -36,6 +36,7 @@ namespace Core.Specs.WhenLeading
 
             var registry = new DomainRegistry()
               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 })
+              .UseContolMessageQueue()
               .UseNodeMessageSender(bus1)
               .UseToReceiveMessages(bus2)
               .UseLogEntryStore(logEntryStore);
