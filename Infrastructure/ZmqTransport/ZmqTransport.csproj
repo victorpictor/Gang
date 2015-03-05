@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="MessageEnvelope.cs" />
     <Compile Include="MessageReceivers\NodeMessageReceiver.cs" />
+    <Compile Include="MessageReceivers\SubscriberNodeMessageReceiver.cs" />
     <Compile Include="MessageRegistry.cs" />
     <Compile Include="MessageSenders\DomainMessageSender.cs" />
     <Compile Include="MessageSenders\NodeMessageSender.cs" />

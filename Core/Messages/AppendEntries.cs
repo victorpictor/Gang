@@ -4,6 +4,10 @@ namespace Core.Messages
 {
     public class AppendEntries : IMessage
     {
+        public AppendEntries()
+        {
+        }
+
         public AppendEntries(long term, long logIndex, List<object> machineCommands)
         {
             Term = term;

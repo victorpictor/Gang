@@ -2,12 +2,14 @@
 using Core.Messages;
 using Core.Receivers;
 using Core.Senders;
+using Core.States.Services;
 
 namespace Core.Specs
 {
     public class InMemoryBus: ISendMessages, IReceiveMessages
     {
         public Queue<IMessage> messages = new Queue<IMessage>();
+        public ServiceReference ServiceReference { get; set; }
 
         public void Send(IMessage m)
         {
@@ -25,6 +27,15 @@ namespace Core.Specs
         public int MessageCount()
         {
             return messages.Count;
+        }
+
+        
+        public void StopReceiving()
+        {
+        }
+
+        public void StrtReceiving()
+        {
         }
     }
 

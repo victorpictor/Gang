@@ -44,6 +44,7 @@ namespace Core
 
             return new Receiver(nodeMessageReceiver);
         }
+
         public NodeLogEntriesService LogEntriesService()
         {
             if (logEntriesService == null)

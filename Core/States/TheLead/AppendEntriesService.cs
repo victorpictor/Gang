@@ -10,7 +10,6 @@ namespace Core.States.TheLead
 {
     public class AppendEntriesService : AbstractService
     {
-
         private Node node;
         private RequestState requestState;
         private LeaderBus leaderBus;

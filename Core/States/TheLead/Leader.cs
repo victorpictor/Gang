@@ -20,7 +20,7 @@ namespace Core.States.TheLead
                     .Reference());
 
             RegisterService(
-                new HeartBeatService(base.node, this.requestState)
+                new HeartBeatService(base.node, requestState)
                     .Reference());
 
             RegisterService(
