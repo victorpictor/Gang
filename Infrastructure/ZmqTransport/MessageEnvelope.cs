@@ -7,6 +7,7 @@ namespace ZmqTransport
     {
         public Guid Id = Guid.NewGuid();
 
+        public int SenderId;
         public string MessageName;
         public dynamic Message;
     }

@@ -15,11 +15,24 @@ namespace NodeHost
     {
         static void Main(string[] args)
         {
+
+           var nodeSettings = new NodeSettings()
+                {
+                    NodeId = 1,
+                    NodeName = "first",
+                    ElectionTimeout = 3000,
+                    FollowerSla = 200,
+                    HeartBeatPeriod = 150,
+                    ClusterNodes = new List<int>() {1, 2, 3, 4},
+                    Majority = 3
+                };
+           
            var registry =
                 new DomainRegistry()
-                .UseNodeSettings(new NodeSettings(){NodeId = 1, NodeName = "first", ElectionTimeout = 3000, FollowerSla = 200, HeartBeatPeriod = 150, KnownNodes = new List<int>() {2, 3, 4}, Majority = 3})
-                .UseToReceiveMessages(new SubscriberNodeMessageReceiver())
-                .UseNodeMessageSender(new NodeMessageSender())
+                .UseNodeSettings(nodeSettings)
+                .UseContolMessageQueue()
+                .UseToReceiveMessages(new SubscriberNodeMessageReceiver(nodeSettings))
+                .UseNodeMessageSender(new NodeMessageSender(nodeSettings))
                 .UseContolMessageSender(new DomainMessageSender())
                 .UseLogEntryStore(new LogEntryStore());
 
@@ -30,9 +43,6 @@ namespace NodeHost
 
             while (true)
             {
-                var command = Console.ReadLine();
-                if (command == "exit")
-                    break;
             }
 
             node.Stop();

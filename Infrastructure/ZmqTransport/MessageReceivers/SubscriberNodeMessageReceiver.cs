@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Core.Clustering;
 using Core.Messages;
 using Core.Receivers;
 using Core.States.Services;
@@ -12,11 +13,13 @@ namespace ZmqTransport.MessageReceivers
 {
     public class SubscriberNodeMessageReceiver : IReceiveMessages
     {
+        private NodeSettings settings;
        
         private Queue messageQueue = new Queue();
 
-        public SubscriberNodeMessageReceiver()
+        public SubscriberNodeMessageReceiver(NodeSettings settings)
         {
+            this.settings = settings;
             Action receiverProcess = () =>
             {
                 var messages = new MessageRegistry();
@@ -26,7 +29,7 @@ namespace ZmqTransport.MessageReceivers
                 {
                     subSocket.Options.ReceiveHighWatermark = 1000;
                     subSocket.Connect("tcp://localhost:12345");
-                    subSocket.Subscribe("all");
+                    subSocket.Subscribe("nodetopic"+settings.NodeId);
                     int i = 1;
                     while (true)
                     {
@@ -47,12 +50,16 @@ namespace ZmqTransport.MessageReceivers
         public IMessage Receive()
         {
             IMessage message = new AppendEntries(-1, -1, new List<object>());
-
+            var tries = 0;
             lock (messageQueue.SyncRoot)
             {
-                while (messageQueue.Count == 0)
-                 Thread.Sleep(100);
+                while (messageQueue.Count == 0 && tries == 2)
+                {
+                    Thread.Sleep(100);
+                    tries++;
+                }
                
+                if(messageQueue.Count != 0)
                 message = (IMessage)messageQueue.Dequeue();
             }
 

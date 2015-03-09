@@ -13,6 +13,6 @@ namespace Core.Clustering
         public int FollowerSla = 1000;
         public int Majority = 3;
 
-        public List<int> KnownNodes = new List<int>();
+        public List<int> ClusterNodes = new List<int>();
     }
 }
