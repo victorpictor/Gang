@@ -12,7 +12,20 @@ namespace Core.Clustering
         public int HeartBeatPeriod = 1000;
         public int FollowerSla = 1000;
         public int Majority = 3;
+        public int SubscribersPort = 8181;
+        public int ClusterDiscoveryPeriod = 10;
 
-        public List<int> ClusterNodes = new List<int>();
+        public List<ClusterNode> ClusterNodes = new List<ClusterNode>();
+
+        public ClusterNode NodeDesctiption()
+        {
+            return new ClusterNode()
+                        {
+                            Id = this.NodeId,
+                            Name = this.NodeName,
+                            Topic = "topic" + this.NodeId,
+                            SubscriberPort = this.SubscribersPort
+                        };
+        }
     }
 }

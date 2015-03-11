@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clustering\ClusterNode.cs" />
     <Compile Include="Clustering\Node.cs" />
     <Compile Include="Clustering\NodeSettings.cs" />
     <Compile Include="Clustering\NodeStateService.cs" />

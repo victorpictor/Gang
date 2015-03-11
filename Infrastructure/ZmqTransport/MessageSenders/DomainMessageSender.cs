@@ -14,7 +14,7 @@ namespace ZmqTransport.MessageSenders
             {
                 client.Connect("tcp://localhost:5556");
 
-                var msg = JsonConvert.SerializeObject(new MessageEnvelope() { MessageName = m.GetType().Name, Message = m });
+                var msg = JsonConvert.SerializeObject(new MessageEnvelope("") { MessageName = m.GetType().Name, Message = m });
                 client.Send(msg);
             }
         }

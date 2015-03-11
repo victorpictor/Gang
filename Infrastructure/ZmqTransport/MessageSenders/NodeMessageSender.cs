@@ -19,12 +19,12 @@ namespace ZmqTransport.MessageSenders
         public NodeMessageSender(NodeSettings settings)
         {
             this.settings = settings;
-
+            
             context = NetMQContext.Create();
             pubSocket = context.CreatePublisherSocket();
 
             pubSocket.Options.SendHighWatermark = 1000;
-            pubSocket.Bind("tcp://localhost:52345");
+            pubSocket.Bind(string.Format("tcp://localhost:{0}", settings.SubscribersPort));
         }
 
         public void Send(IMessage m)
@@ -32,26 +32,14 @@ namespace ZmqTransport.MessageSenders
 
                settings.ClusterNodes.ForEach(n =>
                  {
-                     if (n != settings.NodeId)
+                     if (n.Id != settings.NodeId)
                      {
                          pubSocket.SendMore("nodetopic" + n.ToString())
-                                  .Send(JsonConvert.SerializeObject(new MessageEnvelope() { SenderId = settings.NodeId, MessageName = m.GetType().Name, Message = m }));
-                         Console.WriteLine("Sent {0} to {1} term {2}", m.GetType().Name, "nodetopic" + n.ToString(), m.Term);
+                                  .Send(JsonConvert.SerializeObject(new MessageEnvelope("nodetopic" + n.Id.ToString()) { SenderId = settings.NodeId, MessageName = m.GetType().Name, Message = m }));
+                         Console.WriteLine("Sent {0} to {1} term {2}", m.GetType().Name, "nodetopic" + n.Id.ToString(), m.Term);
                      }
                  });
             
-        }
-
-        public void Reply(IMessage m)
-        {
-            using (var context = NetMQContext.Create())
-            using (var pubSocket = context.CreatePublisherSocket())
-            {
-                pubSocket.Options.SendHighWatermark = 1000;
-                pubSocket.Bind("tcp://localhost:12345");
-
-                pubSocket.SendMore("all").Send(JsonConvert.SerializeObject(new MessageEnvelope() { SenderId = settings.NodeId, MessageName = m.GetType().Name, Message = m }));
-            }
         }
 
         ~NodeMessageSender()
