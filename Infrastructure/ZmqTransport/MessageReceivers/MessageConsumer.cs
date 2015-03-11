@@ -24,7 +24,7 @@ namespace ZmqTransport.MessageReceivers
                 {
                     subSocket.Options.ReceiveHighWatermark = 1000;
                     subSocket.Connect(string.Format("tcp://localhost:{0}", clusterNode.SubscriberPort));
-                    subSocket.Subscribe("nodetopic" + clusterNode.Id);
+                    subSocket.Subscribe("");
 
                     while (true)
                     {

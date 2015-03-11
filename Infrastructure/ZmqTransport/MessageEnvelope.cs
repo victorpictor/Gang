@@ -5,13 +5,6 @@ namespace ZmqTransport
 {
     public class MessageEnvelope
     {
-        public string topic;
-
-        public MessageEnvelope(string topic)
-        {
-            this.topic = topic;
-        }
-
         public Guid Id = Guid.NewGuid();
 
         public int SenderId;
