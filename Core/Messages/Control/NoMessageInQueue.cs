@@ -4,7 +4,7 @@
     {
         public NoMessageInQueue()
         {
-            Term = 0;
+            Term = -1;
         }
 
         public long Term { get; set; }

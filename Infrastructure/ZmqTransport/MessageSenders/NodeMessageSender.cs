@@ -28,7 +28,7 @@ namespace ZmqTransport.MessageSenders
 
         public void Send(IMessage m)
         {
-            pubSocket.Send(
+            pubSocket.SendMore("all").Send(
                          JsonConvert.SerializeObject(new MessageEnvelope()
                              {
                                  SenderId = settings.NodeId,

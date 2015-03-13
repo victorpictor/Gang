@@ -1,4 +1,5 @@
-﻿using Core.Clustering;
+﻿using System;
+using Core.Clustering;
 using Core.Transport;
 
 namespace Core.States.TheLead
@@ -10,11 +11,13 @@ namespace Core.States.TheLead
         
         public override void EnterNewState(Node node)
         {
+            Console.WriteLine("Node is {0}", this.GetType().Name);
+
             base.node = node;
 
             leaderBus = new LeaderBus();
             this.requestState = new RequestState();
-            
+
             RegisterService(
                 new AppendEntriesService(base.node, leaderBus, requestState)
                     .Reference());

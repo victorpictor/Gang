@@ -47,10 +47,10 @@
   <ItemGroup>
     <Compile Include="Discovery\NodeDiscoveryService.cs" />
     <Compile Include="MessageEnvelope.cs" />
+    <Compile Include="MessageSenders\ControlMessageBus.cs" />
     <Compile Include="MessageReceivers\MessageConsumer.cs" />
     <Compile Include="MessageReceivers\NodeMessageSubscriber.cs" />
     <Compile Include="MessageRegistry.cs" />
-    <Compile Include="MessageSenders\DomainMessageSender.cs" />
     <Compile Include="MessageSenders\NodeMessageSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

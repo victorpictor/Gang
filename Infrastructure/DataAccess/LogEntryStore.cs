@@ -11,7 +11,7 @@ namespace DataAccess
 
         public LogEntry LastAppended()
         {
-            return new LogEntry() { NodeId = 1, Term = 1, Index = 0, MachineCommands = new List<object>()};
+            return new LogEntry() { NodeId = 1, Term = 1, Index = 1, MachineCommands = new List<object>()};
         }
     }
 }

@@ -53,7 +53,7 @@ namespace ZmqTransport.Discovery
                     string message = inbox.ReceiveString(out peerName);
                     
                     var node = JsonConvert.DeserializeObject<ClusterNode>(message);
-                    Console.WriteLine("hey from node {0}", node.Id);
+                    Console.WriteLine("discovered node node {0}", node.Id);
                     
                     if (ClusterNodes.All(n => n.Id != node.Id))
                         ClusterNodes.Add(node);
@@ -62,10 +62,10 @@ namespace ZmqTransport.Discovery
 
             nodeSettings.ClusterNodes = ClusterNodes;
 
-            if (ClusterNodes.Count < 2 * nodeSettings.Majority - 1)
-            {
-                throw new Exception("Could not join a cluster with a majority of " + nodeSettings.Majority);
-            }
+            //if (ClusterNodes.Count < 2 * nodeSettings.Majority - 1)
+            //{
+            //    throw new Exception("Could not join a cluster with a majority of " + nodeSettings.Majority);
+            //}
 
         }
     }

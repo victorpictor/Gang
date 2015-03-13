@@ -13,11 +13,7 @@ namespace Core
             this.nodeSender = sender;
             return this;
         }
-        public override DomainRegistry UseContolMessageSender(ISendMessages domainSender)
-        {
-            this.domainSender = domainSender;
-            return this;
-        }
+        
         public override DomainRegistry UseNodeSettings(NodeSettings nodeSettings)
         {
             this.nodeSettings = nodeSettings;
@@ -29,6 +25,21 @@ namespace Core
 
             return this;
         }
+
+        public override DomainRegistry UseToReceiveControlMessages(IReceiveMessages controlMessageReceiver)
+        {
+            this.controlMessageReceiver = controlMessageReceiver;
+
+            return this;
+        }
+
+        public override DomainRegistry UseControlMessageSender(ISendMessages sender)
+        {
+            this.controlMessageSender = sender;
+
+            return this;
+        }
+
         public override DomainRegistry UseLogEntryStore(ILogEntryStore logEntryStore)
         {
             this.logEntryStore = logEntryStore;
@@ -46,6 +57,9 @@ namespace Core
 
         public Receiver MessageReceiver()
         {
+            if (controlMessageSender != null)
+                return new Receiver(nodeMessageReceiver, controlMessageReceiver);
+
             if (nodeMessageReceiver == null)
                 throw new NullReferenceException("No MessageReceiver registered");
 
@@ -68,6 +82,9 @@ namespace Core
         }
         public ISendMessages ContolMessageSender()
         {
+            if (controlMessageSender != null)
+                return controlMessageSender;
+
             if (contolMessageQueue == null)
                 throw new NullReferenceException("No ContolMessageQueue registered");
 

@@ -35,7 +35,6 @@ namespace Core.Specs.BeingCandidate
 
             var registry = new DomainRegistry()
                 .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3 })
-                .UseContolMessageSender(bus)
                 .UseNodeMessageSender(bus2)
                 .UseLogEntryStore(logEntryStore)
                 .UseToReceiveMessages(bus);
@@ -57,9 +56,9 @@ namespace Core.Specs.BeingCandidate
         }
 
         [Test]
-        public void It_should_publish_at_least_3_times_the_request_vote_message()
+        public void It_should_publish_the_request_vote_message()
         {
-            Assert.Greater(bus2.messages.Count,3);
+            Assert.AreEqual(1, bus2.messages.Count);
         }
     }
 }

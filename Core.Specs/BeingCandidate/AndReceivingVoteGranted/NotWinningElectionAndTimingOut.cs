@@ -36,7 +36,6 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
             var registry = new DomainRegistry()
                 .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 300, Majority = 3 })
                 .UseContolMessageQueue()
-                .UseContolMessageSender(bus)
                 .UseToReceiveMessages(bus)
                 .UseLogEntryStore(logEntryStore);
 

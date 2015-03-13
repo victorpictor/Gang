@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Configuration;
+﻿using System;
+using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
 using Core;
 using Core.Clustering;
+using Core.Messages;
 using Core.States.TheFollower;
+using Core.Transport;
 using DataAccess;
 using ZmqTransport.Discovery;
 using ZmqTransport.MessageReceivers;
@@ -15,11 +19,12 @@ namespace NodeHost
         
         static void Main(string[] args)
         {
-           var nodeSettings = new FileNodeSettings().ReadSettings();
 
-           new NodeDiscoveryService(nodeSettings).Run();
+            var nodeSettings = new FileNodeSettings().ReadSettings();
 
-           var registry =
+            new NodeDiscoveryService(nodeSettings).Run();
+            
+            var registry = 
                 new DomainRegistry()
                 .UseNodeSettings(nodeSettings)
                 .UseContolMessageQueue()
@@ -27,13 +32,17 @@ namespace NodeHost
                 .UseNodeMessageSender(new NodeMessageSender(nodeSettings))
                 .UseLogEntryStore(new LogEntryStore());
 
+         
+           var node = new Node(new Follower(), registry);
 
-            var node = new Node(new Follower(), registry);
+           node.Start();
+           
+            while (true)
+            {
+                
+            }
 
-            node.Start();
-
-            
-            node.Stop();
+           node.Stop();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Core.Receivers
             while (true)
             {
                 var message = receiveControlMessages.Receive();
-                if (message.Term > 0)
+                if (message.Term >= 0)
                     return message;
 
                 message = receiveMessages.Receive();

@@ -34,9 +34,9 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
             });
             
             var registry = new DomainRegistry()
-             .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3 })
+             .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 3000, Majority = 3 })
              .UseContolMessageQueue()
-             .UseContolMessageSender(bus)
+             .UseNodeMessageSender(bus)
              .UseToReceiveMessages(bus)
              .UseLogEntryStore(logEntryStore);
 
@@ -53,9 +53,9 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
             bus.Send(new VoteGranted(2, 55, 1));
             bus.Send(new VoteGranted(4, 55, 1));
 
-            node.Stop();
-
             Thread.Sleep(900);
+
+            node.Stop();
         }
 
         [Test]

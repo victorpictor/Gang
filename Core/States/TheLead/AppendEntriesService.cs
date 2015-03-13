@@ -66,7 +66,9 @@ namespace Core.States.TheLead
 
                 nap++;
                 if (nap <= 3)
-                    leaderBus.Send(retryMessage);
+                    node.GetRegistry()
+                            .NodeMessageSender()
+                            .Send(retryMessage);
             }
         }
     }

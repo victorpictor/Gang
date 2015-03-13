@@ -36,7 +36,6 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
             var registry = new DomainRegistry()
              .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 })
              .UseContolMessageQueue()
-             .UseContolMessageSender(bus)
              .UseNodeMessageSender(bus)
              .UseLogEntryStore(logEntryStore)
              .UseToReceiveMessages(bus);
@@ -49,7 +48,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
             bus.Send(new AppendEntries(1, 2, 2, 2, 1, new List<object>()));
 
             node.Start();
-            Thread.Sleep(1500); 
+            Thread.Sleep(500); 
             node.Stop();
         }
 

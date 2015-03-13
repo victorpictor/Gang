@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -26,17 +27,19 @@ namespace ZmqTransport.MessageReceivers
         {
             IMessage message = new AppendEntries(-1, -1, new List<object>());
             var tries = 0;
-            lock (messageQueue.SyncRoot)
-            {
-                while (messageQueue.Count == 0 && tries == 2)
+            
+            
+                lock (messageQueue.SyncRoot)
                 {
-                    Thread.Sleep(100);
-                    tries++;
+                    while (messageQueue.Count == 0 && tries == 2)
+                    {
+                        Thread.Sleep(100);
+                        tries++;
+                    }
+
+                    if (messageQueue.Count != 0)
+                        message = (IMessage)messageQueue.Dequeue();
                 }
-               
-                if(messageQueue.Count != 0)
-                message = (IMessage)messageQueue.Dequeue();
-            }
 
             return message;
         }
