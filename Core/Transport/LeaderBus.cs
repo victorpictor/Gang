@@ -1,11 +1,17 @@
-﻿using Core.Messages;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
+using Core.Messages;
 using Core.Receivers;
 using Core.Senders;
 
 namespace Core.Transport
 {
-    public class LeaderBus
+    public class LeaderBus : IDeliverMessages
     {
+        private Queue followerMessageQueue = Queue.Synchronized(new Queue());  
+
+
         private static IReceiveMessages<IClientCommand> commands;
         private static IReceiveMessages<IMessage> followerMessages;
         private static ISend<ClientReply> repliesBus;
@@ -27,7 +33,14 @@ namespace Core.Transport
 
         public IMessage ReceiveMessage()
         {
-            return followerMessages.Receive();
+
+            while (true)
+            {
+                if (followerMessageQueue.Count > 0)
+                    return (IMessage) followerMessageQueue.Dequeue();
+                    
+                Thread.Sleep(100);
+            }
         }
 
         public void SendToClient()
@@ -37,6 +50,11 @@ namespace Core.Transport
 
         public void Send(IMessage message)
         {
+        }
+
+        public void Deliver(IMessage message)
+        {
+            followerMessageQueue.Enqueue(message);
         }
     }
 }

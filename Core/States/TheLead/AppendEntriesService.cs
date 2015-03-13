@@ -12,8 +12,7 @@ namespace Core.States.TheLead
     {
         private Node node;
         private RequestState requestState;
-        private LeaderBus leaderBus;
-
+        
         public AppendEntriesService(Node node, LeaderBus leaderBus, RequestState requestState)
         {
             this.node = node;
@@ -21,7 +20,7 @@ namespace Core.States.TheLead
             Action appender = () =>
                 {
                     this.requestState = requestState;
-                    this.leaderBus = leaderBus;
+                    
                     var state = node.GetRegistry().LogEntriesService().NodeState();
 
                     while (true)
@@ -40,6 +39,9 @@ namespace Core.States.TheLead
 
                         WaitForMajorityToReply(followerMessage);
 
+                        if (requestState.Failed())
+                            // send failure to client and continue
+
                         node.GetRegistry()
                             .LogEntriesService()
                             .Append(followerMessage.Term, followerMessage.LogIndex, followerMessage.PrevTerm,
@@ -57,18 +59,24 @@ namespace Core.States.TheLead
         {
             var settings = node.GetRegistry().NodeSettings();
             var nap = 0;
+            
             while (true)
             {
                 if (requestState.IsMajority(retryMessage.Term, retryMessage.LogIndex) >= settings.Majority)
+                {
+                    requestState.Succeeded();
                     return;
-
+                }
+                
                 Thread.Sleep(settings.FollowerSla / 3);
 
                 nap++;
                 if (nap <= 3)
-                    node.GetRegistry()
-                            .NodeMessageSender()
-                            .Send(retryMessage);
+                   node.GetRegistry()
+                        .NodeMessageSender()
+                        .Send(retryMessage);
+                else
+                    return;
             }
         }
     }

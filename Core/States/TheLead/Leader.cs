@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Clustering;
+using Core.Messages;
 using Core.Transport;
 
 namespace Core.States.TheLead
@@ -36,5 +37,14 @@ namespace Core.States.TheLead
 
             StartRegisteredServices();
         }
+
+        public MessageResponse Receive(EntriesAppended entriesAppended)
+        {
+            leaderBus.Deliver(entriesAppended);
+
+            return new MessageResponse(false, () => { });
+        }
+
+
     }
 }
