@@ -1,4 +1,5 @@
-﻿using Core.Messages;
+﻿using System;
+using Core.Messages;
 using Core.Receivers;
 
 namespace Core.Senders
@@ -14,6 +15,8 @@ namespace Core.Senders
 
         public void Send(IMessage m)
         {
+            Console.WriteLine("{0} Sending {1}", DateTime.Now, m.GetType().Name);
+
             bus.Deliver(m);
         }
     }

@@ -23,7 +23,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
             state = new Candidate();
 
             bus = new InMemoryBus();
-             
+            
             var logEntryStore = new LogEntryStore();
             logEntryStore.Append(new LogEntry()
             {
@@ -36,7 +36,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
             var registry = new DomainRegistry()
               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 })
               .UseContolMessageQueue()
-              .UseNodeMessageSender(bus)
+              .UseNodeMessageSender(new InMemoryBus())
               .UseToReceiveMessages(bus)
               .UseLogEntryStore(logEntryStore);
 

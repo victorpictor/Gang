@@ -28,17 +28,46 @@ namespace Core.States.TheCandidate
            StartRegisteredServices();
         }
 
+        public override MessageResponse Receive(AppendEntries appendEntries)
+        {
+            Console.WriteLine("{3} Received AppendEntries from node {0}, term {1} log index {2}", appendEntries.LeaderId, appendEntries.Term, appendEntries.LogIndex, DateTime.Now);
+
+            var state = node.GetRegistry().LogEntriesService().NodeState();
+
+            if (appendEntries.Term >= state.Term)
+            {
+                node.GetRegistry().LogEntriesService().UpdateTerm(appendEntries.Term);
+
+                return new MessageResponse(true, () =>
+                    {
+                        StopRegisteredServices();
+                        node.Next(new StateFactory().Follower());
+                    });
+            }
+            
+            Console.WriteLine("{3} Ignored AppendEntries from node {0}, term {1} log index {2} my term was {4} index {5}", appendEntries.LeaderId, appendEntries.Term, appendEntries.LogIndex, DateTime.Now, state.Term, state.EntryIndex);
+
+            return new MessageResponse(false, () => { });
+        }
+
         public override MessageResponse Receive(VoteGranted voteGranted)
         {
             Console.WriteLine("{2} Voted by {0}, term {1}", voteGranted.VoterId, voteGranted.Term, DateTime.Now);
-
+            
             var settings = node.GetRegistry().NodeSettings();
             
-            Granted.AddVote(voteGranted.VoterId);
+            if (voteGranted.CandidateId == settings.NodeId)
+            {
+                Granted.AddVote(voteGranted.VoterId);
 
-            if (Granted.Votes() >= settings.Majority)
-                return new MessageResponse(true, () => node.Next(new StateFactory().Leader()));
-
+                if (Granted.Votes() >= settings.Majority)
+                    return new MessageResponse(true, () =>
+                        {
+                            StopRegisteredServices();
+                            node.Next(new StateFactory().Leader());
+                        });
+            }
+           
             return new MessageResponse(false, () => { });
         }
 
@@ -59,8 +88,12 @@ namespace Core.States.TheCandidate
                     node.GetRegistry()
                       .NodeMessageSender()
                       .Send(new VoteGranted(state.NodeId, requestedVote.CandidateId, requestedVote.LastLogTerm));
-                    
-                    return new MessageResponse(true, () => node.Next(new StateFactory().Follower(votes)));
+
+                    return new MessageResponse(true, () =>
+                        {
+                            StopRegisteredServices();
+                            node.Next(new StateFactory().Follower(votes));
+                        });
                 }
                 
                 Console.WriteLine("{3} Already voted in this term for candidate {0}, term {1}, my term was {2}", requestedVote.CandidateId, requestedVote.Term, state.Term,DateTime.Now);
@@ -79,7 +112,7 @@ namespace Core.States.TheCandidate
             return new MessageResponse(true, () =>
             {
                 node.GetRegistry().LogEntriesService().IncrementTerm();
-
+                StopRegisteredServices();
                 node.Next(new StateFactory().Candidate());
             });
         }

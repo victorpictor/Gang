@@ -34,9 +34,9 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
             });
             
             var registry = new DomainRegistry()
-             .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 3000, Majority = 3 })
+             .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3 })
              .UseContolMessageQueue()
-             .UseNodeMessageSender(bus)
+             .UseNodeMessageSender(new InMemoryBus())
              .UseToReceiveMessages(bus)
              .UseLogEntryStore(logEntryStore);
 
@@ -48,13 +48,13 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
         {
             node.Start();
 
-            bus.Send(new VoteGranted(2, 55, 1));
-            bus.Send(new VoteGranted(3, 55, 1));
-            bus.Send(new VoteGranted(2, 55, 1));
-            bus.Send(new VoteGranted(4, 55, 1));
+            bus.Send(new VoteGranted(2, 1, 1));
+            bus.Send(new VoteGranted(3, 1, 1));
+            bus.Send(new VoteGranted(2, 1, 1));
+            bus.Send(new VoteGranted(4, 1, 1));
 
-            Thread.Sleep(900);
-
+            Thread.Sleep(1000);
+           
             node.Stop();
         }
 

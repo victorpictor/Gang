@@ -35,7 +35,7 @@ namespace Core.Log
 
         public void MessageReceivedNow()
         {
-            persistentNodeState.LastMessageReceivedOn = DateTime.Now;
+           persistentNodeState.LastMessageReceivedOn = DateTime.Now;
         }
 
         public void UpdateTerm(long term)

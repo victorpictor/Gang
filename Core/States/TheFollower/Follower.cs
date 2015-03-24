@@ -122,7 +122,7 @@ namespace Core.States.TheFollower
                         .GetRegistry()
                         .LogEntriesService()
                         .IncrementTerm();
-
+                    StopRegisteredServices();
                     node.Next(new StateFactory().Candidate());
                 });
         }

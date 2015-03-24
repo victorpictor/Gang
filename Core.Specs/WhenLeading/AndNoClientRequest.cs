@@ -14,16 +14,13 @@ namespace Core.Specs.WhenLeading
         private Node node;
 
         private InMemoryBus bus1;
-        private InMemoryBus bus2;
-
+       
         public override void Given()
         {
             state = new Leader();
 
             bus1 = new InMemoryBus();
-            bus2 = new InMemoryBus();
-
-
+            
             var logEntryStore = new LogEntryStore();
             logEntryStore.Append(new LogEntry()
             {
@@ -38,7 +35,7 @@ namespace Core.Specs.WhenLeading
               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 })
               .UseContolMessageQueue()
               .UseNodeMessageSender(bus1)
-              .UseToReceiveMessages(bus2)
+              .UseToReceiveMessages(new InMemoryBus())
               .UseLogEntryStore(logEntryStore);
 
 

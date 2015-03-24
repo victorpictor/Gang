@@ -18,10 +18,14 @@ namespace Core.States.TheCandidate
 
                     Thread.Sleep(settings.ElectionTimeout);
 
-                    var started = DateTime.Now;
+                    var electionEnds = DateTime.Now.AddMilliseconds(settings.ElectionTimeout);
 
-                    while (DateTime.Now.Subtract(started).TotalMilliseconds <= settings.ElectionTimeout)
+                    while (DateTime.Now < electionEnds)
                     {
+                        if (electionState.Votes() >= settings.Majority)
+                            break;
+                        
+                        Thread.Sleep(100);
                     }
 
                     if (electionState.Votes() <= settings.Majority)

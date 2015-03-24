@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using System.Threading;
 using Core.Messages;
 using Core.Receivers;
@@ -28,6 +28,7 @@ namespace Core.Transport
 
         public IClientCommand ReceiveCommand()
         {
+            return new ClientCommand(){Id = Guid.NewGuid(), Command = new object()};
             return commands.Receive();
         }
 

@@ -24,7 +24,7 @@ namespace Core.States.TheLead
                                 .NodeMessageSender()
                                 .Send(new AppendEntries(state.Term, state.EntryIndex, new List<object>()){LeaderId = settings.NodeId});
                             Console.WriteLine("Sent heartbeat term {0}", state.Term);
-                            Thread.Sleep(settings.HeartBeatPeriod);
+                            Thread.Sleep(settings.HeartBeatPeriod - 1);
                         }
                     }
             };

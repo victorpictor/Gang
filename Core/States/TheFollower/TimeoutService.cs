@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Core.Clustering;
 using Core.Messages.Control;
 using Core.States.Services;
@@ -16,15 +17,17 @@ namespace Core.States.TheFollower
                     var state = node.GetRegistry().LogEntriesService().NodeState();
                     
                     node.GetRegistry().LogEntriesService().MessageReceivedNow();
-                   
-                    var lastMessageReceivedOn = node.GetRegistry().LogEntriesService().LastMessageReceivedOn();
 
-                    while (DateTime.Now.Subtract(lastMessageReceivedOn).TotalMilliseconds <= settings.FollowerTimeout)
+                    var msAgo = 0;
+                    while (msAgo <= settings.FollowerTimeout)
                     {
-                        lastMessageReceivedOn = node.GetRegistry().LogEntriesService().LastMessageReceivedOn();
+                        Thread.Sleep(settings.FollowerTimeout - 100);
+
+                        var lastMessageReceivedOn = node.GetRegistry().LogEntriesService().LastMessageReceivedOn();
+                        msAgo = (int)DateTime.Now.Subtract(lastMessageReceivedOn).TotalMilliseconds;
                     }
 
-                    Console.WriteLine("{0} Last message received on {1}",DateTime.Now, lastMessageReceivedOn);
+                    Console.WriteLine("{0} Sending time out",DateTime.Now);
 
                     node.GetRegistry()
                         .ContolMessageSender()

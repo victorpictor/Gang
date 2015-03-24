@@ -33,6 +33,8 @@ namespace ZmqTransport.MessageReceivers
 
                         var envelope = JsonConvert.DeserializeObject<MessageEnvelope>(message);
 
+                        //Console.WriteLine("{0} MessageConsumer received {1}", DateTime.Now, envelope.MessageName);
+
                         internalQueue.Enqueue(
                             (IMessage)messages.Create(envelope.MessageName, envelope.Message.ToString()));
                     }

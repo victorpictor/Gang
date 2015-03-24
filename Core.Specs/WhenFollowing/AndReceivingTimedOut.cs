@@ -30,7 +30,7 @@ namespace Core.Specs.WhenFollowing
             });
 
            var registry = new DomainRegistry()
-               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 500, Majority = 3 })
+               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", Majority = 3, FollowerTimeout = 200})
                .UseContolMessageQueue()
                .UseNodeMessageSender(bus)
                .UseToReceiveMessages(bus)
@@ -42,7 +42,7 @@ namespace Core.Specs.WhenFollowing
         public override void When()
         {
             node.Start();
-            Thread.Sleep(1500);
+            Thread.Sleep(1000);
             node.Stop();
         }
 
