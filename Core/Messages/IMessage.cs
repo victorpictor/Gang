@@ -4,4 +4,9 @@
     {
         long Term { get; set; }
     }
+
+    public interface IReply: IMessage
+    {
+        int To { get; set; }
+    }
 }

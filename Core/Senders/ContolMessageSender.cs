@@ -15,8 +15,11 @@ namespace Core.Senders
 
         public void Send(IMessage m)
         {
-            Console.WriteLine("{0} Sending {1}", DateTime.Now, m.GetType().Name);
+            bus.Deliver(m);
+        }
 
+        public void Reply(IReply m)
+        {
             bus.Deliver(m);
         }
     }

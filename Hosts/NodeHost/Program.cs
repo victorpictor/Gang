@@ -8,6 +8,7 @@ using Core.Messages;
 using Core.States.TheFollower;
 using Core.Transport;
 using DataAccess;
+using ZmqTransport;
 using ZmqTransport.Discovery;
 using ZmqTransport.MessageReceivers;
 using ZmqTransport.MessageSenders;
@@ -19,7 +20,6 @@ namespace NodeHost
         
         static void Main(string[] args)
         {
-
             var nodeSettings = new FileNodeSettings().ReadSettings();
 
             new NodeDiscoveryService(nodeSettings).Run();
@@ -42,7 +42,7 @@ namespace NodeHost
                 
             }
 
-           node.Stop();
+          // node.Stop();
         }
     }
 }

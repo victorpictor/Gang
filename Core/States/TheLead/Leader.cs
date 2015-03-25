@@ -19,21 +19,21 @@ namespace Core.States.TheLead
             leaderBus = new LeaderBus();
             this.requestState = new RequestState();
 
-            RegisterService(
-                new AppendEntriesService(base.node, leaderBus, requestState)
-                    .Reference());
+            //RegisterService(
+            //    new AppendEntriesService(base.node, leaderBus, requestState)
+            //        .Reference());
 
             RegisterService(
                 new HeartBeatService(base.node, requestState)
                     .Reference());
 
-            RegisterService(
-                new FollowersRepliesService(leaderBus, requestState)
-                    .Reference());
+            //RegisterService(
+            //    new FollowersRepliesService(leaderBus, requestState)
+            //        .Reference());
 
-            RegisterService(
-                new ReadLogService()
-                    .Reference());
+            //RegisterService(
+            //    new ReadLogService()
+            //        .Reference());
 
             StartRegisteredServices();
         }

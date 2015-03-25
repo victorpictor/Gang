@@ -63,8 +63,9 @@ namespace Core.States.TheFollower
                 node
                     .GetRegistry()
                     .NodeMessageSender()
-                    .Send(new EntriesAppended()
+                    .Reply(new EntriesAppended()
                         {
+                            To = appendEntries.LeaderId,
                             Term = appendEntries.Term,
                             LogIndex = appendEntries.LogIndex,
                             NodeId = node.GetRegistry().NodeSettings().NodeId
@@ -96,12 +97,12 @@ namespace Core.States.TheFollower
 
                     node.GetRegistry()
                         .NodeMessageSender()
-                        .Send(new VoteGranted(state.NodeId, requestedVote.CandidateId, requestedVote.Term));
+                        .Reply(new VoteGranted(state.NodeId, requestedVote.CandidateId, requestedVote.Term));
 
                 }
                 else
                 {
-                    Console.WriteLine("{3}Already voted in this term for candidate {0}, term {1}, my term was {2}",
+                    Console.WriteLine("{3} Already voted in this term for candidate {0}, term {1}, my term was {2}",
                                       requestedVote.CandidateId, requestedVote.Term, state.Term, DateTime.Now);
                 }
             }
@@ -125,11 +126,6 @@ namespace Core.States.TheFollower
                     StopRegisteredServices();
                     node.Next(new StateFactory().Candidate());
                 });
-        }
-
-        public override MessageResponse Receive(ExitState exitState)
-        {
-            return new MessageResponse(true, StopRegisteredServices);
         }
 
     }

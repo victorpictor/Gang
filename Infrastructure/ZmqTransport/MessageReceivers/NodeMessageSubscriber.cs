@@ -18,7 +18,7 @@ namespace ZmqTransport.MessageReceivers
             var subscriberTasks = settings
                 .ClusterNodes
                 .Where(cn => cn.Id != settings.NodeId)
-                .Select(n => new MessageConsumer(n, messageQueue)).ToList();
+                .Select(n => new MessageConsumer(n, messageQueue, settings.NodeId)).ToList();
 
             subscriberTasks.ForEach(st => st.Consume());
         }

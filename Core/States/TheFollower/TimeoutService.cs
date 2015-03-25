@@ -27,8 +27,6 @@ namespace Core.States.TheFollower
                         msAgo = (int)DateTime.Now.Subtract(lastMessageReceivedOn).TotalMilliseconds;
                     }
 
-                    Console.WriteLine("{0} Sending time out",DateTime.Now);
-
                     node.GetRegistry()
                         .ContolMessageSender()
                         .Send(new TimedOut(state.NodeId, state.Term));

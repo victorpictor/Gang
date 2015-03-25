@@ -68,6 +68,10 @@ namespace ZmqTransport.MessageSenders
 
         }
 
+        public void Reply(IReply m)
+        {
+        }
+
         ~ControlMessageBus()
         {
             receiver.Dispose();

@@ -1,4 +1,5 @@
-﻿using Core.Clustering;
+﻿using System;
+using Core.Clustering;
 using Core.Messages;
 using Core.Senders;
 using NetMQ;
@@ -18,7 +19,7 @@ namespace ZmqTransport.MessageSenders
         public NodeMessageSender(NodeSettings settings)
         {
             this.settings = settings;
-            
+
             context = NetMQContext.Create();
             pubSocket = context.CreatePublisherSocket();
 
@@ -28,13 +29,32 @@ namespace ZmqTransport.MessageSenders
 
         public void Send(IMessage m)
         {
-            pubSocket.SendMore("all").Send(
-                         JsonConvert.SerializeObject(new MessageEnvelope()
-                             {
-                                 SenderId = settings.NodeId,
-                                 MessageName = m.GetType().Name,
-                                 Message = m
-                             }));
+            settings.ClusterNodes.ForEach(s =>
+                {
+
+                    if (settings.NodeId != s.Id)
+                        pubSocket.SendMore(string.Format("node{0}", s.Id)).Send(
+                            JsonConvert.SerializeObject(new MessageEnvelope()
+                                {
+                                    SenderId = settings.NodeId,
+                                    MessageName = m.GetType().Name,
+                                    Message = m
+                                }));
+                }
+                );
+        }
+
+        public void Reply(IReply m)
+        {
+
+            pubSocket.SendMore(string.Format("node{0}", m.To)).Send(
+                JsonConvert.SerializeObject(new MessageEnvelope()
+                {
+                    SenderId = settings.NodeId,
+                    MessageName = m.GetType().Name,
+                    Message = m
+                }));
+
         }
 
         ~NodeMessageSender()

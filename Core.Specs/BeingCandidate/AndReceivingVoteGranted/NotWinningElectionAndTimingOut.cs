@@ -47,7 +47,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
         {
             node.Start();
 
-            bus.Send(new VoteGranted(1, 2, 1));
+            bus.Reply(new VoteGranted(1, 2, 1));
 
             Thread.Sleep(900);
         }

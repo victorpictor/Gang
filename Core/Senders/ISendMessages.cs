@@ -4,6 +4,7 @@ namespace Core.Senders
 {
     public interface ISend<T>
     {
+        void Reply(IReply m);
         void Send(T m);
     }
     

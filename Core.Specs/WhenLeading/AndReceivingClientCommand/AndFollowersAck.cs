@@ -24,6 +24,11 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
             {
                 Replies.Enqueue(r);
             }
+
+            public void Reply(IReply m)
+            {
+                Replies.Enqueue(new ClientReply());
+            }
         }
         private class ClientCommandReceiver : IReceiveMessages<IClientCommand>
         {

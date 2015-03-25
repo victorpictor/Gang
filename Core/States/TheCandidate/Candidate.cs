@@ -56,7 +56,7 @@ namespace Core.States.TheCandidate
             
             var settings = node.GetRegistry().NodeSettings();
             
-            if (voteGranted.CandidateId == settings.NodeId)
+            if (voteGranted.To == settings.NodeId)
             {
                 Granted.AddVote(voteGranted.VoterId);
 
@@ -87,7 +87,7 @@ namespace Core.States.TheCandidate
                     
                     node.GetRegistry()
                       .NodeMessageSender()
-                      .Send(new VoteGranted(state.NodeId, requestedVote.CandidateId, requestedVote.LastLogTerm));
+                      .Reply(new VoteGranted(state.NodeId, requestedVote.CandidateId, requestedVote.LastLogTerm));
 
                     return new MessageResponse(true, () =>
                         {

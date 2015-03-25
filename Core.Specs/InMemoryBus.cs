@@ -16,6 +16,11 @@ namespace Core.Specs
             messages.Enqueue(m);
         }
 
+        public void Reply(IReply m)
+        {
+            messages.Enqueue(m);
+        }
+
         public IMessage Receive()
         {
             if (messages.Count > 0)

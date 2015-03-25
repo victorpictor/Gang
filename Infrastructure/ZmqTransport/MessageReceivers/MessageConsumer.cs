@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using Core.Clustering;
 using Core.Messages;
 using Core.States.Services;
@@ -13,7 +12,7 @@ namespace ZmqTransport.MessageReceivers
     {
         public ServiceReference ConsumerService;
 
-        public MessageConsumer(ClusterNode clusterNode, Queue internalQueue)
+        public MessageConsumer(ClusterNode clusterNode, Queue internalQueue, int nodeId)
         {
             Action receiverProcess = () =>
             {
@@ -24,7 +23,7 @@ namespace ZmqTransport.MessageReceivers
                 {
                     subSocket.Options.ReceiveHighWatermark = 1000;
                     subSocket.Connect(string.Format("tcp://localhost:{0}", clusterNode.SubscriberPort));
-                    subSocket.Subscribe("all");
+                    subSocket.Subscribe(string.Format("node{0}",nodeId));
 
                     while (true)
                     {
@@ -33,7 +32,7 @@ namespace ZmqTransport.MessageReceivers
 
                         var envelope = JsonConvert.DeserializeObject<MessageEnvelope>(message);
 
-                        //Console.WriteLine("{0} MessageConsumer received {1}", DateTime.Now, envelope.MessageName);
+                        Console.WriteLine("{0} Message received on  topic {1} port {2}", DateTime.Now, messageTopicReceived, clusterNode.SubscriberPort);
 
                         internalQueue.Enqueue(
                             (IMessage)messages.Create(envelope.MessageName, envelope.Message.ToString()));
