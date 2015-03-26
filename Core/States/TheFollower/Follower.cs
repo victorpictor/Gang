@@ -19,7 +19,7 @@ namespace Core.States.TheFollower
 
         public override void EnterNewState(Node node)
         {
-            Console.WriteLine("Node is {0}", this.GetType().Name);
+            this.Info(string.Format("Node is {0}", this.GetType().Name));
 
             base.node = node;
 
@@ -36,7 +36,8 @@ namespace Core.States.TheFollower
 
         public override MessageResponse Receive(AppendEntries appendEntries)
         {
-            Console.WriteLine("{3} Received AppendEntries from node {0}, term {1} log index {2}", appendEntries.LeaderId, appendEntries.Term, appendEntries.LogIndex, DateTime.Now);
+            this.Info(string.Format("Received AppendEntries from node {0}, term {1} log index {2}", appendEntries.LeaderId, appendEntries.Term, appendEntries.LogIndex));
+
             var logEntryService = node
                 .GetRegistry()
                 .LogEntriesService();
@@ -79,8 +80,8 @@ namespace Core.States.TheFollower
         {
             var state = node.GetRegistry().LogEntriesService().NodeState();
 
-            Console.WriteLine("{2} Requested vote, candidate {0}, term {1}", requestedVote.CandidateId, requestedVote.Term, DateTime.Now);
-
+            this.Info(string.Format("Requested vote, candidate {0}, term {1}", requestedVote.CandidateId, requestedVote.Term));
+            
             if (state.Term < requestedVote.LastLogTerm)
                 return new MessageResponse(false, () => { });
 
@@ -90,7 +91,8 @@ namespace Core.States.TheFollower
                 {
                     votes.Add(requestedVote.Term, requestedVote.CandidateId);
 
-                    Console.WriteLine("{2} Vote granted for {0}, term {1}", requestedVote.CandidateId, requestedVote.Term, DateTime.Now);
+                    this.Info(string.Format("Vote granted for {0}, term {1}", requestedVote.CandidateId, requestedVote.Term));
+
                     node
                         .GetRegistry()
                         .LogEntriesService().MessageReceivedNow();
@@ -102,13 +104,13 @@ namespace Core.States.TheFollower
                 }
                 else
                 {
-                    Console.WriteLine("{3} Already voted in this term for candidate {0}, term {1}, my term was {2}",
-                                      requestedVote.CandidateId, requestedVote.Term, state.Term, DateTime.Now);
+                    this.Info(string.Format("Already voted in this term for candidate {0}, term {1}, my term was {2}",
+                        requestedVote.CandidateId, requestedVote.Term, state.Term));
                 }
             }
             else
             {
-                Console.WriteLine("{2} Did not grant vote for candidate {0}, term {1}", requestedVote.CandidateId, requestedVote.Term, DateTime.Now);
+                this.Info(string.Format("Did not grant vote for candidate {0}, term {1}", requestedVote.CandidateId, requestedVote.Term));
             }
 
             return new MessageResponse(false, () => { });
@@ -116,7 +118,7 @@ namespace Core.States.TheFollower
 
         public override MessageResponse Receive(TimedOut timedOut)
         {
-            Console.WriteLine("{0} Timed out", DateTime.Now);
+            this.Info("Timed out");
             return new MessageResponse(true, () =>
                 {
                     node

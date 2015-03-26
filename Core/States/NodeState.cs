@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Core.Clustering;
 using Core.Messages;
 
@@ -28,22 +29,31 @@ namespace Core.States
             
             var loop = new Thread(() =>
             {
-                var receiver = registry.MessageReceiver();
-                MessageResponse msgResp;
-
-                while (true)
+                try
                 {
-                    var message = receiver.NextMessage();
+                    var receiver = registry.MessageReceiver();
+                    MessageResponse msgResp;
 
-                    msgResp = finitState.Receive((dynamic)message);
+                    while (true)
+                    {
+                        var message = receiver.NextMessage();
 
-                    if (msgResp.LeaveState)
-                        break;
+                        msgResp = finitState.Receive((dynamic)message);
 
-                    msgResp.Action();
+                        if (msgResp.LeaveState)
+                            break;
+
+                        msgResp.Action();
+                    }
+
+                    finitState.Transition(() => msgResp.Action());
                 }
-
-                finitState.Transition(() => msgResp.Action());
+                catch (Exception e)
+                {
+                    this.Error(string.Format("Exiting the loop with exception"), e);
+                    throw e;
+                }
+                
             });
 
             loop.Start();

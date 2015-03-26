@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Threading;
-using System.Threading.Tasks;
-using Core;
+﻿using Core;
 using Core.Clustering;
-using Core.Messages;
 using Core.States.TheFollower;
-using Core.Transport;
 using DataAccess;
-using ZmqTransport;
+using NLog;
 using ZmqTransport.Discovery;
 using ZmqTransport.MessageReceivers;
 using ZmqTransport.MessageSenders;
@@ -17,9 +11,11 @@ namespace NodeHost
 {
     class Program
     {
-        
         static void Main(string[] args)
         {
+            var logger = LogManager.GetCurrentClassLogger();
+            Core.Logger.Set(new nLogger(logger));
+
             var nodeSettings = new FileNodeSettings().ReadSettings();
 
             new NodeDiscoveryService(nodeSettings).Run();

@@ -13,7 +13,7 @@ namespace Core.States.TheCandidate
 
         public override void EnterNewState(Node node)
         {
-            Console.WriteLine("Node is {0}", this.GetType().Name);
+            this.Info(string.Format("Node is {0}", this.GetType().Name));
 
             base.node = node;
 
@@ -30,8 +30,7 @@ namespace Core.States.TheCandidate
 
         public override MessageResponse Receive(AppendEntries appendEntries)
         {
-            Console.WriteLine("{3} Received AppendEntries from node {0}, term {1} log index {2}", appendEntries.LeaderId, appendEntries.Term, appendEntries.LogIndex, DateTime.Now);
-
+            this.Info(string.Format("Received AppendEntries from node {0}, term {1} log index {2}", appendEntries.LeaderId, appendEntries.Term, appendEntries.LogIndex));
             var state = node.GetRegistry().LogEntriesService().NodeState();
 
             if (appendEntries.Term >= state.Term)
@@ -45,14 +44,14 @@ namespace Core.States.TheCandidate
                     });
             }
             
-            Console.WriteLine("{3} Ignored AppendEntries from node {0}, term {1} log index {2} my term was {4} index {5}", appendEntries.LeaderId, appendEntries.Term, appendEntries.LogIndex, DateTime.Now, state.Term, state.EntryIndex);
-
+            this.Info(string.Format("Ignored AppendEntries from node {0}, term {1} log index {2} my term was {3} index {4}", appendEntries.LeaderId, appendEntries.Term, appendEntries.LogIndex,  state.Term, state.EntryIndex));
+            
             return new MessageResponse(false, () => { });
         }
 
         public override MessageResponse Receive(VoteGranted voteGranted)
         {
-            Console.WriteLine("{2} Voted by {0}, term {1}", voteGranted.VoterId, voteGranted.Term, DateTime.Now);
+            this.Info(string.Format("Voted by {0}, term {1}", voteGranted.VoterId, voteGranted.Term));
             
             var settings = node.GetRegistry().NodeSettings();
             
@@ -73,8 +72,8 @@ namespace Core.States.TheCandidate
 
         public override MessageResponse Receive(RequestedVote requestedVote)
         {
-            Console.WriteLine("{2} Requested vote, candidate {0}, term {1}", requestedVote.CandidateId, requestedVote.Term, DateTime.Now);
-
+            this.Info(string.Format("Requested vote, candidate {0}, term {1}", requestedVote.CandidateId, requestedVote.Term));
+            
             var state = node.GetRegistry().LogEntriesService().NodeState();
             
             if (state.Term < requestedVote.Term)
@@ -83,8 +82,8 @@ namespace Core.States.TheCandidate
                 {
                     votes.Add(requestedVote.Term, requestedVote.CandidateId);
                     
-                    Console.WriteLine("{3} Voted for candidate {0}, term {1}, my term was {2}", requestedVote.CandidateId, requestedVote.Term, state.Term, DateTime.Now);
-                    
+                    this.Info(string.Format("Voted for candidate {0}, term {1}, my term was {2}", requestedVote.CandidateId, requestedVote.Term, state.Term));
+
                     node.GetRegistry()
                       .NodeMessageSender()
                       .Reply(new VoteGranted(state.NodeId, requestedVote.CandidateId, requestedVote.LastLogTerm));
@@ -96,19 +95,19 @@ namespace Core.States.TheCandidate
                         });
                 }
                 
-                Console.WriteLine("{3} Already voted in this term for candidate {0}, term {1}, my term was {2}", requestedVote.CandidateId, requestedVote.Term, state.Term,DateTime.Now);
+                this.Info(string.Format("Already voted in this term for candidate {0}, term {1}, my term was {2}", requestedVote.CandidateId, requestedVote.Term, state.Term));
             }
             else
-                Console.WriteLine("{2} Did not grant vote for candidate {0}, term {1}", requestedVote.CandidateId, requestedVote.Term, DateTime.Now);
-            
-
+                this.Info(string.Format("Did not grant vote for candidate {0}, term {1}", requestedVote.CandidateId, requestedVote.Term));
+           
             return new MessageResponse(false, () => { });
         }
 
 
         public override MessageResponse Receive(TimedOut timedOut)
         {
-            Console.WriteLine("{0} Election timed out", DateTime.Now);
+            this.Info("Election timed out");
+
             return new MessageResponse(true, () =>
             {
                 node.GetRegistry().LogEntriesService().IncrementTerm();

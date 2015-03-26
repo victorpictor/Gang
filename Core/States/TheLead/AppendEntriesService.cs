@@ -47,7 +47,7 @@ namespace Core.States.TheLead
                             .Append(followerMessage.Term, followerMessage.LogIndex, followerMessage.PrevTerm,
                                     followerMessage.PrevLogIndex, followerMessage.MachineCommands);
 
-                        leaderBus.SendToClient();
+                        //leaderBus.SendToClient();
                     }
                 };
 

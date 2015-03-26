@@ -15,7 +15,8 @@ namespace Core.States.TheCandidate
 
                 var state = node.GetRegistry().LogEntriesService().NodeState();
 
-                Console.WriteLine("Node is {0} triggering election, term {1}", settigs.NodeId, state.Term);
+                this.Info(string.Format("Node is {0} triggering election, term {1}", settigs.NodeId, state.Term));
+
                 node.GetRegistry()
                     .NodeMessageSender()
                     .Send(new RequestedVote(state.NodeId, state.PrevTerm(), state.Term, state.EntryIndex));

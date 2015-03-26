@@ -10,8 +10,7 @@ namespace Core.Transport
     public class LeaderBus : IDeliverMessages
     {
         private Queue followerMessageQueue = Queue.Synchronized(new Queue());  
-
-
+        
         private static IReceiveMessages<IClientCommand> commands;
         private static IReceiveMessages<IMessage> followerMessages;
         private static ISend<ClientReply> repliesBus;

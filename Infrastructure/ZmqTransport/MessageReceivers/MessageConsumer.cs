@@ -32,8 +32,6 @@ namespace ZmqTransport.MessageReceivers
 
                         var envelope = JsonConvert.DeserializeObject<MessageEnvelope>(message);
 
-                        Console.WriteLine("{0} Message received on  topic {1} port {2}", DateTime.Now, messageTopicReceived, clusterNode.SubscriberPort);
-
                         internalQueue.Enqueue(
                             (IMessage)messages.Create(envelope.MessageName, envelope.Message.ToString()));
                     }

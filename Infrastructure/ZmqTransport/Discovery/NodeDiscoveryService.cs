@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core;
 using Core.Clustering;
 using Core.States.Services;
 using NetMQ;
@@ -53,7 +54,8 @@ namespace ZmqTransport.Discovery
                     string message = inbox.ReceiveString(out peerName);
                     
                     var node = JsonConvert.DeserializeObject<ClusterNode>(message);
-                    Console.WriteLine("discovered node node {0}", node.Id);
+
+                    this.Info(string.Format("Discovered node node {0}", node.Id));
                     
                     if (ClusterNodes.All(n => n.Id != node.Id))
                         ClusterNodes.Add(node);

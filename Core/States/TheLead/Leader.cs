@@ -12,24 +12,25 @@ namespace Core.States.TheLead
         
         public override void EnterNewState(Node node)
         {
-            Console.WriteLine("Node is {0}", this.GetType().Name);
-
+            
+            this.Info(string.Format("Node is {0}", this.GetType().Name));
+            
             base.node = node;
 
             leaderBus = new LeaderBus();
             this.requestState = new RequestState();
 
-            //RegisterService(
-            //    new AppendEntriesService(base.node, leaderBus, requestState)
-            //        .Reference());
+            RegisterService(
+                new AppendEntriesService(base.node, leaderBus, requestState)
+                    .Reference());
 
             RegisterService(
                 new HeartBeatService(base.node, requestState)
                     .Reference());
 
-            //RegisterService(
-            //    new FollowersRepliesService(leaderBus, requestState)
-            //        .Reference());
+            RegisterService(
+                new FollowersRepliesService(leaderBus, requestState)
+                    .Reference());
 
             //RegisterService(
             //    new ReadLogService()
