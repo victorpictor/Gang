@@ -22,6 +22,11 @@ namespace Core.States
             return new MessageResponse(true, StopRegisteredServices);
         }
 
+        public virtual MessageResponse Receive(EntriesAppended entriesAppended)
+        {
+            return new MessageResponse(false, () => { });
+        }
+
         public virtual MessageResponse Receive(AppendEntries appendEntries)
         {
             var state = node.GetRegistry().LogEntriesService().NodeState();

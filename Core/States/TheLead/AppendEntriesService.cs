@@ -25,22 +25,26 @@ namespace Core.States.TheLead
 
                     while (true)
                     {
-                        var clientRequest = leaderBus.ReceiveCommand();
 
-                        var followerMessage = new AppendEntries(state.NodeId, state.Term, state.PrevTerm(),
-                                                                state.EntryIndex + 1, state.PrevLogIngex(),
-                                                                new List<object> {clientRequest.Command});
+                         var clientRequest = leaderBus.ReceiveCommand();
 
-                        node.GetRegistry()
-                            .NodeMessageSender()
-                            .Send(followerMessage);
+                         var followerMessage = new AppendEntries(state.NodeId, state.Term, state.PrevTerm(),
+                                                                 state.EntryIndex + 1, state.PrevLogIngex(),
+                                                                 //i++, state.PrevLogIngex(),
+                                                                 new List<object> { clientRequest.Command});
 
-                        requestState.MessageSentNow();
+                         node.GetRegistry()
+                             .NodeMessageSender()
+                             .Send(followerMessage);
 
-                        WaitForMajorityToReply(followerMessage);
+                         this.Info(string.Format("Sent client command, term {0} index {1}", followerMessage.Term, followerMessage.LogIndex));
+                         requestState.MessageSentNow();
 
-                        if (requestState.Failed())
+                         WaitForMajorityToReply(followerMessage);
+
+                        if (requestState.Failed()) 
                             // send failure to client and continue
+                            continue;
 
                         node.GetRegistry()
                             .LogEntriesService()

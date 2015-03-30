@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
 
 namespace Core.Specs
 {
@@ -8,6 +9,8 @@ namespace Core.Specs
         [TestFixtureSetUp]
         public void SetUp()
         {
+            Logger.Set(new Mock<ILog>().Object);
+
             Given();
             When();
         }

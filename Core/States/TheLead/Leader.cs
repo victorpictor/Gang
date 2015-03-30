@@ -32,17 +32,17 @@ namespace Core.States.TheLead
                 new FollowersRepliesService(leaderBus, requestState)
                     .Reference());
 
-            //RegisterService(
-            //    new ReadLogService()
-            //        .Reference());
+            RegisterService(
+                new ReadLogService()
+                    .Reference());
 
             StartRegisteredServices();
         }
 
-        public MessageResponse Receive(EntriesAppended entriesAppended)
+        public override MessageResponse Receive(EntriesAppended entriesAppended)
         {
             leaderBus.Deliver(entriesAppended);
-
+            this.Info(string.Format("EntriesAppended by {0} term {1} index {2}", entriesAppended.NodeId, entriesAppended.Term, entriesAppended.LogIndex));
             return new MessageResponse(false, () => { });
         }
 

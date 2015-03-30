@@ -71,6 +71,8 @@ namespace Core.States.TheFollower
                             LogIndex = appendEntries.LogIndex,
                             NodeId = node.GetRegistry().NodeSettings().NodeId
                         });
+
+                this.Info(string.Format("AppendedEntries from node {0}, term {1} log index {2}", appendEntries.LeaderId, appendEntries.Term, appendEntries.LogIndex));
             }
 
             return new MessageResponse(false, () => { });
