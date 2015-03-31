@@ -49,9 +49,8 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
             node.Start();
 
             bus.Send(new AppendEntries(1, 1, 1, 1, 1, null));
-
+            Thread.Sleep(5);
             node.Stop();
-
             Thread.Sleep(900);
         }
 

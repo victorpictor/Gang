@@ -50,6 +50,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
             bus.Send(new AppendEntries(1, 4, 4, 3, 2, new List<object>() {new object()}));
             Thread.Sleep(900);
             node.Stop();
+            Thread.Sleep(1000);
         }
 
         [Test]

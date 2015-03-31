@@ -50,6 +50,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
             Thread.Sleep(500);
 
             node.Stop();
+            Thread.Sleep(300);
         }
 
         [Test]

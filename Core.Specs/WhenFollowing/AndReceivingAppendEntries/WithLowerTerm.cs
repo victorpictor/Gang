@@ -48,10 +48,10 @@ namespace Core.Specs.WhenFollowing.AndReceivingAppendEntries
             node.Start();
 
             bus.Send(new AppendEntries(1, 1, 1, 1, 1, null));
-           
-            node.Stop();
-
+            
             Thread.Sleep(900);
+            node.Stop();
+            Thread.Sleep(300);
         }
 
         [Test]

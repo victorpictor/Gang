@@ -7,6 +7,10 @@ namespace Core.States.Services
     {
         private Thread serviceThread;
 
+        private bool IsShuttingDown;
+
+        private object _lock = new object();
+
         public ServiceReference(Action a)
         {
             this.serviceThread = new Thread(new ThreadStart(a));
@@ -14,15 +18,28 @@ namespace Core.States.Services
 
         public void StopService()
         {
-            if (serviceThread != null)
-                if (serviceThread.IsAlive)
-                    serviceThread.Abort();
+            lock (_lock)
+            {
+                IsShuttingDown = true;
+            }
+        }
+
+        public bool IsServiceShuttingDown()
+        {
+            var isShuttingDown = false;
+
+            lock (_lock)
+            {
+                isShuttingDown = IsShuttingDown;
+            }
+
+            return isShuttingDown;
         }
 
         public void StartService()
         {
             if (serviceThread != null)
-                serviceThread.Start();
+               serviceThread.Start();
         }
     }
 }

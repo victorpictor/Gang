@@ -16,7 +16,7 @@ namespace Core.States.TheLead
                     var settings = node.GetRegistry().NodeSettings();
                     var state = node.GetRegistry().LogEntriesService().NodeState();
 
-                    while (true)
+                    while (!IsServiceShuttingDown())
                     {
                         if (DateTime.Now.Subtract(requestState.LastMessageSent()).TotalMilliseconds >= settings.HeartBeatPeriod)
                         {

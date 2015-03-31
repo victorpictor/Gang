@@ -34,8 +34,9 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
             });
 
             var registry = new DomainRegistry()
-                .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 300, Majority = 3 })
+                .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 100, Majority = 3 })
                 .UseContolMessageQueue()
+                .UseNodeMessageSender(bus)
                 .UseToReceiveMessages(bus)
                 .UseLogEntryStore(logEntryStore);
 
@@ -49,7 +50,10 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
 
             bus.Reply(new VoteGranted(1, 2, 1));
 
-            Thread.Sleep(900);
+            Thread.Sleep(500);
+            node.Stop();
+            Thread.Sleep(300);
+
         }
 
         [Test]
@@ -61,7 +65,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
         [Test]
         public void It_should_increment_state()
         {
-            Assert.AreEqual(2, node.GetRegistry().LogEntriesService().NodeState().Term);
+            Assert.GreaterOrEqual(node.GetRegistry().LogEntriesService().NodeState().Term, 2);
         }
     }
 }

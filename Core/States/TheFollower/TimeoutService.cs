@@ -19,7 +19,7 @@ namespace Core.States.TheFollower
                     node.GetRegistry().LogEntriesService().MessageReceivedNow();
 
                     var msAgo = 0;
-                    while (msAgo <= settings.FollowerTimeout)
+                    while (msAgo <= settings.FollowerTimeout && !IsServiceShuttingDown())
                     {
                         Thread.Sleep(settings.FollowerTimeout - 100);
 
@@ -27,9 +27,10 @@ namespace Core.States.TheFollower
                         msAgo = (int)DateTime.Now.Subtract(lastMessageReceivedOn).TotalMilliseconds;
                     }
 
-                    node.GetRegistry()
-                        .ContolMessageSender()
-                        .Send(new TimedOut(state.NodeId, state.Term));
+                    if (!IsServiceShuttingDown())
+                        node.GetRegistry()
+                            .ContolMessageSender()
+                            .Send(new TimedOut(state.NodeId, state.Term));
                 };
 
             reference = new ServiceReference(timer);

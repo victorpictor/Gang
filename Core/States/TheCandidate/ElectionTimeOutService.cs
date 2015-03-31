@@ -20,15 +20,15 @@ namespace Core.States.TheCandidate
 
                     var electionEnds = DateTime.Now.AddMilliseconds(settings.ElectionTimeout);
 
-                    while (DateTime.Now < electionEnds)
+                    while (DateTime.Now < electionEnds && !IsServiceShuttingDown())
                     {
                         if (electionState.Votes() >= settings.Majority)
                             break;
-                        
-                        Thread.Sleep(100);
+
+                        Thread.Sleep(50);
                     }
 
-                    if (electionState.Votes() <= settings.Majority)
+                    if (electionState.Votes() <= settings.Majority && !IsServiceShuttingDown())
                         node.GetRegistry()
                             .ContolMessageSender()
                             .Send(new TimedOut(state.NodeId, state.Term));

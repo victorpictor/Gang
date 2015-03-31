@@ -54,12 +54,12 @@ namespace Core.Specs.BeingCandidate.AndReceivingVoteGranted
             bus.Reply(new VoteGranted(4, 1, 1));
 
             Thread.Sleep(1000);
-           
             node.Stop();
+            Thread.Sleep(300);
         }
 
         [Test]
-        public void It_should_become_Candidate()
+        public void It_should_become_Leader()
         {
             Assert.AreEqual(typeof(Leader), node.LastFinitState().GetType());
         }

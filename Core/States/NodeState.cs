@@ -51,7 +51,6 @@ namespace Core.States
                 catch (Exception e)
                 {
                     this.Error(string.Format("Exiting the loop with exception"), e);
-                    throw e;
                 }
                 
             });

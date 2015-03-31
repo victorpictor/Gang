@@ -34,7 +34,7 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
             });
 
             var registry = new DomainRegistry()
-                .UseNodeSettings(new NodeSettings() {NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3})
+                .UseNodeSettings(new NodeSettings() {NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3})
                 .UseContolMessageQueue()
                 .UseToReceiveMessages(bus)
                 .UseNodeMessageSender(bus)
@@ -48,9 +48,10 @@ namespace Core.Specs.BeingCandidate.AndReceivingAppendEntries
             node.Start();
 
             bus.Send(new AppendEntries(1, 4, 4, 4, 3, null));
-            Thread.Sleep(900);
-
-            //node.Stop();
+            Thread.Sleep(300);
+            
+            node.Stop();
+            Thread.Sleep(1000);
         }
 
         [Test]

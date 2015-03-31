@@ -34,7 +34,8 @@ namespace Core.Specs.BeingCandidate
             });
 
             var registry = new DomainRegistry()
-                .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 1000, Majority = 3 })
+                .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 300, Majority = 3 })
+                .UseContolMessageQueue()
                 .UseNodeMessageSender(bus2)
                 .UseLogEntryStore(logEntryStore)
                 .UseToReceiveMessages(bus);
@@ -46,7 +47,9 @@ namespace Core.Specs.BeingCandidate
         public override void When()
         {
             node.Start();
-            Thread.Sleep(3000);
+            Thread.Sleep(340);
+            node.Stop();
+            Thread.Sleep(1000);
         }
 
         [Test]

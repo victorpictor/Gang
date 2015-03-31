@@ -11,7 +11,7 @@ namespace Core.States.TheLead
         {
             Action appended = () =>
                 {
-                    while (true)
+                    while (!IsServiceShuttingDown())
                     {
                         var entriesAppended = (EntriesAppended)leaderBus.ReceiveMessage();
                         requestState.RegisterReply(entriesAppended);

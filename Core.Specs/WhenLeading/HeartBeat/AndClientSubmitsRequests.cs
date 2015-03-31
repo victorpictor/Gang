@@ -6,7 +6,6 @@ using Core.Log;
 using Core.Messages;
 using Core.Receivers;
 using Core.Senders;
-using Core.States;
 using Core.States.TheLead;
 using Core.Transport;
 using Moq;
@@ -69,21 +68,20 @@ namespace Core.Specs.WhenLeading.HeartBeat
         {
             node.Start();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
                 state.SetLastRequestTime();
-                Thread.Sleep(100);
+                Thread.Sleep(50);
             }
             
             node.Stop();
+            Thread.Sleep(1000);
         }
 
         [Test]
         public void It_should_not_send_heart_beat_to_nodes()
         {
-            var contorollMessage = bus1.messages.Dequeue();
-
-            Assert.LessOrEqual(0, bus1.MessageCount());
+           Assert.LessOrEqual(0, bus1.MessageCount());
         }
     }
 }

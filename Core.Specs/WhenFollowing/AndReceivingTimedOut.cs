@@ -44,6 +44,7 @@ namespace Core.Specs.WhenFollowing
             node.Start();
             Thread.Sleep(1000);
             node.Stop();
+            Thread.Sleep(300);
         }
 
         [Test]

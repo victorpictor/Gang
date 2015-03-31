@@ -62,6 +62,7 @@ namespace Core.Specs.WhenFollowing.AndReceivingRequestedVote
             Thread.Sleep(1000);
 
             node.Stop();
+            Thread.Sleep(300);
         }
 
         [Test]

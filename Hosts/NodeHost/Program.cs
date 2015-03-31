@@ -1,4 +1,12 @@
-﻿using Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
+using System.DirectoryServices;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using Core;
 using Core.Clustering;
 using Core.States.TheFollower;
 using DataAccess;
@@ -13,6 +21,7 @@ namespace NodeHost
     {
         static void Main(string[] args)
         {
+
             var logger = LogManager.GetCurrentClassLogger();
             Core.Logger.Set(new nLogger(logger));
 

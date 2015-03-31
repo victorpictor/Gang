@@ -23,7 +23,7 @@ namespace Core.States.TheLead
                     
                     var state = node.GetRegistry().LogEntriesService().NodeState();
 
-                    while (true)
+                    while (!IsServiceShuttingDown())
                     {
 
                          var clientRequest = leaderBus.ReceiveCommand();
@@ -39,7 +39,7 @@ namespace Core.States.TheLead
 
                          this.Info(string.Format("Sent client command, term {0} index {1}", followerMessage.Term, followerMessage.LogIndex));
                          requestState.MessageSentNow();
-
+                         Thread.Sleep(1000);
                          WaitForMajorityToReply(followerMessage);
 
                         if (requestState.Failed()) 
@@ -64,7 +64,7 @@ namespace Core.States.TheLead
             var settings = node.GetRegistry().NodeSettings();
             var nap = 0;
             
-            while (true)
+            while (!IsServiceShuttingDown())
             {
                 if (requestState.IsMajority(retryMessage.Term, retryMessage.LogIndex) >= settings.Majority)
                 {

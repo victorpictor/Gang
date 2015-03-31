@@ -15,5 +15,10 @@
         {
             return reference;
         }
+
+        public bool IsServiceShuttingDown()
+        {
+            return reference.IsServiceShuttingDown();
+        }
     }
 }
