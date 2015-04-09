@@ -9,7 +9,6 @@ namespace Core.States.TheCandidate
     public class Candidate : FinitState
     {
         private ElectionState Granted = new ElectionState();
-        protected Dictionary<long, int> votes = new Dictionary<long, int>();
 
         public override void EnterNewState(Node node)
         {
@@ -25,7 +24,7 @@ namespace Core.States.TheCandidate
                 new ElectionTimeOutService(base.node, this.Granted)
                     .Reference());
 
-           StartRegisteredServices();
+            StartRegisteredServices();
         }
 
         public override MessageResponse Receive(AppendEntries appendEntries)
@@ -43,18 +42,18 @@ namespace Core.States.TheCandidate
                         node.Next(new StateFactory().Follower());
                     });
             }
-            
-            this.Info(string.Format("Ignored AppendEntries from node {0}, term {1} log index {2} my term was {3} index {4}", appendEntries.LeaderId, appendEntries.Term, appendEntries.LogIndex,  state.Term, state.EntryIndex));
-            
+
+            this.Info(string.Format("Ignored AppendEntries from node {0}, term {1} log index {2} my term was {3} index {4}", appendEntries.LeaderId, appendEntries.Term, appendEntries.LogIndex, state.Term, state.EntryIndex));
+
             return new MessageResponse(false, () => { });
         }
 
         public override MessageResponse Receive(VoteGranted voteGranted)
         {
             this.Info(string.Format("Voted by {0}, term {1}", voteGranted.VoterId, voteGranted.Term));
-            
+
             var settings = node.GetRegistry().NodeSettings();
-            
+
             if (voteGranted.To == settings.NodeId)
             {
                 Granted.AddVote(voteGranted.VoterId);
@@ -66,40 +65,34 @@ namespace Core.States.TheCandidate
                             node.Next(new StateFactory().Leader());
                         });
             }
-           
+
             return new MessageResponse(false, () => { });
         }
 
         public override MessageResponse Receive(RequestedVote requestedVote)
         {
             this.Info(string.Format("Requested vote, candidate {0}, term {1}", requestedVote.CandidateId, requestedVote.Term));
-            
+
             var state = node.GetRegistry().LogEntriesService().NodeState();
-            
+
             if (state.Term < requestedVote.Term)
             {
-                if (!votes.ContainsKey(requestedVote.Term))
-                {
-                    votes.Add(requestedVote.Term, requestedVote.CandidateId);
-                    
-                    this.Info(string.Format("Voted for candidate {0}, term {1}, my term was {2}", requestedVote.CandidateId, requestedVote.Term, state.Term));
 
-                    node.GetRegistry()
-                      .NodeMessageSender()
-                      .Reply(new VoteGranted(state.NodeId, requestedVote.CandidateId, requestedVote.LastLogTerm));
+                this.Info(string.Format("Voted for candidate {0}, term {1}, my term was {2}", requestedVote.CandidateId, requestedVote.Term, state.Term));
 
-                    return new MessageResponse(true, () =>
-                        {
-                            StopRegisteredServices();
-                            node.Next(new StateFactory().Follower(votes));
-                        });
-                }
-                
-                this.Info(string.Format("Already voted in this term for candidate {0}, term {1}, my term was {2}", requestedVote.CandidateId, requestedVote.Term, state.Term));
+                node.GetRegistry()
+                  .NodeMessageSender()
+                  .Reply(new VoteGranted(state.NodeId, requestedVote.CandidateId, requestedVote.LastLogTerm));
+
+                return new MessageResponse(true, () =>
+                    {
+                        StopRegisteredServices();
+                        node.Next(new StateFactory().Follower(new Dictionary<long, int>() { { requestedVote.Term, requestedVote.CandidateId } }));
+                    });
             }
             else
                 this.Info(string.Format("Did not grant vote for candidate {0}, term {1}", requestedVote.CandidateId, requestedVote.Term));
-           
+
             return new MessageResponse(false, () => { });
         }
 

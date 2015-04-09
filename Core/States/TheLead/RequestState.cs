@@ -8,7 +8,7 @@ namespace Core.States.TheLead
     {
         private DateTime lastMessageSent;
         private AppendEntriesReplies appendEntries = new AppendEntriesReplies();
-        private bool failed;
+        private bool failed = true;
 
         public RequestState()
         {
@@ -30,6 +30,14 @@ namespace Core.States.TheLead
             appendEntries.Register(e);
         }
 
+        public void FreshState()
+        {
+            
+            failed = true;
+            appendEntries = new AppendEntriesReplies();
+        }
+
+
         public int IsMajority(long term, long index)
         {
             return appendEntries.Count(term, index);
@@ -42,7 +50,7 @@ namespace Core.States.TheLead
 
         public void Succeeded()
         {
-            failed = true;
+            failed = false;
         }
 
     }

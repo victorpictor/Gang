@@ -29,15 +29,6 @@ namespace Core.States
 
         public virtual MessageResponse Receive(AppendEntries appendEntries)
         {
-            var state = node.GetRegistry().LogEntriesService().NodeState();
-
-            if (appendEntries.Term > state.Term)
-            {
-                node.GetRegistry().LogEntriesService().UpdateTerm(appendEntries.Term);
-
-                return new MessageResponse(true, () => node.Next(new StateFactory().Follower()));
-            }
-
             return new MessageResponse(false, () => { });
         }
 

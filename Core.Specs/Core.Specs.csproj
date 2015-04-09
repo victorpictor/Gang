@@ -67,6 +67,8 @@
     <Compile Include="WhenFollowing\AndReceivingRequestedVote\WithLowerTerm.cs" />
     <Compile Include="WhenFollowing\AndReceivingTimedOut.cs" />
     <Compile Include="WhenLeading\AndReceivingClientCommand\AndFollowersAck.cs" />
+    <Compile Include="WhenLeading\AndReceivingRequestedVote\WithHigherTerm.cs" />
+    <Compile Include="WhenLeading\AndReceivingRequestedVote\WithLowerTerm.cs" />
     <Compile Include="WhenLeading\HeartBeat\AndClientSubmitsRequests.cs" />
     <Compile Include="WhenLeading\AndNoClientRequest.cs" />
     <Compile Include="WhenLeading\AndReceivingAppendEntries\WithHigherTerm.cs" />

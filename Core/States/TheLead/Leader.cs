@@ -9,12 +9,12 @@ namespace Core.States.TheLead
     {
         protected LeaderBus leaderBus;
         protected RequestState requestState;
-        
+
         public override void EnterNewState(Node node)
         {
-            
+
             this.Info(string.Format("Node is {0}", this.GetType().Name));
-            
+
             base.node = node;
 
             leaderBus = new LeaderBus();
@@ -46,6 +46,23 @@ namespace Core.States.TheLead
             return new MessageResponse(false, () => { });
         }
 
+        public override MessageResponse Receive(RequestedVote requestedVote)
+        {
+            this.Info(string.Format("Requested vote, candidate {0}, term {1}", requestedVote.CandidateId, requestedVote.Term));
 
+            var state = node.GetRegistry().LogEntriesService().NodeState();
+
+            if (state.Term < requestedVote.Term)
+            {
+                this.Info(string.Format("Left leader state"));
+                return new MessageResponse(true, () =>
+                {
+                    StopRegisteredServices();
+                    node.Next(new StateFactory().Follower());
+                });
+            }
+
+            return new MessageResponse(false, () => { });
+        }
     }
 }
