@@ -20,6 +20,11 @@ namespace Core.States.TheLead
             leaderBus = new LeaderBus();
             this.requestState = new RequestState();
 
+
+            RegisterService(
+                new ClientCommandsService(base.node, leaderBus)
+                .Reference());
+
             RegisterService(
                 new AppendEntriesService(base.node, leaderBus, requestState)
                     .Reference());

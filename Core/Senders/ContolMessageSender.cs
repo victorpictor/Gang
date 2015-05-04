@@ -6,9 +6,9 @@ namespace Core.Senders
 {
     public class ContolMessageSender : ISendMessages
     {
-        private IDeliverMessages bus;
+        private IDeliver<IMessage> bus;
 
-        public ContolMessageSender(IDeliverMessages bus)
+        public ContolMessageSender(IDeliver<IMessage> bus)
         {
             this.bus = bus;
         }

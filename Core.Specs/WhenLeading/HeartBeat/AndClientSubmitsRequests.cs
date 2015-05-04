@@ -17,10 +17,10 @@ namespace Core.Specs.WhenLeading.HeartBeat
     {
         public MyLeader(): base()
         {
-            var receiver = new Mock<IReceiveMessages<IMessage>>();
+            var receiver = new Mock<IReceiveMessages>();
             receiver.SetReturnsDefault(new ClientCommand(){Id = Guid.NewGuid(), Command = new object()});
 
-            LeaderBus.InitLeaderBus(new Mock<IReceiveMessages<IClientCommand>>().Object, new Mock<ISend<ClientReply>>().Object, receiver.Object);
+            LeaderBus.InitLeaderBus(new Mock<ISend<ClientReply>>().Object);
         }
 
         public void SetLastRequestTime()
@@ -58,6 +58,7 @@ namespace Core.Specs.WhenLeading.HeartBeat
                .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 250, Majority = 3 })
                .UseContolMessageQueue()
                .UseNodeMessageSender(bus1)
+               .UseToReceiveClientCommands(bus1)
                .UseLogEntryStore(logEntryStore)
                .UseToReceiveMessages(bus2);
 

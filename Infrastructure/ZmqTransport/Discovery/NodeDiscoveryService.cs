@@ -6,6 +6,7 @@ using Core.Clustering;
 using Core.States.Services;
 using NetMQ;
 using Newtonsoft.Json;
+using ZmqTransport.Settings;
 
 namespace ZmqTransport.Discovery
 {
@@ -13,7 +14,7 @@ namespace ZmqTransport.Discovery
     {
         private NodeSettings nodeSettings;
 
-        public List<ClusterNode> ClusterNodes = new List<ClusterNode>();
+        private List<ClusterNode> ClusterNodes = new List<ClusterNode>();
 
         public NodeDiscoveryService(NodeSettings nodeSettings)
         {
@@ -22,40 +23,40 @@ namespace ZmqTransport.Discovery
 
         public void Run()
         {
-            new ServiceReference(SettingPublisher).StartService();
+            new ServiceReference(BroadcastThisNodeSettings).StartService();
 
-            DicoveryInbox();
+            DicoveryListener();
         }
         
-        private void SettingPublisher()
+        private void BroadcastThisNodeSettings()
         {
             var context = NetMQContext.Create();
 
             var disvoceryPort = new NetMQBeacon(context);
-            disvoceryPort.Configure(9999);
+            disvoceryPort.Configure(DiscoverySettings.DiscoveryPort);
 
             disvoceryPort.Publish(JsonConvert.SerializeObject(nodeSettings.NodeDesctiption()));
         }
 
-        private void DicoveryInbox()
+        private void DicoveryListener()
         {
             var context = NetMQContext.Create();
 
             using (var inbox = new NetMQBeacon(context))
             {
-                inbox.Configure(9999);
+                inbox.Configure(DiscoverySettings.DiscoveryPort);
                 inbox.Subscribe("");
                 
                 var startedDicovery = DateTime.Now;
 
-                while (DateTime.Now.Subtract(startedDicovery).TotalSeconds < nodeSettings.ClusterDiscoveryPeriod)
+                while (DateTime.Now.Subtract(startedDicovery).TotalSeconds < DiscoverySettings.DiscoveryPeriod)
                 {
                     string peerName;
                     string message = inbox.ReceiveString(out peerName);
                     
                     var node = JsonConvert.DeserializeObject<ClusterNode>(message);
 
-                    this.Info(string.Format("Discovered node node {0}", node.Id));
+                    this.Info(string.Format("Discovered node {0}", node.Id));
                     
                     if (ClusterNodes.All(n => n.Id != node.Id))
                         ClusterNodes.Add(node);
@@ -63,12 +64,6 @@ namespace ZmqTransport.Discovery
             }
 
             nodeSettings.ClusterNodes = ClusterNodes;
-
-            //if (ClusterNodes.Count < 2 * nodeSettings.Majority - 1)
-            //{
-            //    throw new Exception("Could not join a cluster with a majority of " + nodeSettings.Majority);
-            //}
-
         }
     }
 }

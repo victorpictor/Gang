@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.DirectoryServices;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using Core;
+﻿using Core;
 using Core.Clustering;
 using Core.States.TheFollower;
 using DataAccess;
@@ -14,6 +6,7 @@ using NLog;
 using ZmqTransport.Discovery;
 using ZmqTransport.MessageReceivers;
 using ZmqTransport.MessageSenders;
+using ZmqTransport.Settings;
 
 namespace NodeHost
 {
@@ -33,6 +26,7 @@ namespace NodeHost
                 new DomainRegistry()
                 .UseNodeSettings(nodeSettings)
                 .UseContolMessageQueue()
+                .UseToReceiveClientCommands(new ClientCommandsReceiver(nodeSettings,new ClientSettigs()))
                 .UseToReceiveMessages(new NodeMessageSubscriber(nodeSettings))
                 .UseNodeMessageSender(new NodeMessageSender(nodeSettings))
                 .UseLogEntryStore(new LogEntryStore());
@@ -47,7 +41,7 @@ namespace NodeHost
                 
             }
 
-          // node.Stop();
+            node.Stop();
         }
     }
 }

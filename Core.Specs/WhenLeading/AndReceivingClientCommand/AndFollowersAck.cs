@@ -6,7 +6,6 @@ using Core.Log;
 using Core.Messages;
 using Core.Receivers;
 using Core.Senders;
-using Core.States;
 using Core.States.TheLead;
 using Core.Transport;
 using NUnit.Framework;
@@ -30,24 +29,7 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
                 Replies.Enqueue(new ClientReply());
             }
         }
-        private class ClientCommandReceiver : IReceiveMessages<IClientCommand>
-        {
-            public IClientCommand Receive()
-            {
-                return new ClientCommand() { Id = Guid.NewGuid(), Command = new object() };
-            }
-        }
-        private class FollowerMessageReceiver : IReceiveMessages<IMessage>
-        {
-            private int Id = 2;
-            
-            public IMessage Receive()
-            {
-                Thread.Sleep(30);
-                return new EntriesAppended() {NodeId = Id++,Term = 2, LogIndex = 1 };
-            }
-        }
-        
+       
         private Leader state;
        
         private Node node;
@@ -59,7 +41,7 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
         public override void Given()
         {
             bus3 = new ClientReplyBus();
-            LeaderBus.InitLeaderBus(new ClientCommandReceiver(), bus3 , new FollowerMessageReceiver());
+            LeaderBus.InitLeaderBus(bus3);
 
             state = new Leader();
 
@@ -79,6 +61,7 @@ namespace Core.Specs.WhenLeading.AndReceivingClientCommand
               .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, HeartBeatPeriod = 150, Majority = 3 })
               .UseContolMessageQueue()
               .UseNodeMessageSender(bus1)
+              .UseToReceiveClientCommands(bus1)
               .UseLogEntryStore(logEntryStore)
               .UseToReceiveMessages(bus2);
 

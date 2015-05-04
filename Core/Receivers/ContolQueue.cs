@@ -4,7 +4,7 @@ using Core.Messages.Control;
 
 namespace Core.Receivers
 {
-    public class ContolMessageQueue : IReceiveMessages, IDeliver<IMessage>
+    public class ContolQueue : IReceiveMessages, IDeliverMessages
     {
         private Queue<IMessage> messageQueue = new Queue<IMessage>();
 

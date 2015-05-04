@@ -3,12 +3,16 @@ using Core.States.Services;
 
 namespace Core.Receivers
 {
-    public interface IReceiveMessages : IReceiveMessages<IMessage>
+    public interface IReceiveMessages
     {
+        IMessage Receive();
     }
 
-    public interface IReceiveMessages<T>
+   
+    public interface IReceiveMessagesService : IReceiveMessages
     {
-        T Receive();
+        void StartService();
+        void StopService();
     }
+   
 }

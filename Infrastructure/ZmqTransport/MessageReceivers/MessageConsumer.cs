@@ -8,11 +8,11 @@ using Newtonsoft.Json;
 
 namespace ZmqTransport.MessageReceivers
 {
-    public class MessageConsumer
+    internal class MessageConsumer
     {
         public ServiceReference ConsumerService;
 
-        public MessageConsumer(ClusterNode clusterNode, Queue internalQueue, int nodeId)
+        public MessageConsumer(int subscriberPort, Queue internalQueue, int nodeId)
         {
             Action receiverProcess = () =>
             {
@@ -22,10 +22,10 @@ namespace ZmqTransport.MessageReceivers
                 using (var subSocket = context.CreateSubscriberSocket())
                 {
                     subSocket.Options.ReceiveHighWatermark = 1000;
-                    subSocket.Connect(string.Format("tcp://localhost:{0}", clusterNode.SubscriberPort));
+                    subSocket.Connect(string.Format("tcp://localhost:{0}", subscriberPort));
                     subSocket.Subscribe(string.Format("node{0}",nodeId));
 
-                    while (true)
+                    while (ConsumerService.IsServiceShuttingDown())
                     {
                         var messageTopicReceived = subSocket.ReceiveString();
                         var message = subSocket.ReceiveString();
@@ -41,12 +41,12 @@ namespace ZmqTransport.MessageReceivers
             ConsumerService = new ServiceReference(receiverProcess);
         }
 
-        public void Consume()
+        public void StartConsume()
         {
            ConsumerService.StartService();
         }
-        
-        public void StopConsumer()
+
+        public void StopConsume()
         {
             ConsumerService.StopService();
         }

@@ -8,13 +8,13 @@ namespace Core.Clustering
 
         public int NodeId;
         
-        public int ElectionTimeout = 1000;
-        public int FollowerTimeout = 1000;
-        public int HeartBeatPeriod = 1000;
-        public int FollowerSla = 1000;
-        public int Majority = 3;
-        public int SubscribersPort = 8181;
-        public int ClusterDiscoveryPeriod = 3;
+        public int ElectionTimeout;
+        public int FollowerTimeout;
+        public int HeartBeatPeriod;
+        public int FollowerSla;
+        public int Majority;
+        public int SubscribersPort;
+        public int ClusterDiscoveryPeriod;
 
         public List<ClusterNode> ClusterNodes = new List<ClusterNode>();
 

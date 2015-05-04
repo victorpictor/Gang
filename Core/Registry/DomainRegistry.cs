@@ -1,12 +1,13 @@
 ﻿using System;
 using Core.Clustering;
 using Core.Log;
+using Core.Messages;
 using Core.Receivers;
 using Core.Senders;
 
 namespace Core
 {
-    public class DomainRegistry : Configurator, IDependencyFactory
+    public class DomainRegistry : Configurator
     {
         public override DomainRegistry UseNodeMessageSender(ISendMessages sender)
         {
@@ -19,16 +20,17 @@ namespace Core
             this.nodeSettings = nodeSettings;
             return this;
         }
-        public override DomainRegistry UseToReceiveMessages(IReceiveMessages nodeMessageReceiver)
+
+        public override DomainRegistry UseToReceiveMessages(IReceiveMessagesService nodeMessageReceiver)
         {
             this.nodeMessageReceiver = nodeMessageReceiver;
 
             return this;
         }
 
-        public override DomainRegistry UseToReceiveControlMessages(IReceiveMessages controlMessageReceiver)
+        public override DomainRegistry UseToReceiveClientCommands(IReceiveMessagesService clientCommandsReceiver)
         {
-            this.controlMessageReceiver = controlMessageReceiver;
+            this.clientCommandsReceiver = clientCommandsReceiver;
 
             return this;
         }
@@ -57,13 +59,21 @@ namespace Core
 
         public Receiver MessageReceiver()
         {
-            if (controlMessageSender != null)
-                return new Receiver(nodeMessageReceiver, controlMessageReceiver);
+            if (contolMessageQueue == null)
+                throw new NullReferenceException("No ContolMessageQueue registered");
 
             if (nodeMessageReceiver == null)
                 throw new NullReferenceException("No MessageReceiver registered");
 
-            return new Receiver(nodeMessageReceiver, contolMessageQueue);
+            return new Receiver((IReceiveMessages)nodeMessageReceiver, contolMessageQueue);
+        }
+
+        public IReceiveMessagesService ClientCommandsReceiver()
+        {
+            if (clientCommandsReceiver == null)
+                throw new NullReferenceException("No ClientCommandsReceiver registered");
+
+            return this.clientCommandsReceiver;
         }
 
         public NodeLogEntriesService LogEntriesService()
@@ -88,7 +98,7 @@ namespace Core
             if (contolMessageQueue == null)
                 throw new NullReferenceException("No ContolMessageQueue registered");
 
-            return new ContolMessageSender((IDeliverMessages)contolMessageQueue);
+            return new ContolMessageSender((IDeliver<IMessage>)contolMessageQueue);
         }
         public NodeSettings NodeSettings()
         {

@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{393AD67D-C5B8-405B-9B87-676F323A639A}</ProjectGuid>
+    <ProjectGuid>{A380F6E3-E321-423E-AF2B-3DD757AFB982}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ZmqTransport</RootNamespace>
-    <AssemblyName>ZmqTransport</AssemblyName>
+    <RootNamespace>ZmqTransport.Tests</RootNamespace>
+    <AssemblyName>ZmqTransport.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,13 +30,20 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq">
+      <HintPath>..\lib\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="NetMQ">
-      <HintPath>..\..\lib\NetMQ.dll</HintPath>
+      <HintPath>..\lib\NetMQ.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\lib\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,22 +54,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Discovery\NodeDiscoveryService.cs" />
-    <Compile Include="MessageEnvelope.cs" />
-    <Compile Include="MessageReceivers\AbstractReceiver.cs" />
-    <Compile Include="MessageReceivers\ClientCommandsReceiver.cs" />
-    <Compile Include="MessageReceivers\MessageConsumer.cs" />
-    <Compile Include="MessageReceivers\NodeMessageSubscriber.cs" />
-    <Compile Include="MessageRegistry.cs" />
-    <Compile Include="MessageSenders\NodeMessageSender.cs" />
+    <Compile Include="Specification.cs" />
+    <Compile Include="NodeDiscovery\MeByOthers.cs" />
+    <Compile Include="NodeDiscovery\Broadcast\NodeDetailsBroadcaster.cs" />
+    <Compile Include="NodeDiscovery\Broadcast\NodeDetailsBroadcastListener.cs" />
+    <Compile Include="NodeDiscovery\OthersByMe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings\ClientSettigs.cs" />
-    <Compile Include="Settings\DiscoverySettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Core.csproj">
+    <ProjectReference Include="..\Core\Core.csproj">
       <Project>{f1515064-9670-44a2-80f1-9b5df1a42909}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infrastructure\ZmqTransport\ZmqTransport.csproj">
+      <Project>{393ad67d-c5b8-405b-9b87-676f323a639a}</Project>
+      <Name>ZmqTransport</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

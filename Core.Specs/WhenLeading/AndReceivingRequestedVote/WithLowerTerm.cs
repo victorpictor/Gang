@@ -34,6 +34,7 @@ namespace Core.Specs.WhenLeading.AndReceivingRequestedVote
             var registry = new DomainRegistry()
                 .UseNodeSettings(new NodeSettings() { NodeId = 1, NodeName = "N1", ElectionTimeout = 10000, Majority = 3 })
                .UseContolMessageQueue()
+               .UseToReceiveClientCommands(bus)
                .UseNodeMessageSender(bus)
                .UseLogEntryStore(logEntryStore)
                .UseToReceiveMessages(bus);
@@ -48,6 +49,7 @@ namespace Core.Specs.WhenLeading.AndReceivingRequestedVote
             bus.Send(new RequestedVote(2, 1, 1, 1));
 
             Thread.Sleep(900);
+            node.Stop();
         }
 
         [Test]

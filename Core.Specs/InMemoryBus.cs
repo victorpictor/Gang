@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Core.Messages;
 using Core.Receivers;
 using Core.Senders;
@@ -6,7 +7,7 @@ using Core.States.Services;
 
 namespace Core.Specs
 {
-    public class InMemoryBus: ISendMessages, IReceiveMessages
+    public class InMemoryBus : ISendMessages, IReceiveMessagesService
     {
         public Queue<IMessage> messages = new Queue<IMessage>();
         public ServiceReference ServiceReference { get; set; }
@@ -34,14 +35,13 @@ namespace Core.Specs
             return messages.Count;
         }
 
-        
-        public void StopReceiving()
+        public void StartService()
         {
         }
 
-        public void StrtReceiving()
+        public void StopService()
         {
         }
     }
-
+    
 }

@@ -53,7 +53,7 @@
     <Compile Include="Log\ILogEntryStore.cs" />
     <Compile Include="Messages\Control\NoMessageInQueue.cs" />
     <Compile Include="Receivers\ContolMessageQueue.cs" />
-    <Compile Include="Receivers\IDeliverMessages.cs" />
+    <Compile Include="Receivers\IDeliver.cs" />
     <Compile Include="Registry\Configurator.cs" />
     <Compile Include="Registry\DomainRegistry.cs" />
     <Compile Include="Log\LogEntry.cs" />
@@ -85,6 +85,7 @@
     <Compile Include="States\TheCandidate\ElectionTimeOutService.cs" />
     <Compile Include="States\TheFollower\LogRecoveryService.cs" />
     <Compile Include="States\TheFollower\TimeoutService.cs" />
+    <Compile Include="States\TheLead\ClientCommandsService.cs" />
     <Compile Include="States\TheLead\FollowersRepliesService.cs" />
     <Compile Include="States\TheLead\AppendEntriesService.cs" />
     <Compile Include="States\TheLead\HeartBeatService.cs" />
