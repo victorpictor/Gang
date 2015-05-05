@@ -19,11 +19,11 @@ namespace ZmqTransport
                                  .Where(p => commandType.IsAssignableFrom(p) && p.IsClass).ToList();
         }
 
-        public dynamic Create(string type, string sMessage)
+        public IMessage Create(string type, string sMessage)
         {
             var ct = KnownMessages.Where(t => t.Name == type || t.FullName == type).Select(tt => tt).FirstOrDefault();
 
-            return JsonConvert.DeserializeObject(sMessage, ct);
+            return (IMessage)JsonConvert.DeserializeObject(sMessage, ct);
         }
     }
    

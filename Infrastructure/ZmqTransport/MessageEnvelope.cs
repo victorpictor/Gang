@@ -9,6 +9,6 @@ namespace ZmqTransport
 
         public int SenderId;
         public string MessageName;
-        public dynamic Message;
+        public string Message;
     }
 }

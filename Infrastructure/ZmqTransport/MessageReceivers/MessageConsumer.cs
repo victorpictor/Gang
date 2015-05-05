@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections;
-using Core.Clustering;
-using Core.Messages;
 using Core.States.Services;
 using NetMQ;
 using Newtonsoft.Json;
 
 namespace ZmqTransport.MessageReceivers
 {
-    internal class MessageConsumer
+    public class MessageConsumer
     {
-        public ServiceReference ConsumerService;
+        public ServiceReference ConsumerService = new ServiceReference(() => { });
 
         public MessageConsumer(int subscriberPort, Queue internalQueue, int nodeId)
         {
@@ -25,15 +23,19 @@ namespace ZmqTransport.MessageReceivers
                     subSocket.Connect(string.Format("tcp://localhost:{0}", subscriberPort));
                     subSocket.Subscribe(string.Format("node{0}",nodeId));
 
-                    while (ConsumerService.IsServiceShuttingDown())
+                    while (!ConsumerService.IsServiceShuttingDown())
                     {
-                        var messageTopicReceived = subSocket.ReceiveString();
+                        var messageTopicReceived = subSocket.ReceiveString(new TimeSpan(0,0,0,2));
                         var message = subSocket.ReceiveString();
 
-                        var envelope = JsonConvert.DeserializeObject<MessageEnvelope>(message);
+                        if (string.IsNullOrWhiteSpace(messageTopicReceived))
+                            continue;
 
-                        internalQueue.Enqueue(
-                            (IMessage)messages.Create(envelope.MessageName, envelope.Message.ToString()));
+                        var envelope = JsonConvert.DeserializeObject<MessageEnvelope>(message);
+                      
+                        var msg = messages.Create(envelope.MessageName, envelope.Message);
+
+                        internalQueue.Enqueue(msg);
                     }
                 }
             };

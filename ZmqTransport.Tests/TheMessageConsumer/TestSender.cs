@@ -1,14 +1,12 @@
-﻿using System;
-using Core.Clustering;
+﻿using Core.Clustering;
 using Core.Messages;
-using Core.Senders;
 using NetMQ;
 using NetMQ.Sockets;
 using Newtonsoft.Json;
 
-namespace ZmqTransport.MessageSenders
+namespace ZmqTransport.Tests.Consumer
 {
-    public class NodeMessageSender : ISendMessages
+    public class TestSender
     {
         private NodeSettings settings;
 
@@ -16,7 +14,7 @@ namespace ZmqTransport.MessageSenders
         private PublisherSocket pubSocket;
 
 
-        public NodeMessageSender(NodeSettings settings)
+        public TestSender(NodeSettings settings)
         {
             this.settings = settings;
 
@@ -44,20 +42,7 @@ namespace ZmqTransport.MessageSenders
                 );
         }
 
-        public void Reply(IReply m)
-        {
-
-            pubSocket.SendMore(string.Format("node{0}", m.To)).Send(
-                JsonConvert.SerializeObject(new MessageEnvelope()
-                {
-                    SenderId = settings.NodeId,
-                    MessageName = m.GetType().Name,
-                    Message = JsonConvert.SerializeObject(m)
-                }));
-
-        }
-
-        ~NodeMessageSender()
+        ~TestSender()
         {
             pubSocket.Dispose();
             context.Dispose();
