@@ -7,6 +7,7 @@ using ZmqTransport.Discovery;
 using ZmqTransport.MessageReceivers;
 using ZmqTransport.MessageSenders;
 using ZmqTransport.Settings;
+using Logger = NLog.Logger;
 
 namespace NodeHost
 {
@@ -15,7 +16,7 @@ namespace NodeHost
         static void Main(string[] args)
         {
 
-            var logger = LogManager.GetCurrentClassLogger();
+            Logger logger = LogManager.GetCurrentClassLogger();
             Core.Logger.Set(new nLogger(logger));
 
             var nodeSettings = new FileNodeSettings().ReadSettings();

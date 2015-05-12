@@ -4,13 +4,13 @@ using Core.States.Services;
 using NetMQ;
 using Newtonsoft.Json;
 
-namespace ZmqTransport.MessageReceivers
+namespace ZmqTransport.Tests.TheMessageSender
 {
-    public class MessageConsumer
+    public class TestConsumer
     {
         public ServiceReference ConsumerService = new ServiceReference(() => { });
 
-        public MessageConsumer(int subscriberPort, Queue internalQueue, int nodeId)
+        public TestConsumer(int subscriberPort, Queue internalQueue, int nodeId)
         {
             Action receiverProcess = () =>
             {
@@ -41,16 +41,6 @@ namespace ZmqTransport.MessageReceivers
             };
 
             ConsumerService = new ServiceReference(receiverProcess);
-        }
-
-        public void StartConsume()
-        {
-           ConsumerService.StartService();
-        }
-
-        public void StopConsume()
-        {
-            ConsumerService.StopService();
         }
     }
 }
