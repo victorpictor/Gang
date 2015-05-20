@@ -1,5 +1,4 @@
-﻿using Core.Messages;
-using Core.Messages.Control;
+﻿using Core.Messages.Control;
 using Core.States;
 
 namespace Core.Clustering

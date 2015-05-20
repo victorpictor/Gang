@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Clustering;
+using Core.Messages;
 using Core.Messages.Control;
 using Core.States.Services;
 using Core.Transport;
@@ -22,7 +23,7 @@ namespace Core.States.TheLead
 
                         if (message is NoMessageInQueue) continue;
                         
-                        leaderBus.Deliver(message);
+                        leaderBus.Deliver((IClientCommand)message);
                     }
                     receiver.StopService();
                 };

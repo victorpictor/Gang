@@ -57,7 +57,7 @@ namespace Core.Specs.WhenFollowing
         public void It_should_increment_term()
         {
             var term = node.GetRegistry().LogEntriesService().NodeState().Term;
-            Assert.AreEqual(2, term);
+            Assert.GreaterOrEqual(term, 2);
         }
 
     }

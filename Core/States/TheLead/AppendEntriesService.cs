@@ -19,20 +19,18 @@ namespace Core.States.TheLead
 
             Action appender = () =>
                 {
-
                     this.requestState = requestState;
 
                     var state = node.GetRegistry().LogEntriesService().NodeState();
-                    int i = 2;
+                    
                     while (!IsServiceShuttingDown())
                     {
                          this.requestState.FreshState();
                          var clientRequest = leaderBus.ReceiveCommand();
 
-                         var followerMessage = new AppendEntries(state.NodeId, state.Term, state.PrevTerm(),
-                                                                 //state.EntryIndex + 1, state.PrevLogIngex(),
-                                                                 i++, state.PrevLogIngex(),
-                                                                 new List<object> { clientRequest.Command});
+                        var followerMessage = new AppendEntries(state.NodeId, state.Term, state.PrevTerm(),
+                                                                state.EntryIndex + 1, state.PrevLogIngex(),
+                                                                new List<object> {clientRequest.Command});
 
                          node.GetRegistry()
                              .NodeMessageSender()
@@ -41,12 +39,13 @@ namespace Core.States.TheLead
                          this.Info(string.Format("Sent client command, term {0} index {1}", followerMessage.Term, followerMessage.LogIndex));
                          requestState.MessageSentNow();
                          
-                         
                          WaitForMajorityToReply(followerMessage);
 
-                         if (requestState.Failed()) 
-                            // send failure to client and continue
+                        if (requestState.Failed())
+                        {
+                            leaderBus.SendToClient(new ClientReply(clientRequest.Id, Status.Failed));
                             continue;
+                        }
 
                         node.GetRegistry()
                             .LogEntriesService()
@@ -54,8 +53,8 @@ namespace Core.States.TheLead
                                     followerMessage.PrevLogIndex, followerMessage.MachineCommands);
                         
                         this.Info(string.Format("Followers received command, term {0} index {1}", followerMessage.Term, followerMessage.LogIndex));
-                        //leaderBus.SendToClient();
-                        Thread.Sleep(1000);
+
+                        leaderBus.SendToClient(new ClientReply(clientRequest.Id, Status.Succeeded));
                     }
                 };
 
@@ -77,7 +76,7 @@ namespace Core.States.TheLead
                 }
                 
                 Thread.Sleep(settings.FollowerSla / 3);
-
+                
                 nap++;
                 if (nap <= 3)
                    node.GetRegistry()

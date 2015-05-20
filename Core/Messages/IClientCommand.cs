@@ -2,7 +2,7 @@
 
 namespace Core.Messages
 {
-    public interface IClientCommand
+    public interface IClientCommand : IMessage
     {
         Guid Id { get; set; }
         object Command { get; set; }

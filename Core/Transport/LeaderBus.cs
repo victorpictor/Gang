@@ -40,9 +40,9 @@ namespace Core.Transport
             }
         }
 
-        public void SendToClient()
+        public void SendToClient(ClientReply reply)
         {
-            repliesBus.Send(new ClientReply());
+            repliesBus.Send(reply);
         }
 
         public void Deliver(IMessage message)

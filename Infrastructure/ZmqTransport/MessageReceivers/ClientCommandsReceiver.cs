@@ -16,7 +16,6 @@ namespace ZmqTransport.MessageReceivers
         public void StartService()
         {
             consumer.StartConsume();
-           
         }
 
         public void StopService()
